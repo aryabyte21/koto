@@ -7,12 +7,14 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'koto',
+      components: {
+        ThemeSelect: './src/components/ThemeToggle.astro',
+      },
       description:
         'Context-aware AI translation for i18n workflows with LLM provider choice, context profiles, and type-safe keys.',
       customCss: ['./src/styles/custom.css'],
-      // Force dark mode — the design is built for dark
       expressiveCode: {
-        themes: ['github-dark'],
+        themes: ['github-dark', 'github-light'],
       },
       social: {
         github: 'https://github.com/aryabyte21/koto',

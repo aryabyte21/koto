@@ -1,129 +1,164 @@
 html {
   scroll-behavior: smooth;
-  color-scheme: dark;
 }
 
-/* Force dark mode */
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* ── Global rounded corners ── */
+button,
+input,
+select,
+textarea,
+.card,
+.sl-link-card,
+pre,
+code,
+img {
+  border-radius: var(--sl-border-radius, 0.75rem);
+}
+
 :root {
+  --sl-font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --sl-font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+  --sl-text-h1: 2.25rem;
+  --sl-text-h2: 1.5rem;
+  --sl-text-h3: 1.1rem;
+  --sl-content-width: 50rem;
+  --sl-border-radius: 0.75rem;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root[data-theme="dark"] {
   --sl-color-accent-low: #172554;
   --sl-color-accent: #60a5fa;
   --sl-color-accent-high: #bfdbfe;
   --sl-color-white: #fafafa;
   --sl-color-black: #09090b;
-  --sl-color-bg: #09090b;
-  --sl-color-gray-6: #09090b;
-  --sl-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-  --sl-text-h1: 2.25rem;
-  --sl-text-h2: 1.5rem;
-  --sl-text-h3: 1.1rem;
-  --sl-content-width: 50rem;
+  --koto-surface: rgba(255, 255, 255, 0.03);
+  --koto-surface-hover: rgba(255, 255, 255, 0.06);
+  --koto-border: rgba(255, 255, 255, 0.08);
 }
 
-/* Kill theme switcher and force dark */
-starlight-theme-select,
-[data-theme="light"] {
-  display: none !important;
-}
-
-:root {
-  color-scheme: dark !important;
+:root[data-theme="light"] {
+  --sl-color-accent-low: #dbeafe;
+  --sl-color-accent: #2563eb;
+  --sl-color-accent-high: #1e3a5f;
+  --koto-surface: rgba(0, 0, 0, 0.02);
+  --koto-surface-hover: rgba(0, 0, 0, 0.05);
+  --koto-border: rgba(0, 0, 0, 0.08);
 }
 
 /* ── Header ── */
 header.header {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--koto-border);
   backdrop-filter: blur(20px) saturate(1.8);
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
-  background: rgba(9, 9, 11, 0.8);
 }
 
 header .site-title {
-  font-weight: 800;
-  font-size: 1.15rem;
-  letter-spacing: -0.04em;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.03em;
+  gap: 0.4rem;
+}
+
+header .site-title:hover {
+  color: var(--sl-color-accent);
 }
 
 /* ── Sidebar ── */
 .sidebar-pane {
-  border-color: rgba(255, 255, 255, 0.06);
+  border-color: var(--koto-border);
 }
 
-/* ── Hero ── */
+/* ── Hide Starlight's empty hero (we build our own in MDX) ── */
 .hero {
-  padding: 5rem 2rem 2rem;
+  display: none !important;
+}
+
+/* ── Custom Hero ── */
+.hero-section {
+  padding: 5rem 0 3rem;
   text-align: center;
-  max-width: 44rem;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
 }
 
-/* Hide h1 — replaced by AsciiLogo SVG component */
-.hero h1#_top {
-  display: none;
-}
-
-.hero .tagline {
-  max-width: 28ch;
-  margin: 0 auto;
-  font-size: 1.2rem;
+.hero-tagline {
+  max-width: 30ch;
+  font-size: 1.25rem;
   line-height: 1.5;
-  color: #71717a;
+  color: var(--sl-color-gray-2);
   font-weight: 400;
+  margin: 0;
 }
 
-/* CTA */
-.hero .sl-flex {
+.hero-actions {
+  display: flex;
   gap: 0.75rem;
-  margin-top: 2rem;
+  justify-content: center;
 }
 
-.hero .action {
-  border-radius: 0.5rem;
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 0.75rem;
   font-weight: 500;
-  font-size: 0.82rem;
-  padding: 0.5rem 1.1rem;
-  transition: all 150ms ease;
+  font-size: 0.88rem;
+  padding: 0.55rem 1.3rem;
   text-decoration: none;
+  transition: all 150ms ease;
 }
 
-.hero .action.primary {
-  background: #fafafa;
-  color: #09090b;
-  border: 1px solid #fafafa;
+.hero-btn.primary {
+  background: var(--sl-color-text);
+  color: var(--sl-color-bg);
+  border: 1px solid var(--sl-color-text);
 }
 
-.hero .action.primary:hover {
-  background: #d4d4d8;
-  border-color: #d4d4d8;
+.hero-btn.primary:hover {
+  opacity: 0.85;
 }
 
-.hero .action.minimal {
-  color: #a1a1aa;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.hero-btn.minimal {
+  color: var(--sl-color-gray-2);
+  border: 1px solid var(--koto-border);
   background: transparent;
 }
 
-.hero .action.minimal:hover {
-  color: #fafafa;
-  border-color: rgba(255, 255, 255, 0.2);
+.hero-btn.minimal:hover {
+  color: var(--sl-color-text);
+  border-color: var(--sl-color-gray-3);
 }
 
 /* ── Code blocks ── */
 .sl-markdown-content pre {
   border-radius: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: #0c0c0e !important;
+  border: 1px solid var(--koto-border);
+  font-family: var(--sl-font-mono);
 }
 
-/* ── Terminal ── */
+code {
+  font-family: var(--sl-font-mono);
+}
+
+/* ── Terminal (always dark) ── */
 .terminal-window {
   border-radius: 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: #0c0c0e;
   overflow: hidden;
   margin: 1.5rem 0;
-  font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+  font-family: var(--sl-font-mono);
   font-size: 0.8rem;
   line-height: 1.65;
+  color-scheme: dark;
 }
 
 .terminal-titlebar {
@@ -179,72 +214,68 @@ header .site-title {
   letter-spacing: -0.03em;
 }
 
-/* ── Feature grid ── */
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
+/* ── Starlight Card overrides ── */
+.card {
+  border-color: var(--koto-border);
   border-radius: 0.75rem;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  margin: 1.5rem 0;
-}
-
-.feature {
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.02);
   transition: background 150ms ease;
 }
 
-.feature:hover {
-  background: rgba(255, 255, 255, 0.04);
+.card .icon {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--sl-color-accent);
 }
 
-.feature h3 {
-  font-size: 0.88rem;
-  font-weight: 600;
-  margin: 0 0 0.5rem;
-  color: #e4e4e7;
-  letter-spacing: -0.01em;
+.card:hover {
+  background: var(--koto-surface-hover);
 }
 
-.feature p {
-  font-size: 0.8rem;
-  line-height: 1.6;
-  margin: 0;
-  color: #71717a;
+.sl-link-card {
+  border-color: var(--koto-border);
+  border-radius: 0.75rem;
+  transition: border-color 150ms ease;
 }
 
-@media (max-width: 55rem) {
-  .feature-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 30rem) {
-  .feature-grid { grid-template-columns: 1fr; }
+.sl-link-card:hover {
+  border-color: var(--sl-color-accent);
 }
 
 /* ── Tables ── */
-.sl-markdown-content table { border-color: rgba(255, 255, 255, 0.06); }
-.sl-markdown-content th { background: rgba(255, 255, 255, 0.02); border-color: rgba(255, 255, 255, 0.06); }
-.sl-markdown-content td { border-color: rgba(255, 255, 255, 0.06); }
+.sl-markdown-content table { 
+  border-color: var(--koto-border); 
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+.sl-markdown-content th { 
+  background: var(--koto-surface); 
+  border-color: var(--koto-border); 
+}
+.sl-markdown-content td { 
+  border-color: var(--koto-border); 
+}
 
 /* ── Pagination ── */
-.pagination-links a { border-radius: 0.75rem; }
+.pagination-links a {
+  border-radius: 0.75rem;
+  border-color: var(--koto-border);
+}
 
 /* ── Asides ── */
 .starlight-aside {
-  border-color: rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.02);
+  border-color: var(--koto-border);
+  background: var(--koto-surface);
+  border-radius: 0.75rem;
 }
 
-/* ── Hero page cleanup ── */
+/* ── Splash page cleanup ── */
 [data-has-hero] .sl-markdown-content > hr:first-of-type { display: none; }
-
-/* ── Hide card icons ── */
-.card .card-icon { display: none; }
+.hero-section + hr { display: none; }
 
 /* ── Mobile ── */
 @media (max-width: 50rem) {
-  .hero { padding: 3rem 1rem 1.5rem; }
-  .hero h1#_top { font-size: 3rem; }
+  .hero-section {
+    padding: 3rem 0 2rem;
+  }
 }

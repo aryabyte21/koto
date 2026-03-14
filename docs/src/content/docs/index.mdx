@@ -3,21 +3,21 @@ title: koto
 description: Context-aware AI translation for your i18n workflow.
 template: splash
 hero:
-  tagline: "Ship your app in every language. One command, any LLM."
-  actions:
-    - text: Get Started
-      link: ./getting-started/
-      variant: primary
-    - text: GitHub
-      link: https://github.com/aryabyte21/koto
-      icon: external
-      variant: minimal
+  tagline: ' '
 ---
 
+import { Card, CardGrid, LinkCard, Aside } from '@astrojs/starlight/components';
 import AsciiLogo from '../../components/AsciiLogo.astro';
 import Terminal from '../../components/Terminal.astro';
 
-<AsciiLogo />
+<div class="hero-section">
+  <AsciiLogo />
+  <p class="hero-tagline">Ship your app in every language. One command, any LLM.</p>
+  <div class="hero-actions">
+    <a class="hero-btn primary" href="./getting-started/">Get Started</a>
+    <a class="hero-btn minimal" href="https://github.com/aryabyte21/koto" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> GitHub</a>
+  </div>
+</div>
 
 <Terminal title="npx koto init">
 <Fragment set:html={`<span class="bold cyan">  koto</span> <span class="dim">v0.1.0</span>
@@ -75,38 +75,34 @@ import Terminal from '../../components/Terminal.astro';
 
 You add a button. You change a heading. Your source locale is done in seconds — but your 6 target locales are now stale. AI translation tools exist, but they treat a payment confirmation the same as a marketing headline.
 
-**koto fixes this.** Define context profiles — tone, glossary, instructions — per section of your app. Point it at any LLM. Run one command.
+<Aside type="tip" title="koto fixes this.">
+  Define context profiles — tone, glossary, instructions — per section of your app. Point it at any LLM. Run one command.
+</Aside>
 
 ---
 
 ## Why koto?
 
-<div class="feature-grid">
-  <div class="feature">
-    <h3>Context Profiles</h3>
-    <p>Different parts of your app need different tones. Marketing copy sounds energetic. Legal text stays precise. One command handles all of it.</p>
-  </div>
-  <div class="feature">
-    <h3>Bring Your Own LLM</h3>
-    <p>OpenAI, Anthropic, Google Gemini, Ollama, or any compatible endpoint. Switch providers with one config line.</p>
-  </div>
-  <div class="feature">
-    <h3>Type-Safe Keys</h3>
-    <p>Generate TypeScript types from your locale files. Typos and missing keys fail at build time, not in production.</p>
-  </div>
-  <div class="feature">
-    <h3>Smart Cache</h3>
-    <p>SHA-256 content hashing + lockfile. Unchanged strings are never re-translated. Incremental runs take seconds.</p>
-  </div>
-  <div class="feature">
-    <h3>Quality Scoring</h3>
-    <p>Placeholder integrity, length ratio, untranslated detection. Gate your CI pipeline on translation quality.</p>
-  </div>
-  <div class="feature">
-    <h3>CI/CD Ready</h3>
-    <p>GitHub Action included. Translations run in your pipeline. Use <code>--fail-on-error</code> to block bad releases.</p>
-  </div>
-</div>
+<CardGrid stagger>
+  <Card title="Context Profiles" icon="pencil">
+    Different parts of your app need different tones. Marketing copy sounds energetic. Legal text stays precise. One command handles all of it.
+  </Card>
+  <Card title="Bring Your Own LLM" icon="puzzle">
+    OpenAI, Anthropic, Google Gemini, Ollama, or any compatible endpoint. Switch providers with one config line.
+  </Card>
+  <Card title="Type-Safe Keys" icon="approve-check">
+    Generate TypeScript types from your locale files. Typos and missing keys fail at build time, not in production.
+  </Card>
+  <Card title="Smart Cache" icon="rocket">
+    SHA-256 content hashing + lockfile. Unchanged strings are never re-translated. Incremental runs take seconds.
+  </Card>
+  <Card title="Quality Scoring" icon="star">
+    Placeholder integrity, length ratio, untranslated detection. Gate your CI pipeline on translation quality.
+  </Card>
+  <Card title="CI/CD Ready" icon="setting">
+    GitHub Action included. Translations run in your pipeline. Use `--fail-on-error` to block bad releases.
+  </Card>
+</CardGrid>
 
 ---
 
@@ -125,4 +121,7 @@ export default {
 
 That's it. Run `npx koto` and your locale files are ready.
 
-[Get started →](./getting-started/)
+<CardGrid>
+  <LinkCard title="Get started" href="./getting-started/" description="Set up koto in your project in under a minute." />
+  <LinkCard title="Configuration" href="./configuration/" description="Customize locales, providers, and context profiles." />
+</CardGrid>
