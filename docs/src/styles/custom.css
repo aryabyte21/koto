@@ -1,65 +1,91 @@
 :root {
-  --sl-color-accent-low: #cffafe;
-  --sl-color-accent: #0e7490;
-  --sl-color-accent-high: #164e63;
-  --sl-color-black: #0b1020;
+  --sl-color-accent-low: #e2e8f0;
+  --sl-color-accent: #0f172a;
+  --sl-color-accent-high: #020617;
+  --sl-color-black: #020617;
   --sl-color-white: #f8fafc;
-  --sl-font: "Sora", "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+  --sl-font: "Manrope", "SF Pro Display", "Avenir Next", "Segoe UI", sans-serif;
+  --sl-text-h1: 2.45rem;
+  --sl-text-h2: 1.75rem;
 }
 
 :root[data-theme="dark"] {
-  --sl-color-accent-low: #0e2f3a;
-  --sl-color-accent: #22d3ee;
-  --sl-color-accent-high: #a5f3fc;
-  --sl-color-black: #060a14;
+  --sl-color-accent-low: #0b1220;
+  --sl-color-accent: #e2e8f0;
+  --sl-color-accent-high: #f8fafc;
+  --sl-color-black: #010409;
 }
 
-/* Brand texture for docs pages */
 .main-pane {
   background-image:
-    radial-gradient(1200px 400px at 20% -10%, rgba(34, 211, 238, 0.12), transparent 70%),
-    radial-gradient(800px 300px at 95% 0%, rgba(14, 116, 144, 0.1), transparent 70%);
+    radial-gradient(900px 400px at 10% -5%, rgba(148, 163, 184, 0.14), transparent 72%),
+    radial-gradient(700px 300px at 100% 0%, rgba(51, 65, 85, 0.2), transparent 70%);
 }
 
 .hero {
-  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 22%, transparent);
-  border-radius: 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--sl-color-hairline) 70%, var(--sl-color-accent) 30%);
+  border-radius: 1rem;
   background:
-    linear-gradient(115deg, color-mix(in srgb, var(--sl-color-accent-low) 75%, transparent), transparent 45%),
-    color-mix(in srgb, var(--sl-color-bg) 95%, white 5%);
-  padding: 2.4rem;
-  box-shadow: 0 20px 45px -35px rgba(3, 7, 18, 0.65);
+    linear-gradient(130deg, color-mix(in srgb, var(--sl-color-accent-low) 70%, transparent), transparent 48%),
+    color-mix(in srgb, var(--sl-color-bg) 97%, white 3%);
+  padding: 2rem;
+  box-shadow: 0 30px 60px -50px rgba(2, 6, 23, 0.9);
+  backdrop-filter: blur(10px);
 }
 
 .hero h1 {
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  text-wrap: balance;
 }
 
 .hero .tagline {
-  max-width: 64ch;
-  font-size: 1.02rem;
+  max-width: 60ch;
+  font-size: 1.01rem;
 }
 
 .card {
-  border-radius: 1rem;
+  border-radius: 0.8rem;
   border: 1px solid color-mix(in srgb, var(--sl-color-hairline) 85%, var(--sl-color-accent) 15%);
-  box-shadow: 0 10px 24px -26px rgba(2, 6, 23, 0.9);
+  box-shadow: 0 10px 24px -24px rgba(2, 6, 23, 0.7);
+  transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.card:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--sl-color-accent) 20%, var(--sl-color-hairline));
 }
 
 .sl-markdown-content h2 {
   letter-spacing: -0.02em;
+  font-weight: 760;
 }
 
 .sl-markdown-content pre {
-  border-radius: 0.9rem;
+  border-radius: 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--sl-color-hairline) 88%, var(--sl-color-accent) 12%);
 }
 
 .pagination-links a {
-  border-radius: 0.9rem;
+  border-radius: 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--sl-color-hairline) 84%, var(--sl-color-accent) 16%);
+}
+
+header .site-title {
+  letter-spacing: 0.01em;
+  font-weight: 700;
+}
+
+header .site-title > :not(img) {
+  display: none;
+}
+
+[data-has-hero] .sl-markdown-content > hr:first-of-type {
+  display: none;
 }
 
 @media (max-width: 50rem) {
   .hero {
-    padding: 1.4rem;
+    padding: 1.3rem;
   }
 }

@@ -11,7 +11,7 @@ inputs:
     default: 'openai'
   api_key:
     description: 'API key for the LLM provider'
-    required: true
+    required: false
   locales:
     description: 'Comma-separated list of target locales (e.g. es,fr,de,ja)'
     required: false
@@ -34,4 +34,4 @@ outputs:
 
 runs:
   using: 'node20'
-  main: 'dist/index.js'
+  main: 'dist/index.cjs'

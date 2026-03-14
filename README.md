@@ -1,16 +1,12 @@
 <div align="center">
 
-```
-  ╦╔═  ╔═╗  ╔╦╗  ╔═╗
-  ╠╩╗  ║ ║   ║   ║ ║
-  ╩ ╩  ╚═╝   ╩   ╚═╝
-```
+![koto logo](./assets/koto-wordmark.svg)
 
 **Context-aware AI translation for your i18n workflow**
 
 [![npm version](https://img.shields.io/npm/v/koto?color=blue)](https://www.npmjs.com/package/koto)
 [![license](https://img.shields.io/npm/l/koto)](./LICENSE)
-[![CI](https://github.com/koto-i18n/koto/actions/workflows/ci.yml/badge.svg)](https://github.com/koto-i18n/koto/actions/workflows/ci.yml)
+[![CI](https://github.com/aryabyte21/koto/actions/workflows/ci.yml/badge.svg)](https://github.com/aryabyte21/koto/actions/workflows/ci.yml)
 
 [Quickstart](#quickstart) · [Features](#features) · [Config](#configuration) · [Providers](#providers) · [CLI Reference](#cli-reference)
 

@@ -1,11 +1,6 @@
-function getInput(name: string, required = false): string {
+function getInput(name: string): string {
   const envKey = `INPUT_${name.toUpperCase().replace(/ /g, '_')}`
   const value = process.env[envKey]?.trim() ?? ''
-
-  if (required && !value) {
-    setFailed(`Input required and not supplied: ${name}`)
-    process.exit(1)
-  }
 
   return value
 }
@@ -30,8 +25,12 @@ function notice(message: string): void {
 
 async function run(): Promise<void> {
   try {
-    const provider = getInput('provider', true)
-    const apiKey = getInput('api_key', true)
+    const provider = getInput('provider')
+    if (!provider) {
+      throw new Error('Input required and not supplied: provider')
+    }
+
+    const apiKey = getInput('api_key')
     const locales = getInput('locales')
     const workingDirectory = getInput('working_directory') || '.'
     const failOnError = getInput('fail_on_error') === 'true'
@@ -44,6 +43,16 @@ async function run(): Promise<void> {
     }
 
     const envKey = envKeyMap[provider]
+    if (!envKeyMap[provider] && provider !== 'ollama') {
+      throw new Error(
+        `Unsupported provider: ${provider}. Supported providers: openai, anthropic, google, ollama.`,
+      )
+    }
+
+    if (provider !== 'ollama' && !apiKey) {
+      throw new Error(`api_key is required when provider is "${provider}"`)
+    }
+
     if (envKey) {
       process.env[envKey] = apiKey
     }
