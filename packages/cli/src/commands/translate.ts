@@ -45,6 +45,10 @@ export async function translateCommand(
   const progress = new TranslationProgress(targetLocales, 0);
   let runningCacheHits = 0;
   let runningTranslated = 0;
+  // Track cumulative totals per locale across multiple source files
+  const localeTotals = new Map<string, number>();
+  const localeDone = new Map<string, number>();  // completed translations across files
+  const localeFileOffset = new Map<string, number>(); // offset before current file started
 
   const result = await runPipeline(config, cwd, {
     dryRun: options.dryRun,
@@ -53,10 +57,17 @@ export async function translateCommand(
     context: options.context,
     callbacks: {
       onFileStart(_file, locale, totalKeys) {
-        progress.update(locale, 0, totalKeys);
+        // Save current done count as offset for this file
+        localeFileOffset.set(locale, localeDone.get(locale) ?? 0);
+        // Accumulate total
+        localeTotals.set(locale, (localeTotals.get(locale) ?? 0) + totalKeys);
+        progress.update(locale, localeDone.get(locale) ?? 0, localeTotals.get(locale)!);
       },
-      onBatchComplete(_file, locale, translated, total) {
-        progress.update(locale, translated, total);
+      onBatchComplete(_file, locale, translatedInFile, _totalInFile) {
+        // translatedInFile is absolute within the current file
+        const offset = localeFileOffset.get(locale) ?? 0;
+        localeDone.set(locale, offset + translatedInFile);
+        progress.update(locale, localeDone.get(locale)!, localeTotals.get(locale)!);
       },
       onLocaleComplete(_locale, stats) {
         runningCacheHits += stats.cached;
