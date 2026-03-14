@@ -93,9 +93,36 @@ export const jsonNestedFormat: FileFormat = {
       // Add new keys that don't exist in the original file
       const existingKeys = new Map<string, string>();
       flatten(parsed, "", existingKeys);
+      const newKeys: [string, string][] = [];
       for (const [key, value] of keys) {
         if (!existingKeys.has(key)) {
-          setNested(rebuilt, key, value);
+          newKeys.push([key, value]);
+        }
+      }
+
+      if (newKeys.length > 0) {
+        // For flat objects, insert before sentinel keys (e.g., ADD_NEW_STRINGS_ABOVE_THIS_LINE)
+        const sentinelPattern = /ABOVE_THIS_LINE|MERGE_CONFLICT|DO_NOT_EDIT|END_OF_FILE/i;
+        const topKeys = Object.keys(rebuilt);
+        const sentinelIndex = topKeys.findIndex((k) => sentinelPattern.test(k));
+
+        if (sentinelIndex > -1 && !newKeys[0][0].includes('.')) {
+          // Flat keys — insert before sentinel
+          const ordered: Record<string, unknown> = {};
+          for (let i = 0; i < topKeys.length; i++) {
+            if (i === sentinelIndex) {
+              for (const [key, value] of newKeys) {
+                ordered[key] = value;
+              }
+            }
+            ordered[topKeys[i]] = rebuilt[topKeys[i]];
+          }
+          return JSON.stringify(ordered, null, indent) + "\n";
+        } else {
+          // Nested keys — just append via setNested
+          for (const [key, value] of newKeys) {
+            setNested(rebuilt, key, value);
+          }
         }
       }
 

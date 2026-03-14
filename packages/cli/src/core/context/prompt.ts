@@ -32,10 +32,11 @@ export function buildSystemPrompt(
   lines.push(
     "",
     "Rules:",
-    "- Translate ONLY the text content. Do not translate placeholders marked as __PH_N__.",
-    "- Do NOT translate brand names, product names, or proper nouns. Keep them exactly as-is.",
-    "- Do NOT translate technical terms, URLs, email addresses, or code identifiers.",
-    "- If a string is already a brand name or proper noun (e.g., a single capitalized word), return it unchanged.",
+    "- Translate ALL text into the target language. Every string must be fully translated — do not leave English words unless they are proper nouns.",
+    "- Do not translate placeholders marked as __PH_N__. Keep them exactly as-is.",
+    "- Keep proper nouns (company names, product names like 'Google Meet', 'Stripe') unchanged.",
+    "- Keep URLs, email addresses, and code identifiers unchanged.",
+    "- Translate common English words like 'Settings', 'Dashboard', 'Docs', 'Cancel' — these are NOT brand names.",
     "- Preserve all formatting (newlines, markdown, HTML tags).",
     "- Return translations in the exact same numbered format as the input.",
     "- Do not add explanations or notes."
