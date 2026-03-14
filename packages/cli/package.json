@@ -1,5 +1,5 @@
 {
-  "name": "koto",
+  "name": "koto-i18n",
   "version": "0.1.0",
   "description": "Context-aware AI translation for your i18n workflow",
   "type": "module",

@@ -8,8 +8,8 @@
 
 **Context-aware AI translation for your i18n workflow**
 
-[![npm version](https://img.shields.io/npm/v/koto?color=blue)](https://www.npmjs.com/package/koto)
-[![license](https://img.shields.io/npm/l/koto)](./LICENSE)
+[![npm version](https://img.shields.io/npm/v/koto-i18n?color=blue)](https://www.npmjs.com/package/koto-i18n)
+[![license](https://img.shields.io/npm/l/koto-i18n)](./LICENSE)
 [![CI](https://github.com/aryabyte21/koto/actions/workflows/ci.yml/badge.svg)](https://github.com/aryabyte21/koto/actions/workflows/ci.yml)
 
 [Quickstart](#quickstart) · [Features](#features) · [Config](#configuration) · [Providers](#providers) · [CLI Reference](#cli-reference)
@@ -23,7 +23,7 @@
 **1. Install**
 
 ```bash
-pnpm add -D koto
+pnpm add -D koto-i18n
 ```
 
 **2. Initialize**
@@ -270,7 +270,7 @@ Options:
 npx koto contribute calcom/cal.com --locale ko
 ```
 
-Forks the repo, detects the i18n setup, translates missing keys, and opens a PR — automatically. [See a real PR →](https://github.com/calcom/cal.com/pull/28425)
+Forks the repo, detects the i18n setup, translates missing keys, and opens a PR — automatically. [See a real PR →](https://github.com/calcom/cal.com/pull/28427)
 
 ```
   → Forking calcom/cal.com...
@@ -279,7 +279,7 @@ Forks the repo, detects the i18n setup, translates missing keys, and opens a PR 
   → Translating...
   ✓ Translated 155 keys (score: 100/100)
   → Opening pull request...
-  ✓ https://github.com/calcom/cal.com/pull/28425
+  ✓ https://github.com/calcom/cal.com/pull/28427
 ```
 
 ---
