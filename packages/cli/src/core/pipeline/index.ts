@@ -8,7 +8,7 @@ import { loadGlossary } from '../context/glossary.js';
 import { shield, restore, validate as validatePlaceholders } from '../placeholders/shield.js';
 import { DEFAULT_PATTERNS } from '../placeholders/patterns.js';
 import { hashString } from '../cache/hasher.js';
-import { readLockfile, writeLockfile, diffLockfile } from '../cache/lockfile.js';
+import { readLockfile, writeLockfile, diffLockfile, seedLockfileFromExisting } from '../cache/lockfile.js';
 import { scoreTranslation } from '../quality/scorer.js';
 import { getFormat } from '../../formats/registry.js';
 import { createProvider } from '../../providers/registry.js';
@@ -77,6 +77,35 @@ export async function runPipeline(
 
   // Resolve all source files from config patterns
   const sourceFiles = await resolveSourceFiles(config, cwd);
+
+  // Seed lockfile from existing translations on first run
+  const isEmptyLockfile = Object.keys(lockfile.entries).length === 0;
+  if (isEmptyLockfile && !options.force) {
+    let totalSeeded = 0;
+    for (const sourceFile of sourceFiles) {
+      const format = getFormat(sourceFile.path);
+      const sourceContent = await readFile(sourceFile.absolutePath);
+      const sourceKeys = format.parse(sourceContent).keys;
+
+      for (const locale of targetLocales) {
+        const targetPath = sourceFile.path.replace('[locale]', locale);
+        const targetAbsolute = path.resolve(cwd, targetPath);
+        try {
+          const targetContent = await readFile(targetAbsolute);
+          const targetKeys = format.parse(targetContent).keys;
+          totalSeeded += seedLockfileFromExisting(
+            lockfile, sourceFile.path, sourceKeys, targetKeys, locale,
+          );
+        } catch {
+          // Target file doesn't exist yet — nothing to seed
+        }
+      }
+    }
+    if (totalSeeded > 0) {
+      logger.info(`Found ${totalSeeded} existing translations — added to lockfile.`);
+      await writeLockfile(cwd, lockfile);
+    }
+  }
 
   // Validate --context filter if specified
   if (options.context) {

@@ -34,6 +34,47 @@ function emptyLockfile(): Lockfile {
   return { version: 1, entries: {} };
 }
 
+/**
+ * Seed a lockfile from existing translations on disk.
+ * For each source key that already has a translation in the target file,
+ * mark it as translated in the lockfile so it won't be re-translated.
+ */
+export function seedLockfileFromExisting(
+  lockfile: Lockfile,
+  filePath: string,
+  sourceKeys: Map<string, string>,
+  targetKeys: Map<string, string>,
+  locale: string,
+): number {
+  let seeded = 0;
+
+  if (!lockfile.entries[filePath]) {
+    lockfile.entries[filePath] = {};
+  }
+
+  for (const [key, sourceValue] of sourceKeys) {
+    const targetValue = targetKeys.get(key);
+    // If the target has a value and it's different from source (actually translated)
+    if (targetValue && targetValue !== sourceValue) {
+      if (!lockfile.entries[filePath][key]) {
+        lockfile.entries[filePath][key] = {
+          hash: hashString(sourceValue),
+          translations: {},
+        };
+      }
+      if (!lockfile.entries[filePath][key].translations[locale]) {
+        lockfile.entries[filePath][key].translations[locale] = {
+          hash: hashString(targetValue),
+          at: new Date().toISOString(),
+        };
+        seeded++;
+      }
+    }
+  }
+
+  return seeded;
+}
+
 export async function readLockfile(cwd: string): Promise<Lockfile> {
   const filepath = join(cwd, LOCKFILE_NAME);
   try {

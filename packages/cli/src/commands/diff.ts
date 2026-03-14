@@ -1,10 +1,11 @@
 import { loadConfig } from '../core/config/loader.js';
-import { readLockfile, diffLockfile } from '../core/cache/lockfile.js';
+import { readLockfile, writeLockfile, diffLockfile, seedLockfileFromExisting } from '../core/cache/lockfile.js';
 import { getFormat } from '../formats/registry.js';
 import { readFile } from '../utils/fs.js';
 import { printIntro } from '../ui/intro.js';
 import { printDiff, printDiffJson } from '../ui/diff-view.js';
 import type { LocaleDiff, DiffEntry } from '../ui/diff-view.js';
+import { logger } from '../utils/logger.js';
 import path from 'node:path';
 import { VERSION } from '../utils/version.js';
 
@@ -20,6 +21,35 @@ export async function diffCommand(cwd: string, options: DiffOptions = {}): Promi
 
   const config = await loadConfig(cwd);
   const lockfile = await readLockfile(cwd);
+
+  // Seed lockfile from existing translations on first run
+  const isEmptyLockfile = Object.keys(lockfile.entries).length === 0;
+  if (isEmptyLockfile) {
+    let totalSeeded = 0;
+    for (const pattern of config.files) {
+      const sourcePath = pattern.replace('[locale]', config.sourceLocale);
+      const absSource = path.resolve(cwd, sourcePath);
+      try {
+        const sourceContent = await readFile(absSource);
+        const format = getFormat(sourcePath);
+        const sourceKeys = format.parse(sourceContent).keys;
+        for (const locale of config.targetLocales) {
+          const targetPath = pattern.replace('[locale]', locale);
+          const absTarget = path.resolve(cwd, targetPath);
+          try {
+            const targetContent = await readFile(absTarget);
+            const targetKeys = format.parse(targetContent).keys;
+            totalSeeded += seedLockfileFromExisting(lockfile, pattern, sourceKeys, targetKeys, locale);
+          } catch { /* target doesn't exist */ }
+        }
+      } catch { /* source doesn't exist */ }
+    }
+    if (totalSeeded > 0) {
+      logger.info(`Found ${totalSeeded} existing translations — added to lockfile.`);
+      await writeLockfile(cwd, lockfile);
+    }
+  }
+
   const diffs: LocaleDiff[] = [];
   const requestedLocales = options.locale
     ? options.locale.split(',').map((locale) => locale.trim()).filter(Boolean)
