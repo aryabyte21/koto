@@ -6,6 +6,7 @@ import { printCompact } from '../ui/intro.js';
 import { printDiff, printDiffJson } from '../ui/diff-view.js';
 import type { LocaleDiff, DiffEntry } from '../ui/diff-view.js';
 import path from 'node:path';
+import { VERSION } from '../utils/version.js';
 
 export interface DiffOptions {
   json?: boolean;
@@ -14,7 +15,7 @@ export interface DiffOptions {
 
 export async function diffCommand(cwd: string, options: DiffOptions = {}): Promise<void> {
   if (!options.json) {
-    printCompact('0.1.0');
+    printCompact(VERSION);
   }
 
   const config = await loadConfig(cwd);

@@ -1,6 +1,10 @@
 <div align="center">
 
-![koto logo](./assets/koto-wordmark.svg)
+```
+╦╔═  ╔═╗  ╔╦╗  ╔═╗
+╠╩╗  ║ ║   ║   ║ ║
+╩ ╩  ╚═╝   ╩   ╚═╝
+```
 
 **Context-aware AI translation for your i18n workflow**
 
@@ -29,24 +33,40 @@ npx koto init
 ```
 
 ```
-  ╦╔═  ╔═╗  ╔╦╗  ╔═╗
-  ╠╩╗  ║ ║   ║   ║ ║
-  ╩ ╩  ╚═╝   ╩   ╚═╝
+  koto v0.1.0
 
-◆  What format are your translation files?
-│  ● JSON (flat or nested)
-│  ○ TypeScript (next-intl, react-i18next)
-│  ○ YAML
-│  ○ PO (gettext)
+┌  Detected
+│
+│  Framework: Next.js 14
+│  i18n library: next-intl
+│  Source: src/messages/ (en, 🇪🇸 es, 🇫🇷 fr)
+│
+└
 
-◆  Where is your source locale file?
-│  src/locales/en.json
+◆  Which LLM provider?
+│  ● OpenAI (gpt-4o-mini — fast & cheap)
+│  ○ Anthropic (claude-sonnet — high quality)
+│  ○ Google (gemini-2.5-flash — fast & cheap)
+│  ○ Ollama (local, free, private)
 
-◆  What locales do you want to translate to?
-│  ◻ 🇪🇸 es  ◻ 🇫🇷 fr  ◻ 🇩🇪 de  ◻ 🇯🇵 ja  ◻ 🇰🇷 ko  ◻ 🇨🇳 zh
-│  ◻ 🇧🇷 pt-BR  ◻ 🇮🇹 it  ◻ 🇳🇱 nl  ◻ 🇷🇺 ru  ◻ 🇸🇦 ar  ◻ 🇮🇳 hi
+◆  Target locales? (space to toggle)
+│  ◼ 🇪🇸  es       Spanish (existing)
+│  ◼ 🇫🇷  fr       French (existing)
+│  ◼ 🇩🇪  de       German
+│  ◼ 🇯🇵  ja       Japanese
+│  ◻ 🇰🇷  ko       Korean
+│  ◻ 🇧🇷  pt-BR    Brazilian Portuguese
+│  ◻ 🇨🇳  zh-Hans  Simplified Chinese
 
-✔  Created koto.config.ts
+┌  Setup complete
+│
+│  Created koto.config.ts
+│  Created koto.lock
+│
+└
+
+  Set OPENAI_API_KEY in your environment.
+  Run npx koto to translate!
 ```
 
 **3. Translate**
@@ -56,17 +76,35 @@ npx koto translate
 ```
 
 ```
-◆  Translating 42 keys → 6 locales
+  ╦╔═  ╔═╗  ╔╦╗  ╔═╗
+  ╠╩╗  ║ ║   ║   ║ ║
+  ╩ ╩  ╚═╝   ╩   ╚═╝
+  v0.1.0 — context-aware i18n
 
-  🇪🇸 es  ████████████████████████████████████████ 42/42
-  🇫🇷 fr  ████████████████████████████████████████ 42/42
-  🇩🇪 de  ████████████████████████████████████████ 42/42
-  🇯🇵 ja  ████████████████████████████████████████ 42/42
-  🇰🇷 ko  ████████████████████████████████████████ 42/42
-  🇨🇳 zh  ████████████████████████████████████████ 42/42
+◆  Translating 847 keys → 4 locales
 
-✔  252 translations written in 3.2s
-   Quality score: 98/100
+  🇪🇸  es     ████████████████████████████████ 847/847 ✓
+  🇫🇷  fr     ████████████████████████████████ 847/847 ✓
+  🇩🇪  de     ██████████████████████████░░░░░░ 694/847
+  🇯🇵  ja     █████████████████░░░░░░░░░░░░░░░ 451/847
+
+  ⚡ Cache: 712 │ 🔤 Translated: 135 │ ⏱  8.4s
+  💰 Estimated cost: $0.08
+
+✓  Translation complete
+
+  🇪🇸  es       135 translated, 712 cached ✓
+  🇫🇷  fr       128 translated, 719 cached ✓
+  🇩🇪  de       847 translated, 0 cached ✓
+  🇯🇵  ja       847 translated, 0 cached ✓
+
+  ⚡ Cache hits: 1431 │ 🔤 Translated: 1957 │ ⏱  14.2s
+  💰 Estimated cost: $0.23
+
+  ⚠  2 quality issues found. Run koto diff to review.
+
+  4 locale files updated.
+  Run koto types to update TypeScript types.
 ```
 
 ---
@@ -271,7 +309,7 @@ Options:
 ## GitHub Action
 
 ```yaml
-- uses: koto-i18n/koto@v1
+- uses: aryabyte21/koto@v1
   with:
     provider: openai
     api_key: ${{ secrets.OPENAI_API_KEY }}

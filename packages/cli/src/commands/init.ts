@@ -7,6 +7,7 @@ import { writeFile, fileExists } from '../utils/fs.js';
 import { getLanguageFlag, getLanguageName } from '../utils/language.js';
 import { printCompact } from '../ui/intro.js';
 import path from 'node:path';
+import { VERSION } from '../utils/version.js';
 
 const COMMON_LOCALES = [
   'es', 'fr', 'de', 'ja', 'ko', 'pt-BR', 'zh-Hans', 'zh-Hant',
@@ -22,8 +23,7 @@ const PROVIDERS = [
 ] as const;
 
 export async function initCommand(cwd: string): Promise<void> {
-  const version = '0.1.0';
-  printCompact(version);
+  printCompact(VERSION);
 
   // Check if config already exists
   const configExists = await fileExists(path.resolve(cwd, 'koto.config.ts'));

@@ -154,12 +154,50 @@ export async function runPipeline(
       const existingParsed = existingContent ? format.parse(existingContent) : undefined;
       const translatedKeys = new Map<string, string>(existingParsed?.keys ?? new Map());
 
-      let batchesCompleted = 0;
-      for (const batch of batches) {
-        const batchResult = await provider.translate(batch);
+      let actualTranslatedCount = 0;
+
+      const processBatch = async (batch: TranslationBatch) => {
+        // Bug 2: Retry logic with exponential backoff
+        let batchResult: TranslationResult | undefined;
+        const MAX_RETRIES = 3;
+        for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+          try {
+            batchResult = await provider.translate(batch);
+            break;
+          } catch (err) {
+            if (attempt < MAX_RETRIES - 1) {
+              const delayMs = Math.pow(2, attempt) * 1000;
+              logger.warn(
+                `Provider failed for batch ${batch.id} (attempt ${attempt + 1}/${MAX_RETRIES}): ${(err as Error).message}. Retrying in ${delayMs}ms...`,
+              );
+              await new Promise((resolve) => setTimeout(resolve, delayMs));
+            } else {
+              throw new Error(
+                `Provider failed for batch ${batch.id} after ${MAX_RETRIES} attempts: ${(err as Error).message}`,
+              );
+            }
+          }
+        }
+
+        if (!batchResult) return;
 
         result.inputTokens += batchResult.usage?.inputTokens ?? 0;
         result.outputTokens += batchResult.usage?.outputTokens ?? 0;
+
+        // Bug 3: Validate translation coverage — warn and fall back for missing keys
+        const batchKeys = Array.from(batch.strings.keys());
+        const missingKeys = batchKeys.filter((k) => !batchResult!.translations.has(k));
+        if (missingKeys.length > 0) {
+          logger.warn(
+            `Provider did not return translations for ${missingKeys.length} key(s) in batch ${batch.id}: ${missingKeys.join(", ")}. Falling back to source text.`,
+          );
+          for (const key of missingKeys) {
+            const sourceValue = keys.get(key);
+            if (sourceValue) {
+              batchResult.translations.set(key, sourceValue);
+            }
+          }
+        }
 
         // Restore placeholders and validate
         for (const [key, translatedShielded] of batchResult.translations) {
@@ -172,10 +210,24 @@ export async function runPipeline(
           // Quality check
           const source = keys.get(key)!;
           const quality = scoreTranslation(source, translated, locale);
-          if (!quality.passed) {
-            localeStats.issues += quality.issues.length;
-            for (const issue of quality.issues) {
-              options.callbacks?.onQualityIssue?.(key, locale, issue.message);
+
+          // Bug 7: Enforce quality minScore
+          const belowMinScore = config.quality.enabled && quality.score < config.quality.minScore;
+          if (!quality.passed || belowMinScore) {
+            if (belowMinScore && quality.passed) {
+              // Score is below threshold but no errors — flag it
+              localeStats.issues += 1;
+              options.callbacks?.onQualityIssue?.(
+                key,
+                locale,
+                `Translation score ${quality.score.toFixed(2)} is below minimum threshold ${config.quality.minScore}`,
+              );
+            }
+            if (!quality.passed) {
+              localeStats.issues += quality.issues.length;
+              for (const issue of quality.issues) {
+                options.callbacks?.onQualityIssue?.(key, locale, issue.message);
+              }
             }
           }
 
@@ -195,16 +247,23 @@ export async function runPipeline(
           };
         }
 
-        batchesCompleted++;
-        const translated = batchesCompleted * config.batch.size;
+        // Bug 4: Track actual translated count instead of batch math
+        actualTranslatedCount += batchResult.translations.size;
+        localeStats.translated += batchResult.translations.size;
+
         options.callbacks?.onBatchComplete?.(
           sourceFile.path,
           locale,
-          Math.min(translated, keysToTranslate.length),
+          Math.min(actualTranslatedCount, keysToTranslate.length),
           keysToTranslate.length,
         );
+      };
 
-        localeStats.translated += batchResult.translations.size;
+      // Bug 6: Implement concurrent batch processing
+      const concurrency = config.batch.concurrency;
+      for (let i = 0; i < batches.length; i += concurrency) {
+        const chunk = batches.slice(i, i + concurrency);
+        await Promise.all(chunk.map(processBatch));
       }
 
       // Write target file

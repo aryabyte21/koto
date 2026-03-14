@@ -4,9 +4,10 @@ import { loadConfig } from '../core/config/loader.js';
 import { createProvider } from '../providers/registry.js';
 import { printCompact } from '../ui/intro.js';
 import { getLanguageFlag, getLanguageName, isValidLocaleCode } from '../utils/language.js';
+import { VERSION } from '../utils/version.js';
 
 export async function validateCommand(cwd: string): Promise<void> {
-  printCompact('0.1.0');
+  printCompact(VERSION);
 
   const s = p.spinner();
 

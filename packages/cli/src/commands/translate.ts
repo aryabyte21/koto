@@ -5,6 +5,7 @@ import { printCompact } from '../ui/intro.js';
 import { TranslationProgress } from '../ui/progress.js';
 import { printSummary, printDryRunSummary } from '../ui/summary.js';
 import { getLanguageFlag } from '../utils/language.js';
+import { VERSION } from '../utils/version.js';
 
 export interface TranslateOptions {
   locale?: string;
@@ -18,8 +19,7 @@ export async function translateCommand(
   cwd: string,
   options: TranslateOptions = {},
 ): Promise<void> {
-  const version = '0.1.0';
-  printCompact(version);
+  printCompact(VERSION);
 
   const config = await loadConfig(cwd);
   const targetLocales = options.locale

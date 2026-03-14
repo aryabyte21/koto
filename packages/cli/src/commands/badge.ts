@@ -5,6 +5,7 @@ import { loadConfig } from '../core/config/loader.js';
 import { printCompact } from '../ui/intro.js';
 import { writeFile } from '../utils/fs.js';
 import { getLanguageFlag } from '../utils/language.js';
+import { VERSION } from '../utils/version.js';
 
 export interface LocaleCoverage {
   locale: string;
@@ -139,7 +140,7 @@ ${rows}
 }
 
 export async function badgeCommand(cwd: string): Promise<void> {
-  printCompact('0.1.0');
+  printCompact(VERSION);
 
   const config = await loadConfig(cwd);
   const lockfile = await readLockfile(cwd);

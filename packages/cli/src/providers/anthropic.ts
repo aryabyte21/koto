@@ -1,32 +1,10 @@
 import type { Provider, TranslationBatch, TranslationResult } from "./base.js";
+import { parseNumberedResponse, formatUserMessage } from "./parse.js";
 
 const COST_PER_MILLION: Record<string, { input: number; output: number }> = {
   "claude-sonnet-4-20250514": { input: 3, output: 15 },
   "claude-haiku-4-5-20251001": { input: 0.8, output: 4 },
 };
-
-function formatUserMessage(strings: Map<string, string>): string {
-  const entries = Array.from(strings.values());
-  return entries.map((v, i) => `${i + 1}. ${v}`).join("\n");
-}
-
-function parseNumberedResponse(
-  text: string,
-  keys: string[],
-): Map<string, string> {
-  const result = new Map<string, string>();
-  const lines = text.split("\n").filter((l) => l.trim());
-  for (const line of lines) {
-    const match = line.match(/^(\d+)\.\s*(.+)$/);
-    if (match) {
-      const index = parseInt(match[1], 10) - 1;
-      if (index >= 0 && index < keys.length) {
-        result.set(keys[index], match[2].trim());
-      }
-    }
-  }
-  return result;
-}
 
 export class AnthropicProvider implements Provider {
   name = "anthropic";

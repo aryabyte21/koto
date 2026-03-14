@@ -10,6 +10,7 @@ import { detectLocales } from '../core/detect/locales.js';
 import { loadConfig } from '../core/config/loader.js';
 import { runPipeline } from '../core/pipeline/index.js';
 import { printCompact } from '../ui/intro.js';
+import { VERSION } from '../utils/version.js';
 import { getLanguageName } from '../utils/language.js';
 import { writeFile } from '../utils/fs.js';
 
@@ -99,7 +100,7 @@ export async function contributeCommand(
   repo: string,
   options: ContributeOptions,
 ): Promise<void> {
-  printCompact('0.1.0');
+  printCompact(VERSION);
 
   const { owner, repo: repoName } = parseRepo(repo);
   const fullRepo = `${owner}/${repoName}`;

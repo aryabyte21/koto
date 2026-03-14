@@ -7,6 +7,7 @@ import { validateCommand } from './commands/validate.js';
 import { cacheStatsCommand, cacheClearCommand } from './commands/cache.js';
 import { badgeCommand } from './commands/badge.js';
 import { contributeCommand } from './commands/contribute.js';
+import { VERSION } from './utils/version.js';
 import pc from 'picocolors';
 
 const HELP = `
@@ -49,7 +50,7 @@ async function main(): Promise<void> {
   }
 
   if (flags.version) {
-    console.log('0.1.0');
+    console.log(VERSION);
     return;
   }
 

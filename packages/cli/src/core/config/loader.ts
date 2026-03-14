@@ -23,13 +23,32 @@ export function findConfigFile(cwd: string = process.cwd()): string | null {
 
 async function loadRawConfig(configPath: string): Promise<unknown> {
   if (configPath.endsWith(".json")) {
-    const content = await readFile(configPath, "utf-8");
-    return JSON.parse(content);
+    let content: string;
+    try {
+      content = await readFile(configPath, "utf-8");
+    } catch (err) {
+      throw new Error(
+        `Could not read config file at ${configPath}: ${(err as Error).message}`,
+      );
+    }
+    try {
+      return JSON.parse(content);
+    } catch (err) {
+      throw new Error(
+        `Config file has a syntax error (${configPath}): ${(err as Error).message}`,
+      );
+    }
   }
 
-  const jiti = createJiti(configPath, { interopDefault: true });
-  const mod = await jiti.import(configPath);
-  return (mod as Record<string, unknown>).default ?? mod;
+  try {
+    const jiti = createJiti(configPath, { interopDefault: true });
+    const mod = await jiti.import(configPath);
+    return (mod as Record<string, unknown>).default ?? mod;
+  } catch (err) {
+    throw new Error(
+      `Failed to load config file (${configPath}). Check for syntax errors: ${(err as Error).message}`,
+    );
+  }
 }
 
 function resolveDefaults(parsed: KotoConfig): ResolvedConfig {

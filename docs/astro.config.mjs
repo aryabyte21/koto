@@ -10,11 +10,6 @@ export default defineConfig({
       description:
         'Context-aware AI translation for i18n workflows with LLM provider choice, context profiles, and type-safe keys.',
       customCss: ['./src/styles/custom.css'],
-      logo: {
-        src: './src/assets/logo-dark.svg',
-        alt: 'koto',
-        replacesTitle: true,
-      },
       social: {
         github: 'https://github.com/aryabyte21/koto',
       },

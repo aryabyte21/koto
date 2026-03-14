@@ -91,7 +91,7 @@ export function restore(
 
   for (const [token, original] of tokens) {
     if (result.includes(token)) {
-      result = result.replace(token, original);
+      result = result.replaceAll(token, original);
     } else {
       unreplaced.push(token);
     }

@@ -1,25 +1,25 @@
 :root {
-  --sl-color-accent-low: #e2e8f0;
-  --sl-color-accent: #0f172a;
-  --sl-color-accent-high: #020617;
-  --sl-color-black: #020617;
+  --sl-color-accent-low: #dbeafe;
+  --sl-color-accent: #2563eb;
+  --sl-color-accent-high: #1e40af;
+  --sl-color-black: #0f172a;
   --sl-color-white: #f8fafc;
-  --sl-font: "Manrope", "SF Pro Display", "Avenir Next", "Segoe UI", sans-serif;
+  --sl-font: "Inter", "SF Pro Display", "Segoe UI", sans-serif;
   --sl-text-h1: 2.45rem;
   --sl-text-h2: 1.75rem;
 }
 
 :root[data-theme="dark"] {
-  --sl-color-accent-low: #0b1220;
-  --sl-color-accent: #e2e8f0;
-  --sl-color-accent-high: #f8fafc;
+  --sl-color-accent-low: #172554;
+  --sl-color-accent: #60a5fa;
+  --sl-color-accent-high: #bfdbfe;
   --sl-color-black: #010409;
 }
 
 .main-pane {
   background-image:
-    radial-gradient(900px 400px at 10% -5%, rgba(148, 163, 184, 0.14), transparent 72%),
-    radial-gradient(700px 300px at 100% 0%, rgba(51, 65, 85, 0.2), transparent 70%);
+    radial-gradient(900px 400px at 10% -5%, rgba(37, 99, 235, 0.06), transparent 72%),
+    radial-gradient(700px 300px at 100% 0%, rgba(37, 99, 235, 0.04), transparent 70%);
 }
 
 .hero {
@@ -29,7 +29,7 @@
     linear-gradient(130deg, color-mix(in srgb, var(--sl-color-accent-low) 70%, transparent), transparent 48%),
     color-mix(in srgb, var(--sl-color-bg) 97%, white 3%);
   padding: 2rem;
-  box-shadow: 0 30px 60px -50px rgba(2, 6, 23, 0.9);
+  box-shadow: 0 20px 50px -30px rgba(37, 99, 235, 0.12);
   backdrop-filter: blur(10px);
 }
 
@@ -72,12 +72,9 @@
 }
 
 header .site-title {
-  letter-spacing: 0.01em;
+  letter-spacing: -0.02em;
   font-weight: 700;
-}
-
-header .site-title > :not(img) {
-  display: none;
+  font-size: 1.15rem;
 }
 
 [data-has-hero] .sl-markdown-content > hr:first-of-type {
