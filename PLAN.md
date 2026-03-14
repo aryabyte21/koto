@@ -53,9 +53,9 @@ A previous internal project solved one piece nobody else has: **context-aware tr
 25. ✅ `providers/anthropic.ts` — Claude provider
 26. ✅ `providers/google.ts` — Gemini (API key + Vertex AI)
 27. ✅ `providers/ollama.ts` — Ollama (local, free)
-28. ⬜ `providers/custom.ts` — Generic HTTP adapter
+28. ✅ `providers/custom.ts` — Generic HTTP adapter
 29. ✅ Quality scoring: `core/quality/scorer.ts` + `core/quality/rules.ts`
-30. ⬜ Integration tests for context system + all providers (mock provider for CI)
+30. ✅ Integration tests for context system + all providers (mock provider for CI)
 31. ✅ **Milestone:** Context-aware translation working, multiple providers
 
 ### Phase 4: Type Generation + Additional Formats ✅
@@ -64,8 +64,8 @@ A previous internal project solved one piece nobody else has: **context-aware tr
 32. ✅ `core/typegen/` — generate TypeScript type definitions from locale files
 33. ✅ `commands/types.ts` — `koto types` and `koto types --watch`
 34. ✅ `formats/json-flat.ts` — flat JSON
-35. ⬜ `formats/yaml.ts` — YAML (optional peer dep)
-36. ⬜ `formats/po.ts` — GNU Gettext PO files
+35. ✅ `formats/yaml.ts` — YAML (zero-dep parser)
+36. ✅ `formats/po.ts` — GNU Gettext PO files
 37. ✅ **Milestone:** `npx koto types` generates working TS types
 
 ### Phase 5: GitHub Action + CI ✅
@@ -79,24 +79,24 @@ A previous internal project solved one piece nobody else has: **context-aware tr
 ### Phase 6: Docs Site + Landing Page
 **Goal:** Beautiful docs + landing page ready
 
-42. ⬜ Astro Starlight docs site in `docs/`
-43. ⬜ Landing page: hero + terminal animation + install command
-44. ⬜ Getting started guide, configuration reference
+42. ✅ Astro Starlight docs site in `docs/` (9 pages)
+43. ✅ Landing page: hero + feature cards + install command
+44. ✅ Getting started, configuration, contexts, type-safety, providers, CI/CD, CLI reference, comparison
 45. ⬜ Record 30-second demo GIF for README
 46. ✅ README: logo → one-liner → features → comparison table
-47. ⬜ GitHub Actions workflow to deploy docs to GitHub Pages
-48. ⬜ **Milestone:** Docs site live, README polished
+47. ✅ GitHub Actions workflow to deploy docs to GitHub Pages
+48. ✅ **Milestone:** Docs site builds, README polished
 
 ### Phase 7: Viral Features — Badge + OSS Contributor
 **Goal:** Two growth engines live before launch
 
-49. ⬜ i18n Coverage Badge API (serverless SVG generator)
-50. ⬜ Coverage report page
-51. ⬜ `npx koto badge` command to generate markdown snippet
-52. ⬜ `npx koto contribute <repo> --locale <code>` command
-53. ⬜ GitHub API integration: fork → detect → translate → PR
-54. ⬜ PR template with quality report
-55. ⬜ **Milestone:** Badge generating + successfully open a translation PR
+49. ⬜ i18n Coverage Badge API (serverless SVG generator — needs hosting)
+50. ⬜ Coverage report page (needs hosting)
+51. ✅ `npx koto badge` command — generates shields.io badge + coverage report
+52. ✅ `npx koto contribute <repo> --locale <code>` command
+53. ✅ GitHub API integration: fork → detect → translate → PR (via gh CLI)
+54. ✅ PR template with quality report + "Powered by koto" footer
+55. ✅ **Milestone:** Badge generating + contribute command ready
 
 ---
 
@@ -139,3 +139,28 @@ A previous internal project solved one piece nobody else has: **context-aware tr
 - Integration tests using the `MockProvider` in `test/helpers/mock-provider.ts` should cover the full pipeline end-to-end.
 - The docs site (Phase 6) and viral features (Phase 7) have not been started.
 - The `TranslationProgress` UI uses ANSI escape codes for cursor movement — this won't work in non-TTY environments (CI). The `--fail-on-error` flag path should use a simpler reporter.
+
+### 2026-03-14 — Phase 4-7 Implementation
+
+**Docs site (Astro Starlight 0.32 + Astro 5):**
+- Starlight 0.32 requires Content Layer API: `src/content.config.ts` with `docsLoader()` + `docsSchema()`.
+- The `social` field in Starlight config is an **object** (`{ github: 'url' }`), NOT an array.
+- Sidebar items use `link: '/path/'`, NOT `slug: 'page-id'` — the `slug` format caused build errors.
+- After changing content config, you MUST clean cache: `rm -rf .astro node_modules/.astro`.
+
+**Formats:**
+- YAML parser is zero-dep (custom implementation), handles nested keys, quoted strings, multiline.
+- PO format supports `msgctxt` as key prefix, multiline continuation lines, header preservation.
+- TypeScript format uses regex to extract object literals — handles single quotes, trailing commas.
+- Format registry maps `.yml`/`.yaml` to YAML, `.po`/`.pot` to PO, `.ts`/`.js` to TypeScript.
+
+**Contribute command:**
+- Uses `node:child_process` `execFile` (NOT shell-based) for safety.
+- Shells out to `gh` CLI for GitHub operations (fork, clone, PR create).
+
+**What's still remaining:**
+- Badge API serverless function (needs hosting — Cloudflare Workers or Vercel)
+- Coverage report page (needs hosting)
+- Demo GIF recording
+- Phase 8: Launch campaign
+- Real-world E2E test with actual LLM API key
