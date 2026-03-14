@@ -5,7 +5,7 @@ description: Set up OpenAI, Anthropic, Google Gemini, or Ollama as your translat
 
 import { Tabs, TabItem, Card, CardGrid } from '@astrojs/starlight/components';
 
-koto is provider-agnostic. You bring your own LLM and API key. Switch providers by changing one line in your config — your translations, contexts, and workflows stay the same.
+koto is provider-agnostic. You bring your own LLM and API key. Switch providers by changing one line in your config -- translations, contexts, and workflows stay the same.
 
 ## Choosing a provider
 
@@ -14,7 +14,7 @@ koto is provider-agnostic. You bring your own LLM and API key. Switch providers 
 | **OpenAI** (gpt-4o-mini) | Excellent | Fast | ~$0.15/1M tokens | No | Best balance of quality and cost |
 | **OpenAI** (gpt-4o) | Outstanding | Moderate | ~$2.50/1M tokens | No | Maximum quality for critical content |
 | **Anthropic** (Claude Sonnet) | Outstanding | Moderate | ~$3.00/1M tokens | No | Nuanced, context-sensitive translations |
-| **Google** (Gemini 2.0 Flash) | Very good | Very fast | ~$0.10/1M tokens | No | Fastest option, great for large batches |
+| **Google** (Gemini 2.0 Flash) | Very good | Very fast | ~$0.10/1M tokens | No | Large batches where speed matters |
 | **Ollama** (llama3.2) | Good | Varies | Free | Yes | Privacy-sensitive projects, offline use |
 
 :::tip
@@ -37,7 +37,6 @@ export OPENAI_API_KEY=sk-...
 ### Configuration
 
 ```ts
-// koto.config.ts
 provider: {
   name: 'openai',
   model: 'gpt-4o-mini', // or 'gpt-4o' for higher quality
@@ -81,7 +80,7 @@ provider: {
 | `claude-sonnet-4-20250514` | Outstanding | Moderate | Moderate |
 | `claude-haiku-35-20241022` | Very good | Fast | Low |
 
-Claude models are particularly strong at understanding nuance and context, making them excellent for context-profile-heavy configurations.
+Claude models are particularly strong at understanding nuance and context, making them a good fit for context-profile-heavy configurations.
 
 ---
 
@@ -112,13 +111,13 @@ provider: {
 | `gemini-2.0-flash` | Very good | Very fast | Very low |
 | `gemini-2.0-pro` | Excellent | Moderate | Moderate |
 
-Gemini Flash is the fastest option available, making it ideal for large translation batches where speed matters more than peak quality.
+Gemini Flash is the fastest option, ideal for large batches where speed matters more than peak quality.
 
 ---
 
 ## Ollama (local)
 
-Ollama lets you run LLMs locally on your own machine. No API key needed, no data leaves your network.
+Run LLMs locally. No API key needed, no data leaves your network.
 
 ### Setup
 
@@ -129,7 +128,7 @@ Ollama lets you run LLMs locally on your own machine. No API key needed, no data
 ollama pull llama3.2
 ```
 
-3. Start the Ollama server:
+3. Start the server:
 
 ```bash
 ollama serve
@@ -155,14 +154,14 @@ provider: {
 | `mixtral` | 47B (MoE) | Very good | 32 GB |
 
 :::note
-Local models are slower and generally lower quality than cloud APIs, but they're free, private, and work offline. They work well for development and testing, with a cloud provider for production translations.
+Local models are slower and generally lower quality than cloud APIs, but they're free, private, and work offline. They work well for development and testing, with a cloud provider for production.
 :::
 
 ---
 
-## Custom provider (HTTP adapter)
+## Custom provider (OpenAI-compatible)
 
-If your provider exposes an OpenAI-compatible API, you can use it directly:
+Any service that implements the OpenAI chat completions API works out of the box:
 
 ```ts
 provider: {
@@ -172,33 +171,26 @@ provider: {
 }
 ```
 
-This works with any service that implements the OpenAI chat completions API, including:
-
-- Azure OpenAI
-- Together AI
-- Anyscale
-- Self-hosted vLLM or text-generation-inference
-
-Set your API key via the `OPENAI_API_KEY` environment variable — it will be sent as the Bearer token.
+This works with Azure OpenAI, Together AI, Anyscale, self-hosted vLLM, and more. Set your API key via `OPENAI_API_KEY`.
 
 ---
 
 ## Switching providers
 
-Changing providers is a one-line config change. Your translations, contexts, lockfile, and workflow all stay the same:
+Changing providers is a one-line config change. Everything else stays the same:
 
 ```ts
 provider: {
-  // Before: OpenAI
+  // Before
   // name: 'openai',
   // model: 'gpt-4o-mini',
 
-  // After: Anthropic
+  // After
   name: 'anthropic',
   model: 'claude-sonnet-4-20250514',
 }
 ```
 
 :::caution
-When switching providers, consider running `npx koto translate --force` once to re-translate everything. Different models may produce slightly different translations, and a full re-run ensures consistency.
+When switching providers, consider running `npx koto translate --force` once to re-translate everything. Different models produce slightly different translations, and a full re-run ensures consistency.
 :::

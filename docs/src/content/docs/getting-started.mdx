@@ -3,15 +3,16 @@ title: Getting Started
 description: Install koto and run your first AI-powered translation in under a minute.
 ---
 
-import { Steps, Tabs, TabItem, Code } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Terminal from '../../components/Terminal.astro';
 
 ## Prerequisites
 
-- **Node.js 18+** — koto uses modern Node APIs.
-- **An LLM API key** — OpenAI, Anthropic, Google, or a local Ollama instance. See the [Providers guide](../providers/) for setup details.
-- **Existing i18n source file** — at least one locale file (JSON, TypeScript, YAML, or PO) with your source strings.
+- **Node.js 18+**
+- **An LLM API key** — OpenAI, Anthropic, Google, or a local Ollama instance. See [Providers](../providers/) for details.
+- **A source locale file** — at least one JSON, TypeScript, YAML, or PO file with your source strings.
 
-## Installation
+## 1. Install
 
 <Tabs>
   <TabItem label="pnpm">
@@ -36,113 +37,107 @@ import { Steps, Tabs, TabItem, Code } from '@astrojs/starlight/components';
   </TabItem>
 </Tabs>
 
-## Initialize your project
+## 2. Run the init wizard
 
-<Steps>
+```bash
+npx koto init
+```
 
-1. **Run the init command**
+koto auto-detects your framework, i18n library, and existing locale files:
 
-   ```bash
-   npx koto init
-   ```
+<Terminal title="npx koto init">
+<Fragment set:html={`<span class="bold cyan">  koto</span> <span class="dim">v0.1.0</span>
 
-   koto scans your project and walks you through an interactive setup:
+<span class="dim">┌</span>  <span class="bold">Detected</span>
+<span class="dim">│</span>
+<span class="dim">│</span>  <span class="bold">Framework:</span> Next.js 14
+<span class="dim">│</span>  <span class="bold">i18n library:</span> next-intl
+<span class="dim">│</span>  <span class="bold">Source:</span> src/locales/en.json <span class="dim">(214 keys)</span>
+<span class="dim">│</span>
+<span class="dim">└</span>
 
-   ```
-     ╦╔═  ╔═╗  ╔╦╗  ╔═╗
-     ╠╩╗  ║ ║   ║   ║ ║
-     ╩ ╩  ╚═╝   ╩   ╚═╝
+<span class="cyan">◆</span>  Which LLM provider?
+<span class="dim">│</span>  <span class="cyan">●</span> OpenAI <span class="dim">(gpt-4o-mini — fast & cheap)</span>
+<span class="dim">│</span>  <span class="dim">○</span> Anthropic <span class="dim">(claude-sonnet — high quality)</span>
+<span class="dim">│</span>  <span class="dim">○</span> Google <span class="dim">(gemini-2.5-flash — fast & cheap)</span>
+<span class="dim">│</span>  <span class="dim">○</span> Ollama <span class="dim">(local, free, private)</span>
 
-   ◆  What format are your translation files?
-   │  ● JSON (flat or nested)
-   │  ○ TypeScript (next-intl, react-i18next)
-   │  ○ YAML
-   │  ○ PO (gettext)
+<span class="cyan">◆</span>  Target locales?
+<span class="dim">│</span>  <span class="cyan">◼</span> <span class="flag">🇪🇸</span> es  <span class="cyan">◼</span> <span class="flag">🇫🇷</span> fr  <span class="cyan">◼</span> <span class="flag">🇩🇪</span> de  <span class="cyan">◼</span> <span class="flag">🇯🇵</span> ja
 
-   ◆  Where is your source locale file?
-   │  src/locales/en.json
+<span class="green">✔</span>  Created koto.config.ts
+<span class="green">✔</span>  Created koto.lock
+`} />
+</Terminal>
 
-   ◆  What locales do you want to translate to?
-   │  ◻ 🇪🇸 es  ◻ 🇫🇷 fr  ◻ 🇩🇪 de  ◻ 🇯🇵 ja  ◻ 🇰🇷 ko  ◻ 🇨🇳 zh
+## 3. Set your API key
 
-   ✔  Created koto.config.ts
-   ```
+<Tabs>
+  <TabItem label="OpenAI">
+    ```bash
+    export OPENAI_API_KEY=sk-...
+    ```
+  </TabItem>
+  <TabItem label="Anthropic">
+    ```bash
+    export ANTHROPIC_API_KEY=sk-ant-...
+    ```
+  </TabItem>
+  <TabItem label="Google">
+    ```bash
+    export GOOGLE_API_KEY=...
+    ```
+  </TabItem>
+  <TabItem label="Ollama">
+    No API key needed — just make sure Ollama is running:
+    ```bash
+    ollama serve
+    ```
+  </TabItem>
+</Tabs>
 
-2. **Set your API key**
+## 4. Translate
 
-   Export the API key for your chosen provider:
+```bash
+npx koto translate
+```
 
-   <Tabs>
-     <TabItem label="OpenAI">
-       ```bash
-       export OPENAI_API_KEY=sk-...
-       ```
-     </TabItem>
-     <TabItem label="Anthropic">
-       ```bash
-       export ANTHROPIC_API_KEY=sk-ant-...
-       ```
-     </TabItem>
-     <TabItem label="Google">
-       ```bash
-       export GOOGLE_API_KEY=...
-       ```
-     </TabItem>
-     <TabItem label="Ollama">
-       No API key needed. Just make sure Ollama is running:
-       ```bash
-       ollama serve
-       ```
-     </TabItem>
-   </Tabs>
+<Terminal title="npx koto translate">
+<Fragment set:html={`<span class="bold cyan">  koto</span> <span class="dim">v0.1.0</span>
 
-3. **Run your first translation**
+  <span class="bold">Translating</span> → <span class="flag">🇪🇸</span> <span class="flag">🇫🇷</span> <span class="flag">🇩🇪</span> <span class="flag">🇯🇵</span> <span class="dim">(4 locales)</span>
 
-   ```bash
-   npx koto translate
-   ```
+  <span class="flag">🇪🇸</span>  es     <span class="bar-done">████████████████████████████████</span> 214/214 <span class="green">✓</span>
+  <span class="flag">🇫🇷</span>  fr     <span class="bar-done">████████████████████████████████</span> 214/214 <span class="green">✓</span>
+  <span class="flag">🇩🇪</span>  de     <span class="bar-done">████████████████████████████████</span> 214/214 <span class="green">✓</span>
+  <span class="flag">🇯🇵</span>  ja     <span class="bar-done">████████████████████████████████</span> 214/214 <span class="green">✓</span>
 
-   ```
-   ◆  Translating 42 keys → 6 locales
-
-     🇪🇸 es  ████████████████████████████████████████ 42/42
-     🇫🇷 fr  ████████████████████████████████████████ 42/42
-     🇩🇪 de  ████████████████████████████████████████ 42/42
-     🇯🇵 ja  ████████████████████████████████████████ 42/42
-     🇰🇷 ko  ████████████████████████████████████████ 42/42
-     🇨🇳 zh  ████████████████████████████████████████ 42/42
-
-   ✔  252 translations written in 3.2s
-      Quality score: 98/100
-   ```
-
-</Steps>
+  <span class="green bold">✓</span> <span class="bold">856 translations written in 4.7s</span>
+  <span class="dim">   Quality score: 97/100</span>
+`} />
+</Terminal>
 
 ## What just happened?
 
-When you run `koto translate`, three things happen:
-
-1. **Diffing** — koto reads your source locale file and compares it against each target locale. Only new or changed keys are queued for translation.
-
-2. **Translation** — Each pending key is sent to your configured LLM provider with the appropriate context profile (tone, glossary, instructions). Translations are batched for efficiency.
-
-3. **Output** — Translated strings are written to your target locale files. A lockfile (`koto-lock.json`) is updated with content hashes so the next run skips unchanged keys.
+1. **Diff** — koto compared your source locale against each target. Only new or changed keys were queued.
+2. **Translate** — Pending keys were sent to your LLM with the appropriate context profile, batched for speed.
+3. **Write** — Translated strings were written to your target locale files. A lockfile (`koto.lock`) was updated so the next run skips unchanged keys.
 
 ### Files created
 
 | File | Purpose |
 |---|---|
-| `koto.config.ts` | Your project configuration |
-| `koto-lock.json` | Content hashes for incremental translation (commit this) |
-| `src/locales/es.json` | Translated locale files (one per target locale) |
+| `koto.config.ts` | Project configuration |
+| `koto.lock` | Content hashes for incremental translation — commit this |
+| `src/locales/es.json` | Translated locale files (one per target) |
 
 :::tip
-Commit `koto-lock.json` to your repo. It allows koto to skip unchanged keys on subsequent runs, making incremental translations fast.
+Commit `koto.lock` to your repo. It lets koto skip unchanged keys on subsequent runs.
 :::
 
 ## Next steps
 
-- [Configure context profiles](../contexts/) to give different sections of your app different translation tones
-- [Generate TypeScript types](../type-safety/) from your translation keys
-- [Set up CI/CD](../ci-cd/) to translate automatically on every PR
-- [Explore all CLI commands](../cli-reference/)
+- [Context profiles](../contexts/) — give different sections of your app different translation tones
+- [Type safety](../type-safety/) — generate TypeScript types from your translation keys
+- [CI/CD](../ci-cd/) — translate automatically on every PR
+- [CLI reference](../cli-reference/) — all commands and flags

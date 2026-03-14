@@ -3,7 +3,7 @@ title: koto
 description: Context-aware AI translation for your i18n workflow.
 template: splash
 hero:
-  tagline: "AI-powered i18n that understands your product. Translate with context profiles, type-safe keys, and any LLM — in one command."
+  tagline: "Ship your app in every language. One command, any LLM."
   actions:
     - text: Get Started
       link: ./getting-started/
@@ -25,7 +25,7 @@ import Terminal from '../../components/Terminal.astro';
 <span class="dim">│</span>
 <span class="dim">│</span>  <span class="bold">Framework:</span> Next.js 14
 <span class="dim">│</span>  <span class="bold">i18n library:</span> next-intl
-<span class="dim">│</span>  <span class="bold">Source:</span> src/messages/en.json <span class="dim">(847 keys)</span>
+<span class="dim">│</span>  <span class="bold">Source:</span> src/messages/en.json <span class="dim">(214 keys)</span>
 <span class="dim">│</span>
 <span class="dim">└</span>
 
@@ -59,22 +59,20 @@ import Terminal from '../../components/Terminal.astro';
 
   <span class="bold">Translating</span> → <span class="flag">🇪🇸</span> <span class="flag">🇫🇷</span> <span class="flag">🇩🇪</span> <span class="flag">🇯🇵</span> <span class="dim">(4 locales)</span>
 
-  <span class="flag">🇪🇸</span>  es     <span class="bar-done">████████████████████████████████</span> 847/847 <span class="green">✓</span>
-  <span class="flag">🇫🇷</span>  fr     <span class="bar-done">████████████████████████████████</span> 847/847 <span class="green">✓</span>
-  <span class="flag">🇩🇪</span>  de     <span class="bar-filled">██████████████████████████</span><span class="bar-empty">░░░░░░</span> 694/847
-  <span class="flag">🇯🇵</span>  ja     <span class="bar-filled">█████████████████</span><span class="bar-empty">░░░░░░░░░░░░░░░</span> 451/847
+  <span class="flag">🇪🇸</span>  es     <span class="bar-done">████████████████████████████████</span> 214/214 <span class="green">✓</span>
+  <span class="flag">🇫🇷</span>  fr     <span class="bar-done">████████████████████████████████</span> 214/214 <span class="green">✓</span>
+  <span class="flag">🇩🇪</span>  de     <span class="bar-filled">██████████████████████████</span><span class="bar-empty">░░░░░░</span> 176/214
+  <span class="flag">🇯🇵</span>  ja     <span class="bar-filled">█████████████████</span><span class="bar-empty">░░░░░░░░░░░░░░░</span> 118/214
 
-  <span class="yellow">⚡</span> Cache: <span class="bold">712</span> <span class="dim">│</span> <span class="blue">🔤</span> Translated: <span class="bold">135</span> <span class="dim">│</span> <span class="dim">⏱</span>  8.4s
-  <span class="green">💰</span> Estimated cost: <span class="bold">$0.08</span> <span class="dim">(gpt-4o-mini)</span>
+  <span class="yellow">⚡</span> Cache: <span class="bold">189</span> <span class="dim">│</span> <span class="blue">🔤</span> Translated: <span class="bold">25</span> <span class="dim">│</span> <span class="dim">⏱</span>  3.1s
+  <span class="green">💰</span> Estimated cost: <span class="bold">$0.02</span> <span class="dim">(gpt-4o-mini)</span>
 
   <span class="green bold">✓</span> <span class="bold">Translation complete</span>
 
-  <span class="flag">🇪🇸</span>  es       <span class="bold">135</span> translated, <span class="dim">712 cached</span> <span class="green">✓</span>
-  <span class="flag">🇫🇷</span>  fr       <span class="bold">128</span> translated, <span class="dim">719 cached</span> <span class="green">✓</span>
-  <span class="flag">🇩🇪</span>  de       <span class="bold">847</span> translated, <span class="dim">0 cached</span> <span class="green">✓</span>
-  <span class="flag">🇯🇵</span>  ja       <span class="bold">847</span> translated, <span class="dim">0 cached</span> <span class="green">✓</span>
-
-  <span class="yellow">⚠</span>  2 quality issues found. Run <span class="cyan">koto diff</span> to review.
+  <span class="flag">🇪🇸</span>  es       <span class="bold">25</span> translated, <span class="dim">189 cached</span> <span class="green">✓</span>
+  <span class="flag">🇫🇷</span>  fr       <span class="bold">18</span> translated, <span class="dim">196 cached</span> <span class="green">✓</span>
+  <span class="flag">🇩🇪</span>  de       <span class="bold">214</span> translated, <span class="dim">0 cached</span> <span class="green">✓</span>
+  <span class="flag">🇯🇵</span>  ja       <span class="bold">214</span> translated, <span class="dim">0 cached</span> <span class="green">✓</span>
 
   <span class="dim">4 locale files updated.</span>
   <span class="dim">Run</span> <span class="cyan">koto types</span> <span class="dim">to update TypeScript types.</span>
@@ -83,26 +81,34 @@ import Terminal from '../../components/Terminal.astro';
 
 ---
 
+## The problem
+
+You add a button. You change a heading. Your source locale is done in seconds -- but your 6 target locales are now stale. Traditional workflows mean waiting on translators, syncing spreadsheets, or paying per-word SaaS fees. AI translation tools exist, but they treat a payment confirmation the same as a marketing headline.
+
+**koto fixes this.** Define context profiles -- tone, glossary, instructions -- per section. Point it at any LLM. Run one command. Done.
+
+---
+
 ## Why koto?
 
 <CardGrid>
   <Card title="Context Profiles" icon="pencil">
-    Assign tone and instructions by file pattern. Marketing copy sounds energetic. Legal text stays formal. One command handles all of it.
+    Different parts of your app need different tones. Marketing copy sounds energetic. Legal text stays precise. koto sends the right context to the LLM for each file.
   </Card>
   <Card title="Bring Your Own LLM" icon="setting">
-    OpenAI, Anthropic, Google Gemini, Ollama, or any OpenAI-compatible endpoint. Switch providers with one config line.
+    OpenAI, Anthropic, Google Gemini, Ollama, or any OpenAI-compatible endpoint. Switch providers by changing one config line.
   </Card>
   <Card title="Type-Safe Keys" icon="approve-check">
-    Generate TypeScript types from your locale files. Missing or misspelled keys fail at build time, not in production.
+    Generate TypeScript types from your locale files. Typos and missing keys fail at build time, not in production.
   </Card>
   <Card title="Smart Cache" icon="rocket">
-    SHA-256 content hashing + lockfile. Unchanged strings are never re-translated. Follow-up runs take seconds.
+    SHA-256 content hashing + lockfile. Unchanged strings are never re-translated. Incremental runs take seconds.
   </Card>
   <Card title="Quality Scoring" icon="star">
     Placeholder integrity, length ratio, untranslated detection. Gate your CI pipeline on translation quality.
   </Card>
   <Card title="CI/CD Ready" icon="laptop">
-    GitHub Action included. Use `--fail-on-error` to block releases when translations are incomplete.
+    GitHub Action included. Translations run in your pipeline. Use `--fail-on-error` to block releases on incomplete translations.
   </Card>
 </CardGrid>
 
@@ -122,6 +128,6 @@ export default defineConfig({
 })
 ```
 
-That's it. Run `npx koto` and your locale files are ready.
+That's the entire setup. Run `npx koto` and your locale files are ready.
 
-[Get started →](./getting-started/)
+[Get started -->](./getting-started/)

@@ -4,8 +4,9 @@ description: Automate translations in your CI/CD pipeline with GitHub Actions, G
 ---
 
 import { Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+import Terminal from '../../components/Terminal.astro';
 
-koto is built for CI/CD. Run translations automatically on every PR, enforce quality gates, and keep your locale files in sync without manual effort.
+koto is built for CI/CD. Translate on every PR, enforce quality gates, and keep locale files in sync without manual effort.
 
 ## GitHub Actions
 
@@ -50,7 +51,7 @@ jobs:
 
 ### Using the koto GitHub Action
 
-For a simpler setup, use the official koto action:
+For a simpler setup, use the official action:
 
 ```yaml
 - uses: koto-i18n/koto@v1
@@ -129,7 +130,7 @@ translate:
 
 ## Generic CI
 
-koto works in any CI environment that has Node.js. The key command is:
+koto works in any CI environment with Node.js:
 
 ```bash
 npx koto translate --fail-on-error
@@ -141,13 +142,11 @@ The `--fail-on-error` flag causes koto to exit with code 1 if:
 - Quality score drops below the configured threshold
 - Any source key is missing a translation
 
-This lets you use koto as a quality gate in any pipeline.
-
 ---
 
 ## Quality gates
 
-Use the `quality.threshold` config option alongside `--fail-on-error` to enforce translation quality standards:
+Set a quality threshold in your config, then use `--fail-on-error` to enforce it:
 
 ```ts
 // koto.config.ts
@@ -156,33 +155,28 @@ quality: {
 }
 ```
 
-```bash
-# In CI
-npx koto translate --fail-on-error
-```
+If translations fall short, koto reports the failures and exits non-zero:
 
-If any translation scores below the threshold, koto exits with code 1 and reports which translations failed:
+<Terminal title="npx koto translate --fail-on-error">
+<Fragment set:html={`<span class="bold" style="color:#ff5f57;">✖</span>  <span class="bold">Quality gate failed</span>
 
-```
-✖  Quality gate failed
+  <span class="flag">🇪🇸</span> es  auth.termsOfService  Score: <span class="yellow">72/100</span>
+       Issue: Placeholder <span class="cyan">{company}</span> missing in translation
 
-  🇪🇸 es  auth.termsOfService  Score: 72/100
-           Issue: Placeholder {company} missing in translation
+  <span class="flag">🇯🇵</span> ja  marketing.hero       Score: <span class="yellow">85/100</span>
+       Issue: Translation is 3x longer than source
 
-  🇯🇵 ja  marketing.hero       Score: 85/100
-           Issue: Translation is 3x longer than source
-
-Exit code: 1
-```
+  Exit code: <span class="bold" style="color:#ff5f57;">1</span>
+`} />
+</Terminal>
 
 ---
 
 ## Diff check in CI
 
-Use `koto diff` to check if translations are up to date without actually translating. This is useful for validation-only pipelines:
+Use `koto diff` to verify translations are up to date without running a full translation:
 
 ```bash
-# Fail if there are untranslated keys
 npx koto diff --json | jq '.pending' | grep -q '0' || exit 1
 ```
 
@@ -190,9 +184,9 @@ npx koto diff --json | jq '.pending' | grep -q '0' || exit 1
 
 ## Caching in CI
 
-koto uses `koto-lock.json` for incremental translation. Make sure this file is committed to your repo so CI runs only translate new or changed keys.
+koto uses `koto-lock.json` for incremental translation. Commit this file so CI runs only translate new or changed keys.
 
-If you also want to cache the translation cache directory between CI runs:
+To also cache the translation cache directory between CI runs:
 
 ```yaml
 # GitHub Actions
@@ -210,7 +204,7 @@ If you also want to cache the translation cache directory between CI runs:
 
 Set your provider's API key as a CI secret:
 
-| CI Platform | How to set secrets |
+| CI Platform | Where to set secrets |
 |---|---|
 | GitHub Actions | Settings > Secrets and variables > Actions |
 | GitLab CI | Settings > CI/CD > Variables |
@@ -218,5 +212,5 @@ Set your provider's API key as a CI secret:
 | Jenkins | Credentials Manager |
 
 :::caution
-Never hardcode API keys in your CI config files. Always use your CI platform's secrets management.
+Never hardcode API keys in CI config files. Always use your platform's secrets management.
 :::

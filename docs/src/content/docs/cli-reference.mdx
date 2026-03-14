@@ -3,13 +3,15 @@ title: CLI Reference
 description: Complete reference for all koto CLI commands, flags, and environment variables.
 ---
 
+import Terminal from '../../components/Terminal.astro';
+
 ## Usage
 
 ```bash
 koto [command] [options]
 ```
 
-If no command is provided, `koto translate` is run by default.
+If no command is provided, `koto translate` runs by default.
 
 ---
 
@@ -17,7 +19,7 @@ If no command is provided, `koto translate` is run by default.
 
 ### `koto init`
 
-Interactive setup wizard. Auto-detects your project's framework, locale file format, and source directory, then generates a `koto.config.ts`.
+Interactive setup wizard. Auto-detects your framework, locale file format, and source directory, then generates a `koto.config.ts`.
 
 ```bash
 npx koto init
@@ -31,7 +33,7 @@ npx koto init
 
 ### `koto translate`
 
-Translate all pending strings. This is the default command if none is specified.
+Translate all pending strings. Default command when none is specified.
 
 ```bash
 npx koto translate
@@ -46,7 +48,7 @@ npx koto translate --force
 | `--locale`, `-l` | Translate only specific locales (comma-separated) |
 | `--context`, `-c` | Translate only files matching a specific context profile |
 | `--dry-run` | Preview what would be translated without writing files |
-| `--force` | Re-translate all keys, ignoring the cache and lockfile |
+| `--force` | Re-translate all keys, ignoring cache and lockfile |
 | `--fail-on-error` | Exit with code 1 on translation errors or quality failures |
 | `--json` | Output results in machine-readable JSON |
 
@@ -85,43 +87,44 @@ npx koto types --watch
 
 ### `koto validate`
 
-Check your configuration file and test the provider connection. Useful for verifying setup before running translations.
+Check your configuration and test the provider connection.
 
 ```bash
 npx koto validate
 ```
 
-```
-✔  Config file: koto.config.ts (valid)
-✔  Source locale: src/locales/en.json (87 keys)
-✔  Target locales: es, fr, de, ja
-✔  Provider: openai / gpt-4o-mini (connected)
-✔  Context profiles: default, marketing, legal
-```
+<Terminal title="npx koto validate">
+<Fragment set:html={`<span class="green">✔</span>  Config file: koto.config.ts <span class="dim">(valid)</span>
+<span class="green">✔</span>  Source locale: src/locales/en.json <span class="dim">(214 keys)</span>
+<span class="green">✔</span>  Target locales: es, fr, de, ja
+<span class="green">✔</span>  Provider: openai / gpt-4o-mini <span class="dim">(connected)</span>
+<span class="green">✔</span>  Context profiles: default, marketing, legal
+`} />
+</Terminal>
 
 ---
 
 ### `koto badge`
 
-Generate an i18n coverage badge from your `koto-lock.json`, and emit coverage artifacts for CI and dashboards.
+Generate an i18n coverage badge from your lockfile, plus coverage artifacts for CI and dashboards.
 
 ```bash
 npx koto badge
 ```
 
-Output:
+<Terminal title="npx koto badge">
+<Fragment set:html={`<span class="bold">i18n Coverage Report</span>
 
-```text
-i18n Coverage Report
+  Overall: <span class="green bold">92%</span> across 6 locales
 
-Overall: 92% across 6 locales
-Add to your README:
-![i18n](https://img.shields.io/badge/...)
+  <span class="dim">Add to your README:</span>
+  <span class="cyan">![i18n](https://img.shields.io/badge/...)</span>
 
-Coverage artifacts:
-- koto-coverage.json
-- koto-coverage.html
-```
+  Coverage artifacts:
+  <span class="green">✔</span> koto-coverage.json
+  <span class="green">✔</span> koto-coverage.html
+`} />
+</Terminal>
 
 ---
 
@@ -136,26 +139,27 @@ npx koto contribute owner/repo --locale ja --dry-run
 
 | Flag | Description |
 |---|---|
-| `--locale`, `-l` | Target locale code for the contribution run (required) |
+| `--locale`, `-l` | Target locale code for the contribution (required) |
 | `--dry-run` | Show steps without creating a fork/PR |
 
 ---
 
 ### `koto cache stats`
 
-Display cache analytics: total cached translations, hit rate, and disk usage.
+Display cache analytics: cached translations, hit rate, and disk usage.
 
 ```bash
 npx koto cache stats
 ```
 
-```
-Cache statistics:
-  Location:     node_modules/.cache/koto
-  Translations: 1,247
-  Hit rate:      94.2%
-  Disk usage:    2.3 MB
-```
+<Terminal title="npx koto cache stats">
+<Fragment set:html={`<span class="bold">Cache statistics</span>
+  Location:     <span class="dim">node_modules/.cache/koto</span>
+  Translations: <span class="bold">1,247</span>
+  Hit rate:     <span class="green bold">94.2%</span>
+  Disk usage:   <span class="dim">2.3 MB</span>
+`} />
+</Terminal>
 
 ---
 
@@ -171,8 +175,6 @@ npx koto cache clear
 
 ## Global options
 
-These options work with any command:
-
 | Flag | Description |
 |---|---|
 | `--version`, `-v` | Show koto version |
@@ -185,8 +187,8 @@ These options work with any command:
 | Code | Meaning |
 |---|---|
 | `0` | Success |
-| `1` | Error: translation failure, quality gate failure, or invalid config |
-| `2` | Invalid usage: unknown command or missing required arguments |
+| `1` | Translation failure, quality gate failure, or invalid config |
+| `2` | Unknown command or missing required arguments |
 
 ---
 
@@ -199,7 +201,7 @@ These options work with any command:
 | `GOOGLE_API_KEY` | Google Gemini API key | `provider.name: 'google'` |
 | `KOTO_CONFIG` | Custom path to config file | All (optional) |
 
-koto automatically loads `.env` files from your project root. You can also set environment variables in your shell or CI pipeline.
+koto loads `.env` files from your project root automatically.
 
 ---
 
@@ -230,9 +232,6 @@ npx koto translate --fail-on-error
 # Check what needs translating
 npx koto diff
 
-# Check only specific locales
-npx koto diff --locale es,fr
-
 # Generate TypeScript types
 npx koto types
 
@@ -242,9 +241,9 @@ npx koto types --watch
 # Verify setup
 npx koto validate
 
-# Generate coverage badge and report files
+# Generate coverage badge
 npx koto badge
 
-# Create translation PR for an OSS repo
+# Contribute translations to an OSS repo
 npx koto contribute owner/repo --locale fr
 ```

@@ -3,18 +3,18 @@ title: Context Profiles
 description: Define different translation tones, glossaries, and instructions for different sections of your app.
 ---
 
-import { Steps, Tabs, TabItem, Card, CardGrid } from '@astrojs/starlight/components';
+import { Steps, Card, CardGrid } from '@astrojs/starlight/components';
 
-Context profiles are koto's core differentiator. They let you define different translation tones, terminology, and instructions for different parts of your application. Instead of treating all strings identically, koto adapts its translations to match the intent of each section.
+Context profiles let you assign different translation tones, terminology, and instructions to different parts of your application. Instead of treating all strings identically, koto adapts translations to match the intent of each section.
 
-## Why context profiles matter
+## Why context matters
 
-Consider the word "Submit" in two different places:
+Consider the word "Submit" in two places:
 
-- On a **payment form**, it should translate as the formal equivalent of "Confirm Payment" in each language.
-- On a **feedback widget**, it could translate as the casual equivalent of "Send" or "Share."
+- On a **payment form**, it should translate as the formal equivalent of "Confirm Payment."
+- On a **feedback widget**, it could translate as "Send" or "Share."
 
-Without context, a translation tool picks one and applies it everywhere. With koto's context profiles, each usage gets the right translation automatically.
+Without context, a translation tool picks one and applies it everywhere. With context profiles, each usage gets the right translation.
 
 <CardGrid>
   <Card title="Marketing pages">
@@ -24,16 +24,16 @@ Without context, a translation tool picks one and applies it everywhere. With ko
     Formal, precise language. Jurisdiction-appropriate legal terms. No ambiguity.
   </Card>
   <Card title="UI strings">
-    Concise labels. Consistent with platform conventions (e.g., "Settings" not "Configuration").
+    Concise labels. Consistent with platform conventions ("Settings" not "Configuration").
   </Card>
   <Card title="Support content">
     Friendly, helpful tone. Clear step-by-step instructions. Empathetic language.
   </Card>
 </CardGrid>
 
-## Defining context profiles
+## Defining profiles
 
-Context profiles are defined in the `contexts` section of your `koto.config.ts`. Each profile specifies which files it applies to, the desired tone, and any additional instructions or glossaries.
+Profiles live in the `contexts` section of your `koto.config.ts`. Each profile specifies which files it applies to, the desired tone, and any additional instructions.
 
 ```ts
 import { defineConfig } from 'koto'
@@ -56,7 +56,7 @@ export default defineConfig({
 
     marketing: {
       tone: 'persuasive and energetic',
-      instructions: 'Keep translations punchy. Prefer short, impactful words. Maintain brand voice.',
+      instructions: 'Keep translations punchy. Prefer short, impactful words.',
       files: ['src/locales/marketing/[locale].json'],
     },
 
@@ -76,27 +76,27 @@ export default defineConfig({
 })
 ```
 
-## How context resolution works
+## How resolution works
 
 <Steps>
 
-1. **File matching** — When koto translates a file, it checks which context profile's `files` pattern matches the file path.
+1. **File matching** -- When koto translates a file, it checks which profile's `files` pattern matches the file path.
 
-2. **Default fallback** — If no context matches, the `default` context is applied. If no `default` context is defined, koto translates without additional context.
+2. **Default fallback** -- If no profile matches, the `default` context is applied. If no `default` is defined, koto translates without additional context.
 
-3. **Instructions assembly** — koto builds a prompt that includes the context's `tone`, `instructions`, and any `glossary` terms. This prompt is sent to the LLM alongside the source strings.
+3. **Prompt assembly** -- koto builds an LLM prompt that includes the profile's `tone`, `instructions`, and any `glossary` terms.
 
-4. **Translation** — The LLM translates the strings with full awareness of the intended context, producing translations that match the desired tone and terminology.
+4. **Translation** -- The LLM translates with full awareness of the intended context, producing output that matches the desired tone and terminology.
 
 </Steps>
 
-## Context profile options
+## Profile options
 
 ### `tone`
 
 **Type:** `string`
 
-A natural language description of the desired tone. This is included in the LLM prompt to guide translation style.
+A natural language description of the desired tone, included in the LLM prompt.
 
 ```ts
 tone: 'concise'
@@ -109,7 +109,7 @@ tone: 'friendly, casual, and approachable'
 
 **Type:** `string`
 
-Additional instructions for the LLM. Use this for domain-specific guidance, formatting rules, or constraints.
+Additional guidance for the LLM -- domain-specific rules, formatting constraints, or style notes.
 
 ```ts
 instructions: 'UI strings. Keep translations under 30 characters where possible.'
@@ -120,7 +120,7 @@ instructions: 'Legal copy. Use formal register. Preserve all placeholder variabl
 
 **Type:** `string | string[]`
 
-Glob pattern(s) that determine which files this context applies to. Uses the same `[locale]` placeholder as the top-level `files` option.
+Glob pattern(s) that determine which files this profile applies to. Uses the same `[locale]` placeholder as the top-level `files` option.
 
 ```ts
 files: ['src/locales/marketing/[locale].json']
@@ -131,7 +131,7 @@ files: ['src/locales/legal/[locale].json', 'src/locales/compliance/[locale].json
 
 **Type:** `string`
 
-Path to a JSON glossary file. Glossary terms are included in the LLM prompt to ensure consistent translation of domain-specific terminology.
+Path to a JSON glossary file. Terms are included in the LLM prompt to ensure consistent translation of domain-specific terminology.
 
 ```ts
 glossary: './glossaries/legal.json'
@@ -139,7 +139,7 @@ glossary: './glossaries/legal.json'
 
 ## Glossary files
 
-A glossary file is a JSON object mapping source terms to their expected translations per locale:
+A glossary maps source terms to expected translations per locale:
 
 ```json
 {
@@ -149,12 +149,6 @@ A glossary file is a JSON object mapping source terms to their expected translat
       "fr": "Responsable du traitement",
       "de": "Verantwortlicher",
       "ja": "データ管理者"
-    },
-    "Personal Data": {
-      "es": "Datos personales",
-      "fr": "Données personnelles",
-      "de": "Personenbezogene Daten",
-      "ja": "個人データ"
     },
     "Consent": {
       "es": "Consentimiento",
@@ -166,31 +160,31 @@ A glossary file is a JSON object mapping source terms to their expected translat
 }
 ```
 
-When a glossary is attached to a context, koto sends the relevant terms to the LLM as reference, ensuring translations use the correct domain-specific terminology.
+When a glossary is attached to a profile, koto sends the relevant terms to the LLM as reference.
 
 ## Translating a specific context
 
-You can translate only the files belonging to a specific context:
+Translate only the files belonging to one profile:
 
 ```bash
-# Translate only legal content
+# Legal content only
 npx koto translate --context legal
 
-# Translate only marketing content
+# Marketing content only
 npx koto translate --context marketing
 ```
 
-This is useful when you've updated only one section of your app and want fast, targeted translations.
+Useful when you've updated only one section and want a fast, targeted run.
 
 ## Best practices
 
-1. **Start with `default`** — Define a `default` context for your general UI strings. This catches everything not matched by a specific context.
+1. **Start with `default`** -- Define a `default` context for general UI strings. It catches everything not matched by a specific profile.
 
-2. **Be specific with tone descriptions** — Instead of "formal," write "formal and precise, suitable for legal documents." The more specific your tone description, the better the LLM performs.
+2. **Be specific with tone** -- Instead of "formal," write "formal and precise, suitable for legal documents." The more specific, the better the LLM performs.
 
-3. **Use glossaries for domain terms** — If your app has industry-specific terminology (legal, medical, financial), create glossary files to ensure consistency across all translations.
+3. **Use glossaries for domain terms** -- Industry-specific terminology (legal, medical, financial) benefits from glossary files that enforce consistency.
 
-4. **Organize files by context** — Structure your locale files so that each context maps to a clear directory. This makes the `files` patterns simple and predictable.
+4. **Organize files by context** -- Structure locale files so each profile maps to a clear directory:
 
    ```
    src/locales/
@@ -203,4 +197,4 @@ This is useful when you've updated only one section of your app and want fast, t
        └── en.json          # support context
    ```
 
-5. **Keep contexts focused** — Each context should represent a distinct translation need. If two contexts have the same tone and instructions, merge them.
+5. **Keep profiles focused** -- Each should represent a distinct translation need. If two have the same tone and instructions, merge them.

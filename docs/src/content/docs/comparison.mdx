@@ -1,6 +1,6 @@
 ---
 title: Comparison
-description: How koto compares to other i18n translation tools — Lingo.dev, Tolgee, Paraglide, and Crowdin.
+description: How koto compares to other i18n translation tools.
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
@@ -10,129 +10,124 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 | Feature | koto | Lingo.dev | Tolgee | Paraglide | Crowdin |
 |---|---|---|---|---|---|
 | **Context profiles** | Yes | No | No | No | No |
-| **BYOLLM (any provider)** | Yes | No (own API) | No (own API) | No | No |
+| **BYOLLM (any provider)** | Yes | No | No | No | No |
 | **Local models (Ollama)** | Yes | No | No | No | No |
 | **Quality scoring** | Yes | No | No | No | Basic |
 | **Incremental translation** | Yes | Yes | Yes | No | Yes |
 | **Type generation** | Yes | No | Yes | Yes | No |
 | **GitHub Action** | Yes | Yes | Yes | No | Yes |
-| **Self-hosted / no vendor lock-in** | Yes | No | Partial | Yes | No |
+| **Self-hosted / no lock-in** | Yes | No | Partial | Yes | No |
 | **Open source** | MIT | Source-available | Mixed | MIT | Proprietary |
 | **Pricing** | Free | Paid | Freemium | Free | Paid |
-| **File format support** | JSON, TS, YAML, PO | JSON, YAML | JSON, XLIFF | JS/TS | 50+ formats |
-| **Translation memory** | Via lockfile | Cloud-based | Cloud-based | No | Cloud-based |
+| **File formats** | JSON, TS, YAML, PO | JSON, YAML | JSON, XLIFF | JS/TS | 50+ |
 | **Human review workflow** | No | Yes | Yes | No | Yes |
 
 ---
 
-## Detailed comparisons
+## koto vs Lingo.dev
 
-### koto vs Lingo.dev
-
-**Lingo.dev** is a cloud-based AI translation service with its own proprietary translation engine.
+**Lingo.dev** is a cloud-based AI translation service with a proprietary translation engine.
 
 <CardGrid>
   <Card title="Choose koto if">
-    - You want full control over which LLM performs your translations
+    - You want full control over which LLM performs translations
     - You need context profiles for different tones across your app
-    - You want to run translations locally or in your own CI without a third-party service
+    - You want translations running locally or in your own CI
     - You prefer open source (MIT) with no vendor lock-in
   </Card>
   <Card title="Choose Lingo.dev if">
-    - You want a managed service with no infrastructure to set up
-    - You need human review workflows built in
-    - You prefer a turnkey solution over configuration
+    - You want a managed service with no setup
+    - You need built-in human review workflows
+    - You prefer turnkey over configuration
   </Card>
 </CardGrid>
 
-**Key difference:** koto lets you bring any LLM (OpenAI, Anthropic, Gemini, Ollama) while Lingo.dev locks you into their proprietary translation engine. koto's context profiles have no equivalent in Lingo.dev.
+**Key difference:** koto lets you bring any LLM while Lingo.dev locks you into their engine. Context profiles have no equivalent in Lingo.dev.
 
 ---
 
-### koto vs Tolgee
+## koto vs Tolgee
 
-**Tolgee** is a localization platform with a web-based translation editor, in-context translation, and API-based workflows.
+**Tolgee** is a localization platform with a web editor, in-context translation, and API-based workflows.
 
 <CardGrid>
   <Card title="Choose koto if">
-    - Your team works primarily in code, not a web UI
+    - Your team works in code, not a web UI
     - You want AI-first translation with context awareness
     - You want to avoid running or paying for a localization platform
     - You need quality scoring and automated quality gates
   </Card>
   <Card title="Choose Tolgee if">
     - You have non-technical translators who need a visual editor
-    - You want in-context editing directly in your running app
+    - You want in-context editing in your running app
     - You need a collaborative platform with role-based access
   </Card>
 </CardGrid>
 
-**Key difference:** Tolgee is a full localization platform aimed at teams with dedicated translators. koto is a developer tool that fits into your existing code-and-CI workflow.
+**Key difference:** Tolgee is a full localization platform for teams with dedicated translators. koto is a developer tool that fits into code-and-CI workflows.
 
 ---
 
-### koto vs Paraglide
+## koto vs Paraglide
 
 **Paraglide** (by Inlang) is a compiler-based i18n library that generates type-safe message functions at build time.
 
 <CardGrid>
   <Card title="Choose koto if">
-    - You want AI-powered translation, not just a type-safe i18n runtime
-    - You need translations generated automatically, not written manually
+    - You want AI-powered translation, not just a type-safe runtime
+    - You need translations generated automatically
     - You want to use any LLM provider
-    - You need context profiles for different parts of your app
+    - You need context profiles
   </Card>
   <Card title="Choose Paraglide if">
-    - You want the smallest possible runtime bundle (tree-shakeable per-message)
-    - You have human translators and just need type safety for the dev workflow
-    - You're already in the Inlang ecosystem
+    - You want the smallest runtime bundle (tree-shakeable per-message)
+    - You have human translators and just need type safety
+    - You're in the Inlang ecosystem
   </Card>
 </CardGrid>
 
-**Key difference:** Paraglide is an i18n runtime/compiler. koto is a translation tool. They solve different parts of the problem and can even be used together — koto generates the translations, Paraglide serves them.
+**Key difference:** Paraglide is an i18n runtime/compiler. koto is a translation tool. They solve different parts of the problem and can be used together -- koto generates translations, Paraglide serves them.
 
 ---
 
-### koto vs Crowdin
+## koto vs Crowdin
 
-**Crowdin** is an enterprise localization platform used by large teams with professional translators.
+**Crowdin** is an enterprise localization platform for large teams with professional translators.
 
 <CardGrid>
   <Card title="Choose koto if">
-    - You're a developer team that wants automated AI translations
+    - You're a dev team that wants automated AI translations
     - You don't have dedicated translators and want to ship fast
     - You want a free, open-source tool with no per-word pricing
-    - You need context-aware translations without complex TMS setup
+    - You need context-aware translations without TMS complexity
   </Card>
   <Card title="Choose Crowdin if">
     - You have a professional localization team
-    - You need support for 50+ file formats
-    - You need translation memory, glossary management, and QA at enterprise scale
-    - You need integrations with design tools (Figma, Sketch)
+    - You need 50+ file format support
+    - You need enterprise-scale translation memory and QA
+    - You need design tool integrations (Figma, Sketch)
   </Card>
 </CardGrid>
 
-**Key difference:** Crowdin is an enterprise TMS (Translation Management System). koto is a developer-first CLI tool. Crowdin makes sense when you have professional translators and complex workflows. koto makes sense when your dev team owns translations and wants automation.
+**Key difference:** Crowdin is an enterprise TMS. koto is a developer-first CLI. Crowdin makes sense with professional translators and complex workflows. koto makes sense when your dev team owns translations and wants automation.
 
 ---
 
 ## When to use koto
 
-koto is the right choice when:
-
 - **Your team writes translations in code**, not a web UI
-- **You want AI to handle the translation**, not just manage human translators
-- **Context matters** — different parts of your app need different translation tones
-- **You want control** over which LLM does your translations (and you want to switch freely)
-- **You value simplicity** — `npx koto translate` and you're done
-- **CI/CD is your workflow** — translations happen in the pipeline, not a separate platform
+- **You want AI to handle translation**, not just manage human translators
+- **Context matters** -- different parts of your app need different tones
+- **You want control** over which LLM runs and the ability to switch freely
+- **You value simplicity** -- `npx koto translate` and done
+- **CI/CD is your workflow** -- translations happen in the pipeline
 
-## Migration from other tools
+## Migrating from another tool
 
-If you're migrating from another tool, koto works with standard locale file formats (JSON, YAML, PO, TypeScript). In most cases, migration is straightforward:
+koto works with standard locale file formats. Migration is usually straightforward:
 
-1. Point koto at your existing locale files via the `files` config option
+1. Point koto at your existing locale files via the `files` config
 2. Run `npx koto translate --force` to re-translate with context awareness
-3. Review the output and adjust context profiles as needed
+3. Review output and adjust context profiles as needed
 
-Your existing i18n runtime (next-intl, i18next, react-intl, etc.) stays the same. koto replaces only the translation step.
+Your existing i18n runtime (next-intl, i18next, react-intl) stays the same. koto replaces only the translation step.
