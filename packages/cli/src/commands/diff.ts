@@ -22,11 +22,11 @@ export async function diffCommand(cwd: string, options: DiffOptions = {}): Promi
   const config = await loadConfig(cwd);
   const lockfile = await readLockfile(cwd);
 
-  // Seed lockfile from existing translations on first run
-  const isEmptyLockfile = Object.keys(lockfile.entries).length === 0;
-  if (isEmptyLockfile) {
+  // Seed lockfile from existing translations for any locale not yet tracked
+  {
     let totalSeeded = 0;
     for (const pattern of config.files) {
+      const fileEntries = lockfile.entries[pattern] ?? {};
       const sourcePath = pattern.replace('[locale]', config.sourceLocale);
       const absSource = path.resolve(cwd, sourcePath);
       try {
@@ -34,6 +34,12 @@ export async function diffCommand(cwd: string, options: DiffOptions = {}): Promi
         const format = getFormat(sourcePath);
         const sourceKeys = format.parse(sourceContent).keys;
         for (const locale of config.targetLocales) {
+          // Skip if this locale already has entries for this file
+          const alreadySeeded = Object.values(fileEntries).some(
+            (entry) => entry.translations[locale],
+          );
+          if (alreadySeeded) continue;
+
           const targetPath = pattern.replace('[locale]', locale);
           const absTarget = path.resolve(cwd, targetPath);
           try {

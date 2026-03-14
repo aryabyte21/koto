@@ -78,19 +78,26 @@ export async function runPipeline(
   // Resolve all source files from config patterns
   const sourceFiles = await resolveSourceFiles(config, cwd);
 
-  // Seed lockfile from existing translations on first run
-  const isEmptyLockfile = Object.keys(lockfile.entries).length === 0;
-  if (isEmptyLockfile && !options.force) {
+  // Seed lockfile from existing translations for any locale not yet tracked
+  if (!options.force) {
     let totalSeeded = 0;
     for (const sourceFile of sourceFiles) {
-      const format = getFormat(sourceFile.path);
-      const sourceContent = await readFile(sourceFile.absolutePath);
-      const sourceKeys = format.parse(sourceContent).keys;
+      const fileEntries = lockfile.entries[sourceFile.path] ?? {};
 
       for (const locale of targetLocales) {
+        // Check if this locale already has ANY entries in the lockfile for this file
+        const localeAlreadySeeded = Object.values(fileEntries).some(
+          (entry) => entry.translations[locale],
+        );
+        if (localeAlreadySeeded) continue;
+
+        // This locale has no entries — seed from existing target file
         const targetPath = sourceFile.path.replace('[locale]', locale);
         const targetAbsolute = path.resolve(cwd, targetPath);
         try {
+          const format = getFormat(sourceFile.path);
+          const sourceContent = await readFile(sourceFile.absolutePath);
+          const sourceKeys = format.parse(sourceContent).keys;
           const targetContent = await readFile(targetAbsolute);
           const targetKeys = format.parse(targetContent).keys;
           totalSeeded += seedLockfileFromExisting(
