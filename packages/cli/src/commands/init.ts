@@ -145,15 +145,16 @@ function generateConfig(options: ConfigOptions): string {
     .map((l) => `'${l}'`)
     .join(', ');
 
-  return `import { defineConfig } from 'koto';
-
-export default defineConfig({
+  // Use JSDoc type annotation instead of importing from 'koto'
+  // This works regardless of whether koto is installed as a dependency or run via npx
+  return `/** @type {import('koto').KotoConfig} */
+export default {
   sourceLocale: '${options.sourceLocale}',
   targetLocales: [${locales}],
   provider: {
     name: '${options.provider}',
   },
   files: ['${options.files[0]}'],
-});
+};
 `;
 }

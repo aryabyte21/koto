@@ -83,16 +83,15 @@ function generateKotoConfig(opts: {
   files: string[];
   provider: string;
 }): string {
-  return `import { defineConfig } from 'koto';
-
-export default defineConfig({
+  return `/** @type {import('koto').KotoConfig} */
+export default {
   sourceLocale: '${opts.sourceLocale}',
   targetLocales: ['${opts.targetLocale}'],
   provider: {
     name: '${opts.provider}',
   },
   files: [${opts.files.map((f) => `'${f}'`).join(', ')}],
-});
+};
 `;
 }
 
@@ -101,6 +100,15 @@ export async function contributeCommand(
   options: ContributeOptions,
 ): Promise<void> {
   printIntro(VERSION);
+
+  // Pre-check: gh CLI must be installed
+  try {
+    await execFile('gh', ['--version']);
+  } catch {
+    throw new Error(
+      'The "gh" CLI is required for the contribute command. Install it: https://cli.github.com',
+    );
+  }
 
   const { owner, repo: repoName } = parseRepo(repo);
   const fullRepo = `${owner}/${repoName}`;

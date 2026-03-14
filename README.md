@@ -167,9 +167,9 @@ Drop-in GitHub Action. Use `--fail-on-error` in CI to block deploys when transla
 koto is configured with a `koto.config.ts` file in your project root:
 
 ```ts
-import { defineConfig } from 'koto'
-
-export default defineConfig({
+// koto.config.ts
+/** @type {import('koto').KotoConfig} */
+export default {
   sourceLocale: 'en',
   targetLocales: ['es', 'fr', 'de', 'ja', 'ko', 'zh'],
   files: ['src/locales/[locale].json'],
@@ -196,7 +196,7 @@ export default defineConfig({
       files: ['src/locales/legal/[locale].json'],
     },
   },
-})
+};
 ```
 
 ---

@@ -22,6 +22,7 @@ export class OllamaProvider implements Provider {
       body: JSON.stringify({
         model: this.model,
         stream: false,
+        options: { temperature: 0.3 },
         messages: [
           { role: "system", content: batch.systemPrompt },
           { role: "user", content: userMessage },
