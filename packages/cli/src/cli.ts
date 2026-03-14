@@ -70,7 +70,7 @@ async function main(): Promise<void> {
         break;
 
       case 'diff':
-        await diffCommand(cwd, { json: flags.json });
+        await diffCommand(cwd, { json: flags.json, locale: flags.locale });
         break;
 
       case 'types':

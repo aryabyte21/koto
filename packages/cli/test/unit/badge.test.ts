@@ -2,6 +2,7 @@ import { hashString } from '../../src/core/cache/hasher.js';
 import type { Lockfile } from '../../src/core/cache/lockfile.js';
 import {
   computeCoverage,
+  generateCoverageHtml,
   generateBadgeUrl,
   generateBadgeMarkdown,
 } from '../../src/commands/badge.js';
@@ -160,21 +161,21 @@ describe('computeCoverage', () => {
 describe('generateBadgeUrl', () => {
   it('generates a valid shields.io URL with encoded percentage', () => {
     const url = generateBadgeUrl(95, 3);
-    expect(url).toBe(
-      'https://img.shields.io/badge/i18n-95%25_·_3_languages_🌍-blue',
-    );
+    expect(url).toBe('https://img.shields.io/badge/i18n-95%25%20%7C%203%20locales-green?style=flat-square');
   });
 
   it('handles 0% coverage', () => {
     const url = generateBadgeUrl(0, 1);
     expect(url).toContain('0%25');
-    expect(url).toContain('1_languages');
+    expect(url).toContain('1%20locales');
+    expect(url).toContain('-red?');
   });
 
   it('handles 100% coverage', () => {
     const url = generateBadgeUrl(100, 5);
     expect(url).toContain('100%25');
-    expect(url).toContain('5_languages');
+    expect(url).toContain('5%20locales');
+    expect(url).toContain('-brightgreen?');
   });
 });
 
@@ -182,12 +183,31 @@ describe('generateBadgeMarkdown', () => {
   it('wraps badge URL in markdown image syntax', () => {
     const md = generateBadgeMarkdown(95, 3);
     expect(md).toBe(
-      '![i18n](https://img.shields.io/badge/i18n-95%25_·_3_languages_🌍-blue)',
+      '![i18n](https://img.shields.io/badge/i18n-95%25%20%7C%203%20locales-green?style=flat-square)',
     );
   });
 
   it('produces valid markdown for any percentage', () => {
     const md = generateBadgeMarkdown(42, 7);
     expect(md).toMatch(/^!\[i18n\]\(https:\/\/img\.shields\.io\/badge\/.+\)$/);
+  });
+});
+
+describe('generateCoverageHtml', () => {
+  it('renders a readable HTML report table with coverage rows', () => {
+    const html = generateCoverageHtml({
+      totalKeys: 3,
+      overallPercentage: 83,
+      locales: [
+        { locale: 'fr', translated: 3, total: 3, percentage: 100 },
+        { locale: 'es', translated: 2, total: 3, percentage: 67 },
+      ],
+    });
+
+    expect(html).toContain('<title>koto i18n Coverage Report</title>');
+    expect(html).toContain('<td>fr</td>');
+    expect(html).toContain('<td>100%</td>');
+    expect(html).toContain('<td>Needs attention</td>');
+    expect(html).toContain('Overall coverage: 83%');
   });
 });

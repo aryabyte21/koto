@@ -9,6 +9,7 @@ import path from 'node:path';
 
 export interface DiffOptions {
   json?: boolean;
+  locale?: string;
 }
 
 export async function diffCommand(cwd: string, options: DiffOptions = {}): Promise<void> {
@@ -19,8 +20,17 @@ export async function diffCommand(cwd: string, options: DiffOptions = {}): Promi
   const config = await loadConfig(cwd);
   const lockfile = await readLockfile(cwd);
   const diffs: LocaleDiff[] = [];
+  const requestedLocales = options.locale
+    ? options.locale.split(',').map((locale) => locale.trim()).filter(Boolean)
+    : config.targetLocales;
+  const invalidLocales = requestedLocales.filter((locale) => !config.targetLocales.includes(locale));
+  if (invalidLocales.length > 0) {
+    throw new Error(
+      `Unknown locale(s) for diff: ${invalidLocales.join(', ')}. Available target locales: ${config.targetLocales.join(', ')}`,
+    );
+  }
 
-  for (const locale of config.targetLocales) {
+  for (const locale of requestedLocales) {
     const entries: DiffEntry[] = [];
 
     for (const pattern of config.files) {

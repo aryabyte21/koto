@@ -101,6 +101,46 @@ npx koto validate
 
 ---
 
+### `koto badge`
+
+Generate an i18n coverage badge from your `koto-lock.json`, and emit coverage artifacts for CI and dashboards.
+
+```bash
+npx koto badge
+```
+
+Output:
+
+```text
+i18n Coverage Report
+
+Overall: 92% across 6 locales
+Add to your README:
+![i18n](https://img.shields.io/badge/...)
+
+Coverage artifacts:
+- koto-coverage.json
+- koto-coverage.html
+```
+
+---
+
+### `koto contribute`
+
+Fork an OSS repo, run koto translation for one locale, and open a pull request via GitHub CLI.
+
+```bash
+npx koto contribute owner/repo --locale fr
+npx koto contribute owner/repo --locale ja --dry-run
+```
+
+| Flag | Description |
+|---|---|
+| `--locale`, `-l` | Target locale code for the contribution run (required) |
+| `--dry-run` | Show steps without creating a fork/PR |
+
+---
+
 ### `koto cache stats`
 
 Display cache analytics: total cached translations, hit rate, and disk usage.
@@ -190,6 +230,9 @@ npx koto translate --fail-on-error
 # Check what needs translating
 npx koto diff
 
+# Check only specific locales
+npx koto diff --locale es,fr
+
 # Generate TypeScript types
 npx koto types
 
@@ -198,4 +241,10 @@ npx koto types --watch
 
 # Verify setup
 npx koto validate
+
+# Generate coverage badge and report files
+npx koto badge
+
+# Create translation PR for an OSS repo
+npx koto contribute owner/repo --locale fr
 ```
