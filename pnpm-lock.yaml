@@ -30,7 +30,11 @@ importers:
         specifier: ^0.33.0
         version: 0.33.5
 
-  packages/action: {}
+  packages/action:
+    devDependencies:
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.6.1)(postcss@8.5.8)(typescript@5.9.3)
 
   packages/cli:
     dependencies:

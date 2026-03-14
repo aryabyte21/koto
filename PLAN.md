@@ -102,6 +102,8 @@ A previous internal project solved one piece nobody else has: **context-aware tr
 
 ## AGENT LEARNINGS
 
+> **Agent instruction:** At the end of every chunk, append a dated entry below summarizing anything that would help agents working on later chunks avoid roadblocks or wasted effort. Include surprises about the codebase, non-obvious dependency chains, patterns that worked well, mistakes to avoid, and any deviations from the plan that were necessary. Keep entries concise and actionable. Delete any previous learnings that are no longer relevant or applicable.
+
 ### 2026-03-14 — Initial Implementation (Phases 1–5)
 
 **Build setup:**
@@ -162,5 +164,4 @@ A previous internal project solved one piece nobody else has: **context-aware tr
 - Badge API serverless function (needs hosting — Cloudflare Workers or Vercel)
 - Coverage report page (needs hosting)
 - Demo GIF recording
-- Phase 8: Launch campaign
 - Real-world E2E test with actual LLM API key
