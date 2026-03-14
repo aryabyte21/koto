@@ -15,11 +15,13 @@ hero:
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
 import Terminal from '../../components/Terminal.astro';
 
 <Terminal title="npx koto init">
-<Fragment set:html={`<span class="bold cyan">  koto</span> <span class="dim">v0.1.0</span>
+<Fragment set:html={`<span class="cyan">  ╦╔═  ╔═╗  ╔╦╗  ╔═╗
+  ╠╩╗  ║ ║   ║   ║ ║
+  ╩ ╩  ╚═╝   ╩   ╚═╝</span>
+  <span class="dim">v0.1.0 — context-aware i18n</span>
 
 <span class="dim">┌</span>  <span class="bold">Detected</span>
 <span class="dim">│</span>
@@ -36,26 +38,18 @@ import Terminal from '../../components/Terminal.astro';
 <span class="dim">│</span>  <span class="dim">○</span> Ollama <span class="dim">(local, free, private)</span>
 
 <span class="cyan">◆</span>  Target locales?
-<span class="dim">│</span>  <span class="cyan">◼</span> <span class="flag">🇪🇸</span>  es       Spanish
-<span class="dim">│</span>  <span class="cyan">◼</span> <span class="flag">🇫🇷</span>  fr       French
-<span class="dim">│</span>  <span class="cyan">◼</span> <span class="flag">🇩🇪</span>  de       German
-<span class="dim">│</span>  <span class="cyan">◼</span> <span class="flag">🇯🇵</span>  ja       Japanese
-<span class="dim">│</span>  <span class="dim">◻</span> <span class="flag">🇰🇷</span>  ko       Korean
-<span class="dim">│</span>  <span class="dim">◻</span> <span class="flag">🇧🇷</span>  pt-BR    Brazilian Portuguese
+<span class="dim">│</span>  <span class="cyan">◼</span> <span class="flag">🇪🇸</span>  es    <span class="cyan">◼</span> <span class="flag">🇫🇷</span>  fr    <span class="cyan">◼</span> <span class="flag">🇩🇪</span>  de    <span class="cyan">◼</span> <span class="flag">🇯🇵</span>  ja
 
-<span class="dim">┌</span>  <span class="bold">Setup complete</span>
-<span class="dim">│</span>
-<span class="dim">│</span>  <span class="green">Created</span> koto.config.ts
-<span class="dim">│</span>  <span class="green">Created</span> koto.lock
-<span class="dim">│</span>
-<span class="dim">└</span>
-
-  <span class="dim">Run</span> <span class="cyan">npx koto</span> <span class="dim">to translate!</span>
+<span class="green">✔</span>  Created koto.config.ts
+<span class="green">✔</span>  Created koto.lock
 `} />
 </Terminal>
 
 <Terminal title="npx koto translate">
-<Fragment set:html={`<span class="bold cyan">  koto</span> <span class="dim">v0.1.0</span>
+<Fragment set:html={`<span class="cyan">  ╦╔═  ╔═╗  ╔╦╗  ╔═╗
+  ╠╩╗  ║ ║   ║   ║ ║
+  ╩ ╩  ╚═╝   ╩   ╚═╝</span>
+  <span class="dim">v0.1.0 — context-aware i18n</span>
 
   <span class="bold">Translating</span> → <span class="flag">🇪🇸</span> <span class="flag">🇫🇷</span> <span class="flag">🇩🇪</span> <span class="flag">🇯🇵</span> <span class="dim">(4 locales)</span>
 
@@ -83,34 +77,40 @@ import Terminal from '../../components/Terminal.astro';
 
 ## The problem
 
-You add a button. You change a heading. Your source locale is done in seconds -- but your 6 target locales are now stale. Traditional workflows mean waiting on translators, syncing spreadsheets, or paying per-word SaaS fees. AI translation tools exist, but they treat a payment confirmation the same as a marketing headline.
+You add a button. You change a heading. Your source locale is done in seconds — but your 6 target locales are now stale. AI translation tools exist, but they treat a payment confirmation the same as a marketing headline.
 
-**koto fixes this.** Define context profiles -- tone, glossary, instructions -- per section. Point it at any LLM. Run one command. Done.
+**koto fixes this.** Define context profiles — tone, glossary, instructions — per section of your app. Point it at any LLM. Run one command. Done.
 
 ---
 
 ## Why koto?
 
-<CardGrid>
-  <Card title="Context Profiles" icon="pencil">
-    Different parts of your app need different tones. Marketing copy sounds energetic. Legal text stays precise. koto sends the right context to the LLM for each file.
-  </Card>
-  <Card title="Bring Your Own LLM" icon="setting">
-    OpenAI, Anthropic, Google Gemini, Ollama, or any OpenAI-compatible endpoint. Switch providers by changing one config line.
-  </Card>
-  <Card title="Type-Safe Keys" icon="approve-check">
-    Generate TypeScript types from your locale files. Typos and missing keys fail at build time, not in production.
-  </Card>
-  <Card title="Smart Cache" icon="rocket">
-    SHA-256 content hashing + lockfile. Unchanged strings are never re-translated. Incremental runs take seconds.
-  </Card>
-  <Card title="Quality Scoring" icon="star">
-    Placeholder integrity, length ratio, untranslated detection. Gate your CI pipeline on translation quality.
-  </Card>
-  <Card title="CI/CD Ready" icon="laptop">
-    GitHub Action included. Translations run in your pipeline. Use `--fail-on-error` to block releases on incomplete translations.
-  </Card>
-</CardGrid>
+<div class="feature-grid">
+  <div class="feature">
+    <h3>Context Profiles</h3>
+    <p>Different parts of your app need different tones. Marketing copy sounds energetic. Legal text stays precise. One command handles all of it.</p>
+  </div>
+  <div class="feature">
+    <h3>Bring Your Own LLM</h3>
+    <p>OpenAI, Anthropic, Google Gemini, Ollama, or any compatible endpoint. Switch providers with one config line.</p>
+  </div>
+  <div class="feature">
+    <h3>Type-Safe Keys</h3>
+    <p>Generate TypeScript types from your locale files. Typos and missing keys fail at build time, not in production.</p>
+  </div>
+  <div class="feature">
+    <h3>Smart Cache</h3>
+    <p>SHA-256 content hashing + lockfile. Unchanged strings are never re-translated. Incremental runs take seconds.</p>
+  </div>
+  <div class="feature">
+    <h3>Quality Scoring</h3>
+    <p>Placeholder integrity, length ratio, untranslated detection. Gate your CI pipeline on translation quality.</p>
+  </div>
+  <div class="feature">
+    <h3>CI/CD Ready</h3>
+    <p>GitHub Action included. Translations run in your pipeline. Use <code>--fail-on-error</code> to block bad releases.</p>
+  </div>
+</div>
 
 ---
 
@@ -128,6 +128,6 @@ export default defineConfig({
 })
 ```
 
-That's the entire setup. Run `npx koto` and your locale files are ready.
+That's it. Run `npx koto` and your locale files are ready.
 
-[Get started -->](./getting-started/)
+[Get started →](./getting-started/)
