@@ -2,6 +2,8 @@ import { defineConfig } from 'astro/config'
 import starlight from '@astrojs/starlight'
 
 export default defineConfig({
+  site: 'https://aryabyte21.github.io',
+  base: '/koto',
   integrations: [
     starlight({
       title: 'koto',
