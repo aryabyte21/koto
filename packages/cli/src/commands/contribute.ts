@@ -119,7 +119,8 @@ export async function contributeCommand(
 
   const { owner, repo: repoName } = parseRepo(repo);
   const fullRepo = `${owner}/${repoName}`;
-  const branchName = `koto/add-${options.locale}-translations`;
+  const timestamp = Date.now().toString(36).slice(-4);
+  const branchName = `koto/add-${options.locale}-translations-${timestamp}`;
   const localeName = getLanguageName(options.locale);
 
   console.log(
