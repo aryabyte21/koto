@@ -95,7 +95,12 @@ export async function runPipeline(
     for (const sourceFile of sourceFiles) {
       const format = getFormat(sourceFile.path);
       const content = await readFile(sourceFile.absolutePath);
-      const parsed = format.parse(content);
+      let parsed;
+      try {
+        parsed = format.parse(content);
+      } catch (err) {
+        throw new Error(`Failed to parse ${sourceFile.absolutePath}: ${(err as Error).message}`);
+      }
       const keys = parsed.keys;
       localeStats.total += keys.size;
 

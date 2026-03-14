@@ -55,6 +55,10 @@ function extractParams(value: string): string[] {
   return params;
 }
 
+function escapeKey(key: string): string {
+  return key.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
 function buildTypeFile(
   keys: Map<string, string>,
   paramKeys: Map<string, string[]>,
@@ -69,24 +73,25 @@ function buildTypeFile(
   ];
 
   for (let i = 0; i < sortedKeys.length; i++) {
-    const key = sortedKeys[i];
+    const key = escapeKey(sortedKeys[i]);
     const separator = i < sortedKeys.length - 1 ? '' : ';';
     lines.push(`  | '${key}'${separator}`);
   }
 
-  if (paramKeys.size > 0) {
-    lines.push('');
-    lines.push('export type TranslationParams = {');
+  // Always emit TranslationParams (empty if no parameterized keys)
+  lines.push('');
+  lines.push('export type TranslationParams = {');
 
+  if (paramKeys.size > 0) {
     const sortedParamKeys = [...paramKeys.keys()].sort();
     for (const key of sortedParamKeys) {
       const params = paramKeys.get(key)!;
       const paramType = params.map((p) => `${p}: string | number`).join('; ');
-      lines.push(`  '${key}': { ${paramType} };`);
+      lines.push(`  '${escapeKey(key)}': { ${paramType} };`);
     }
-
-    lines.push('};');
   }
+
+  lines.push('};');
 
   lines.push('');
   lines.push('// Helper type for type-safe translation functions');
