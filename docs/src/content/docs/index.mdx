@@ -14,7 +14,10 @@ hero:
       variant: minimal
 ---
 
+import AsciiLogo from '../../components/AsciiLogo.astro';
 import Terminal from '../../components/Terminal.astro';
+
+<AsciiLogo />
 
 <Terminal title="npx koto init">
 <Fragment set:html={`<span class="bold cyan">  koto</span> <span class="dim">v0.1.0</span>
