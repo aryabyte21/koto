@@ -44,7 +44,7 @@ export default defineConfig({
           label: 'Reference',
           items: [
             { label: 'CLI Reference', link: '/cli-reference/' },
-            { label: 'Comparison', link: '/comparison/' },
+            { label: 'Why koto?', link: '/comparison/' },
           ],
         },
       ],

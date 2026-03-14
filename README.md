@@ -159,23 +159,6 @@ export default {
 
 ---
 
-## How koto Compares
-
-| Feature | koto | Lingo.dev | Tolgee | Paraglide |
-|---|---|---|---|---|
-| Context profiles | ✅ | ❌ | ❌ | ❌ |
-| BYOLLM (any provider) | ✅ | ❌ (own API) | ❌ (own API) | ❌ |
-| Local models (Ollama) | ✅ | ❌ | ❌ | ❌ |
-| Quality scoring | ✅ | ❌ | ❌ | ❌ |
-| Incremental translation | ✅ | ✅ | ✅ | ❌ |
-| Type generation | ✅ | ❌ | ✅ | ✅ |
-| GitHub Action | ✅ | ✅ | ✅ | ❌ |
-| Self-hosted / no vendor lock-in | ✅ | ❌ | Partial | ✅ |
-| Open source | MIT | Source-available | Mixed | MIT |
-| Price | Free | Paid | Freemium | Free |
-
----
-
 ## Providers
 
 ### OpenAI
