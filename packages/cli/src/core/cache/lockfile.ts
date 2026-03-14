@@ -30,6 +30,25 @@ export interface DiffResult extends LocaleDiff {
 
 const LOCKFILE_NAME = "koto.lock";
 
+/**
+ * Heuristic: does this value look like something that shouldn't be translated?
+ * Brand names, single words, numbers, URLs, technical identifiers, etc.
+ */
+function looksLikeUntranslatableValue(value: string): boolean {
+  const trimmed = value.trim();
+  // Single word (likely a brand name or technical term)
+  if (!trimmed.includes(' ') && trimmed.length <= 30) return true;
+  // All uppercase or has no lowercase letters (acronyms, codes)
+  if (/^[^a-z]*$/.test(trimmed)) return true;
+  // URL or email
+  if (/^https?:\/\//.test(trimmed) || trimmed.includes('@')) return true;
+  // Number or number-like
+  if (/^\d[\d.,]*$/.test(trimmed)) return true;
+  // Very short (1-3 chars)
+  if (trimmed.length <= 3) return true;
+  return false;
+}
+
 function emptyLockfile(): Lockfile {
   return { version: 1, entries: {} };
 }
@@ -54,8 +73,15 @@ export function seedLockfileFromExisting(
 
   for (const [key, sourceValue] of sourceKeys) {
     const targetValue = targetKeys.get(key);
-    // If the target has a value and it's different from source (actually translated)
-    if (targetValue && targetValue !== sourceValue) {
+    if (!targetValue) continue;
+
+    // Treat as "already handled" if:
+    // 1. Translation differs from source (genuinely translated), OR
+    // 2. Value is identical but looks intentional (brand names, short tokens, numbers, URLs)
+    const isTranslated = targetValue !== sourceValue;
+    const isIntentionallyIdentical = targetValue === sourceValue && looksLikeUntranslatableValue(sourceValue);
+
+    if (isTranslated || isIntentionallyIdentical) {
       if (!lockfile.entries[filePath][key]) {
         lockfile.entries[filePath][key] = {
           hash: hashString(sourceValue),

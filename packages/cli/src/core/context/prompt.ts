@@ -33,6 +33,9 @@ export function buildSystemPrompt(
     "",
     "Rules:",
     "- Translate ONLY the text content. Do not translate placeholders marked as __PH_N__.",
+    "- Do NOT translate brand names, product names, or proper nouns. Keep them exactly as-is.",
+    "- Do NOT translate technical terms, URLs, email addresses, or code identifiers.",
+    "- If a string is already a brand name or proper noun (e.g., a single capitalized word), return it unchanged.",
     "- Preserve all formatting (newlines, markdown, HTML tags).",
     "- Return translations in the exact same numbered format as the input.",
     "- Do not add explanations or notes."
