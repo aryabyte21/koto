@@ -1,0 +1,85 @@
+import { existsSync } from "node:fs";
+import { readFile } from "node:fs/promises";
+import { resolve, join } from "node:path";
+import { createJiti } from "jiti";
+import { kotoConfigSchema, type KotoConfig, type ResolvedConfig } from "./schema.js";
+import { defaults, DEFAULT_MODEL_BY_PROVIDER } from "./defaults.js";
+
+const CONFIG_FILES = [
+  "koto.config.ts",
+  "koto.config.js",
+  "koto.config.json",
+];
+
+export function findConfigFile(cwd: string = process.cwd()): string | null {
+  for (const file of CONFIG_FILES) {
+    const filePath = join(cwd, file);
+    if (existsSync(filePath)) {
+      return filePath;
+    }
+  }
+  return null;
+}
+
+async function loadRawConfig(configPath: string): Promise<unknown> {
+  if (configPath.endsWith(".json")) {
+    const content = await readFile(configPath, "utf-8");
+    return JSON.parse(content);
+  }
+
+  const jiti = createJiti(configPath, { interopDefault: true });
+  const mod = await jiti.import(configPath);
+  return (mod as Record<string, unknown>).default ?? mod;
+}
+
+function resolveDefaults(parsed: KotoConfig): ResolvedConfig {
+  const providerName = parsed.provider.name;
+  const model =
+    parsed.provider.model ??
+    DEFAULT_MODEL_BY_PROVIDER[providerName] ??
+    providerName;
+
+  return {
+    sourceLocale: parsed.sourceLocale ?? defaults.sourceLocale,
+    targetLocales: parsed.targetLocales,
+    files: parsed.files,
+    provider: {
+      name: providerName,
+      model,
+      ...(parsed.provider.apiKey && { apiKey: parsed.provider.apiKey }),
+      ...(parsed.provider.baseUrl && { baseUrl: parsed.provider.baseUrl }),
+    },
+    contexts: parsed.contexts ?? defaults.contexts,
+    typegen: {
+      enabled: parsed.typegen?.enabled ?? defaults.typegen.enabled,
+      ...(parsed.typegen?.outputPath && {
+        outputPath: parsed.typegen.outputPath,
+      }),
+    },
+    quality: {
+      enabled: parsed.quality?.enabled ?? defaults.quality.enabled,
+      minScore: parsed.quality?.minScore ?? defaults.quality.minScore,
+    },
+    batch: {
+      size: parsed.batch?.size ?? defaults.batch.size,
+      concurrency: parsed.batch?.concurrency ?? defaults.batch.concurrency,
+    },
+  };
+}
+
+export async function loadConfig(
+  cwd: string = process.cwd()
+): Promise<ResolvedConfig> {
+  const configPath = findConfigFile(cwd);
+
+  if (!configPath) {
+    throw new Error(
+      `No config file found. Create a koto.config.ts in ${resolve(cwd)}`
+    );
+  }
+
+  const raw = await loadRawConfig(configPath);
+  const parsed = kotoConfigSchema.parse(raw);
+
+  return resolveDefaults(parsed);
+}

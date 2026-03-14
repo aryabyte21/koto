@@ -1,0 +1,294 @@
+import { createHash } from 'node:crypto';
+import type { ResolvedConfig } from '../config/schema.js';
+import type { Provider, TranslationBatch, TranslationResult } from '../../providers/base.js';
+import type { FileFormat, ParsedTranslations } from '../../formats/base.js';
+import { resolveContext } from '../context/index.js';
+import { buildSystemPrompt } from '../context/prompt.js';
+import { loadGlossary } from '../context/glossary.js';
+import { shield, restore, validate as validatePlaceholders } from '../placeholders/shield.js';
+import { DEFAULT_PATTERNS } from '../placeholders/patterns.js';
+import { hashString } from '../cache/hasher.js';
+import { readLockfile, writeLockfile, diffLockfile } from '../cache/lockfile.js';
+import { scoreTranslation } from '../quality/scorer.js';
+import { getFormat } from '../../formats/registry.js';
+import { createProvider } from '../../providers/registry.js';
+import { readFile, writeFile, resolveGlob } from '../../utils/fs.js';
+import { getLanguageName, getLanguageFlag } from '../../utils/language.js';
+import { estimateCost } from '../../utils/cost.js';
+import { logger } from '../../utils/logger.js';
+import path from 'node:path';
+
+export interface PipelineCallbacks {
+  onFileStart?: (filePath: string, locale: string, totalKeys: number) => void;
+  onBatchComplete?: (filePath: string, locale: string, translated: number, total: number) => void;
+  onFileComplete?: (filePath: string, locale: string) => void;
+  onLocaleComplete?: (locale: string, stats: LocaleStats) => void;
+  onQualityIssue?: (key: string, locale: string, issue: string) => void;
+}
+
+export interface LocaleStats {
+  translated: number;
+  cached: number;
+  total: number;
+  issues: number;
+}
+
+export interface PipelineResult {
+  locales: Record<string, LocaleStats>;
+  totalKeys: number;
+  totalTranslated: number;
+  totalCached: number;
+  totalIssues: number;
+  costUsd: number;
+  durationMs: number;
+  inputTokens: number;
+  outputTokens: number;
+}
+
+export interface PipelineOptions {
+  dryRun?: boolean;
+  force?: boolean;
+  locales?: string[];
+  context?: string;
+  callbacks?: PipelineCallbacks;
+}
+
+export async function runPipeline(
+  config: ResolvedConfig,
+  cwd: string,
+  options: PipelineOptions = {},
+): Promise<PipelineResult> {
+  const startTime = Date.now();
+  const provider = createProvider(config.provider);
+  const lockfile = await readLockfile(cwd);
+
+  const targetLocales = options.locales ?? config.targetLocales;
+  const result: PipelineResult = {
+    locales: {},
+    totalKeys: 0,
+    totalTranslated: 0,
+    totalCached: 0,
+    totalIssues: 0,
+    costUsd: 0,
+    durationMs: 0,
+    inputTokens: 0,
+    outputTokens: 0,
+  };
+
+  // Resolve all source files from config patterns
+  const sourceFiles = await resolveSourceFiles(config, cwd);
+
+  for (const locale of targetLocales) {
+    const localeStats: LocaleStats = { translated: 0, cached: 0, total: 0, issues: 0 };
+
+    for (const sourceFile of sourceFiles) {
+      const format = getFormat(sourceFile.path);
+      const content = await readFile(sourceFile.absolutePath);
+      const parsed = format.parse(content);
+      const keys = parsed.keys;
+      localeStats.total += keys.size;
+
+      // Resolve context for this file
+      const context = resolveContext(sourceFile.path, config.contexts ?? {});
+
+      // If filtering by context, skip non-matching files
+      if (options.context && context.name !== options.context) continue;
+
+      // Load glossary if context has one
+      if (context.glossaryPath) {
+        const terms = await loadGlossary(
+          path.resolve(cwd, context.glossaryPath),
+          locale,
+        );
+        context.glossaryTerms = terms;
+      }
+
+      // Diff against lockfile to find what needs translation
+      const diff = options.force
+        ? { added: [...keys.keys()], changed: [], removed: [], unchanged: [] }
+        : diffLockfile(lockfile, sourceFile.path, keys, [locale]);
+
+      const keysToTranslate = [...diff.added, ...diff.changed];
+      localeStats.cached += diff.unchanged.length;
+
+      if (keysToTranslate.length === 0) continue;
+
+      options.callbacks?.onFileStart?.(sourceFile.path, locale, keysToTranslate.length);
+
+      if (options.dryRun) {
+        localeStats.translated += keysToTranslate.length;
+        continue;
+      }
+
+      // Shield placeholders
+      const shieldedStrings = new Map<string, { shielded: string; tokens: Map<string, string> }>();
+      for (const key of keysToTranslate) {
+        const value = keys.get(key)!;
+        const result = shield(value, DEFAULT_PATTERNS);
+        shieldedStrings.set(key, result);
+      }
+
+      // Batch and translate
+      const batches = createBatches(
+        shieldedStrings,
+        locale,
+        config.sourceLocale,
+        buildSystemPrompt(context, config.sourceLocale, locale),
+        config.batch.size,
+      );
+
+      const targetFilePath = sourceFile.path.replace(
+        `[locale]`,
+        locale,
+      ).replace(config.sourceLocale, locale);
+
+      // Read existing target file if it exists
+      const targetAbsolute = path.resolve(cwd, targetFilePath);
+      let existingContent: string | undefined;
+      try {
+        existingContent = await readFile(targetAbsolute);
+      } catch {
+        // File doesn't exist yet
+      }
+
+      const existingParsed = existingContent ? format.parse(existingContent) : undefined;
+      const translatedKeys = new Map<string, string>(existingParsed?.keys ?? new Map());
+
+      let batchesCompleted = 0;
+      for (const batch of batches) {
+        const batchResult = await provider.translate(batch);
+
+        result.inputTokens += batchResult.usage?.inputTokens ?? 0;
+        result.outputTokens += batchResult.usage?.outputTokens ?? 0;
+
+        // Restore placeholders and validate
+        for (const [key, translatedShielded] of batchResult.translations) {
+          const shieldInfo = shieldedStrings.get(key);
+          if (!shieldInfo) continue;
+
+          const translated = restore(translatedShielded, shieldInfo.tokens);
+          translatedKeys.set(key, translated);
+
+          // Quality check
+          const source = keys.get(key)!;
+          const quality = scoreTranslation(source, translated, locale);
+          if (!quality.passed) {
+            localeStats.issues += quality.issues.length;
+            for (const issue of quality.issues) {
+              options.callbacks?.onQualityIssue?.(key, locale, issue.message);
+            }
+          }
+
+          // Update lockfile entry
+          if (!lockfile.entries[sourceFile.path]) {
+            lockfile.entries[sourceFile.path] = {};
+          }
+          lockfile.entries[sourceFile.path][key] = {
+            hash: hashString(source),
+            translations: {
+              ...lockfile.entries[sourceFile.path]?.[key]?.translations,
+              [locale]: {
+                hash: hashString(translated),
+                at: new Date().toISOString(),
+              },
+            },
+          };
+        }
+
+        batchesCompleted++;
+        const translated = batchesCompleted * config.batch.size;
+        options.callbacks?.onBatchComplete?.(
+          sourceFile.path,
+          locale,
+          Math.min(translated, keysToTranslate.length),
+          keysToTranslate.length,
+        );
+
+        localeStats.translated += batchResult.translations.size;
+      }
+
+      // Write target file
+      const output = format.serialize(translatedKeys, existingContent);
+      await writeFile(targetAbsolute, output);
+
+      options.callbacks?.onFileComplete?.(sourceFile.path, locale);
+    }
+
+    result.locales[locale] = localeStats;
+    result.totalKeys += localeStats.total;
+    result.totalTranslated += localeStats.translated;
+    result.totalCached += localeStats.cached;
+    result.totalIssues += localeStats.issues;
+
+    options.callbacks?.onLocaleComplete?.(locale, localeStats);
+  }
+
+  // Write lockfile
+  if (!options.dryRun) {
+    await writeLockfile(cwd, lockfile);
+  }
+
+  result.costUsd = estimateCost(
+    config.provider.model ?? 'gpt-4o-mini',
+    result.inputTokens,
+    result.outputTokens,
+  );
+  result.durationMs = Date.now() - startTime;
+
+  return result;
+}
+
+interface SourceFile {
+  path: string;        // relative pattern path (e.g., src/locales/[locale].json)
+  absolutePath: string; // absolute path to source file
+}
+
+async function resolveSourceFiles(
+  config: ResolvedConfig,
+  cwd: string,
+): Promise<SourceFile[]> {
+  const files: SourceFile[] = [];
+
+  for (const pattern of config.files) {
+    const sourcePath = pattern.replace('[locale]', config.sourceLocale);
+    const absolutePath = path.resolve(cwd, sourcePath);
+
+    try {
+      await readFile(absolutePath);
+      files.push({ path: pattern, absolutePath });
+    } catch {
+      logger.warn(`Source file not found: ${sourcePath}`);
+    }
+  }
+
+  return files;
+}
+
+function createBatches(
+  strings: Map<string, { shielded: string; tokens: Map<string, string> }>,
+  targetLocale: string,
+  sourceLocale: string,
+  systemPrompt: string,
+  batchSize: number,
+): TranslationBatch[] {
+  const entries = [...strings.entries()];
+  const batches: TranslationBatch[] = [];
+
+  for (let i = 0; i < entries.length; i += batchSize) {
+    const chunk = entries.slice(i, i + batchSize);
+    const batchStrings = new Map<string, string>();
+    for (const [key, { shielded }] of chunk) {
+      batchStrings.set(key, shielded);
+    }
+
+    batches.push({
+      id: `batch-${Math.floor(i / batchSize)}`,
+      strings: batchStrings,
+      sourceLocale,
+      targetLocale,
+      systemPrompt,
+    });
+  }
+
+  return batches;
+}

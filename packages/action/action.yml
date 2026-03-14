@@ -1,0 +1,37 @@
+name: 'koto Translate'
+description: 'AI-powered i18n translation'
+branding:
+  icon: 'globe'
+  color: 'blue'
+
+inputs:
+  provider:
+    description: 'LLM provider to use (openai, anthropic, google, ollama)'
+    required: true
+    default: 'openai'
+  api_key:
+    description: 'API key for the LLM provider'
+    required: true
+  locales:
+    description: 'Comma-separated list of target locales (e.g. es,fr,de,ja)'
+    required: false
+  working_directory:
+    description: 'Directory containing the koto config file'
+    required: false
+    default: '.'
+  fail_on_error:
+    description: 'Exit with error code if any translation fails'
+    required: false
+    default: 'false'
+
+outputs:
+  translated:
+    description: 'Number of keys translated'
+  locales:
+    description: 'Locales that were translated'
+  quality_score:
+    description: 'Average quality score across all translations'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

@@ -1,0 +1,52 @@
+{
+  "name": "koto",
+  "version": "0.1.0",
+  "description": "Context-aware AI translation for your i18n workflow",
+  "type": "module",
+  "bin": {
+    "koto": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "i18n",
+    "internationalization",
+    "translation",
+    "ai",
+    "llm",
+    "localization",
+    "l10n",
+    "context-aware",
+    "type-safe"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.9.1",
+    "picocolors": "^1.1.1",
+    "zod": "^3.24.0",
+    "jiti": "^2.4.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0",
+    "@types/node": "^22.0.0"
+  }
+}
