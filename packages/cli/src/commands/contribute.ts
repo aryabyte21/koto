@@ -16,6 +16,13 @@ import { writeFile } from '../utils/fs.js';
 
 const execFile = promisify(execFileCb);
 
+function detectProvider(): string {
+  if (process.env.GOOGLE_API_KEY) return 'google';
+  if (process.env.ANTHROPIC_API_KEY) return 'anthropic';
+  if (process.env.OPENAI_API_KEY) return 'openai';
+  return 'openai'; // fallback
+}
+
 export interface ContributeOptions {
   locale: string;
   dryRun?: boolean;
@@ -187,7 +194,7 @@ export async function contributeCommand(
       sourceLocale: existingLocales.sourceLocale,
       targetLocale: options.locale,
       files: [filePattern],
-      provider: 'openai',
+      provider: detectProvider(),
     });
 
     await writeFile(join(cloneDir, 'koto.config.ts'), configContent);
