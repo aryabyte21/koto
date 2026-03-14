@@ -267,7 +267,10 @@ export async function contributeCommand(
     console.log(`  ${pc.dim('→')} Pushing...`);
     await run('git', ['push', 'origin', branchName], { cwd: cloneDir });
 
-    // 7. Open PR
+    // 7. Get fork owner (the authenticated user)
+    const forkOwner = (await run('gh', ['api', 'user', '--jq', '.login'])).trim();
+
+    // 8. Open PR from fork to upstream
     console.log(`  ${pc.dim('→')} Opening pull request...`);
     const prBody = generatePrBody({
       localeName,
@@ -286,7 +289,7 @@ export async function contributeCommand(
       '--repo',
       fullRepo,
       '--head',
-      branchName,
+      `${forkOwner}:${branchName}`,
       '--title',
       prTitle,
       '--body',
