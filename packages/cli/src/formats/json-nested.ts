@@ -88,7 +88,17 @@ export const jsonNestedFormat: FileFormat = {
     if (original) {
       const indent = detectIndent(original);
       const parsed = JSON.parse(original);
-      const rebuilt = rebuildFromOriginal(parsed, keys, "");
+      const rebuilt = rebuildFromOriginal(parsed, keys, "") as Record<string, unknown>;
+
+      // Add new keys that don't exist in the original file
+      const existingKeys = new Map<string, string>();
+      flatten(parsed, "", existingKeys);
+      for (const [key, value] of keys) {
+        if (!existingKeys.has(key)) {
+          setNested(rebuilt, key, value);
+        }
+      }
+
       return JSON.stringify(rebuilt, null, indent) + "\n";
     }
 
