@@ -1,0 +1,65 @@
+:root {
+  --sl-color-accent-low: #cffafe;
+  --sl-color-accent: #0e7490;
+  --sl-color-accent-high: #164e63;
+  --sl-color-black: #0b1020;
+  --sl-color-white: #f8fafc;
+  --sl-font: "Sora", "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+}
+
+:root[data-theme="dark"] {
+  --sl-color-accent-low: #0e2f3a;
+  --sl-color-accent: #22d3ee;
+  --sl-color-accent-high: #a5f3fc;
+  --sl-color-black: #060a14;
+}
+
+/* Brand texture for docs pages */
+.main-pane {
+  background-image:
+    radial-gradient(1200px 400px at 20% -10%, rgba(34, 211, 238, 0.12), transparent 70%),
+    radial-gradient(800px 300px at 95% 0%, rgba(14, 116, 144, 0.1), transparent 70%);
+}
+
+.hero {
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 22%, transparent);
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(115deg, color-mix(in srgb, var(--sl-color-accent-low) 75%, transparent), transparent 45%),
+    color-mix(in srgb, var(--sl-color-bg) 95%, white 5%);
+  padding: 2.4rem;
+  box-shadow: 0 20px 45px -35px rgba(3, 7, 18, 0.65);
+}
+
+.hero h1 {
+  letter-spacing: -0.03em;
+}
+
+.hero .tagline {
+  max-width: 64ch;
+  font-size: 1.02rem;
+}
+
+.card {
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--sl-color-hairline) 85%, var(--sl-color-accent) 15%);
+  box-shadow: 0 10px 24px -26px rgba(2, 6, 23, 0.9);
+}
+
+.sl-markdown-content h2 {
+  letter-spacing: -0.02em;
+}
+
+.sl-markdown-content pre {
+  border-radius: 0.9rem;
+}
+
+.pagination-links a {
+  border-radius: 0.9rem;
+}
+
+@media (max-width: 50rem) {
+  .hero {
+    padding: 1.4rem;
+  }
+}

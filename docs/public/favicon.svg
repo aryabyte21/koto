@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="koto favicon">
+  <defs>
+    <linearGradient id="kotoGradient" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#22d3ee" />
+      <stop offset="1" stop-color="#0e7490" />
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="#0b1020" />
+  <path d="M18 16h10v14l11-14h12L38 31l14 17H40L28 33v15H18z" fill="url(#kotoGradient)" />
+</svg>

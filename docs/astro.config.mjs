@@ -7,6 +7,9 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'koto',
+      description:
+        'Context-aware AI translation for i18n workflows with LLM provider choice, context profiles, and type-safe keys.',
+      customCss: ['./src/styles/custom.css'],
       social: {
         github: 'https://github.com/aryabyte21/koto',
       },

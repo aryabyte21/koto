@@ -3,10 +3,10 @@ title: koto
 description: Context-aware AI translation for your i18n workflow. Translate your app with LLMs, context profiles, and type safety.
 template: splash
 hero:
-  tagline: Context-aware AI translation for your i18n workflow. Use any LLM to translate your app with tone-aware context profiles, incremental caching, and type-safe keys.
+  tagline: Ship multilingual releases without a localization platform. koto translates only what changed, keeps placeholders safe, and gives every area of your product its own translation tone.
   actions:
     - text: Get Started
-      link: /getting-started/
+      link: ./getting-started/
       icon: right-arrow
       variant: primary
     - text: View on GitHub
@@ -17,28 +17,28 @@ hero:
 
 import { Card, CardGrid, Code } from '@astrojs/starlight/components';
 
-## Why koto?
+## Build Fast Without Translation Debt
 
-Most i18n tools treat translation as a flat key-value lookup. koto understands that "Submit" on a payment form and "Submit" on a feedback widget need different translations. Context profiles let you define tone, terminology, and instructions per section of your app — so every string lands right.
+Most tools translate keys in isolation. koto translates with product context, type-aware outputs, and CI-friendly workflows so your team can treat localization like normal engineering work.
 
 <CardGrid>
   <Card title="Context Profiles" icon="pencil">
-    Define different tones for different parts of your app. Marketing pages get punchy copy. Legal pages stay formal. UI strings stay concise.
+    Assign tone and domain instructions by file pattern. Marketing can sound energetic while legal copy stays formal and precise.
   </Card>
   <Card title="BYOLLM" icon="setting">
-    Bring your own LLM. Works with OpenAI, Anthropic Claude, Google Gemini, and local models via Ollama. Switch providers with one config line.
+    Bring your own model provider. OpenAI, Anthropic, Google, Ollama, or OpenAI-compatible endpoints all work behind one config interface.
   </Card>
   <Card title="Type Safety" icon="approve-check">
-    Auto-generate TypeScript types from your translation files. Catch missing keys at build time, not in production.
+    Generate framework-specific TypeScript types from locale keys so missing or misspelled keys fail before production.
   </Card>
   <Card title="Smart Cache" icon="rocket">
-    Only re-translate changed or new keys. Unchanged strings are cached with content hashes, so incremental runs take seconds instead of minutes.
+    Incremental lockfile + hash caching means unchanged strings are skipped. Most follow-up runs complete in seconds.
   </Card>
   <Card title="Quality Scoring" icon="star">
-    Every translation is scored for placeholder integrity, length ratio, and terminology consistency. Catch issues before they ship.
+    Every translation is scored for placeholder integrity, length ratio, and glossary consistency so quality gates can run in CI.
   </Card>
   <Card title="CI/CD Ready" icon="laptop">
-    Drop-in GitHub Action. Use `--fail-on-error` in CI to block deploys when translations are missing or quality drops below threshold.
+    Run in GitHub Actions or any CI. Use `--fail-on-error` to block releases if translations are incomplete or below threshold.
   </Card>
 </CardGrid>
 
@@ -47,13 +47,13 @@ Most i18n tools treat translation as a flat key-value lookup. koto understands t
 ## Get started in 30 seconds
 
 ```bash
-# Install
+# Install the CLI
 pnpm add -D koto
 
-# Interactive setup — detects your framework and locale files
+# Interactive setup: detects framework + locale files
 npx koto init
 
-# Translate everything
+# Translate pending keys
 npx koto translate
 ```
 
@@ -92,4 +92,4 @@ export default defineConfig({
 
 That's it. Run `npx koto translate` and your locale files are ready.
 
-[Read the full getting started guide →](/getting-started/)
+[Read the full getting started guide ->](./getting-started/)
