@@ -264,6 +264,26 @@ Options:
 
 ---
 
+## Translate any OSS repo in one command
+
+```bash
+npx koto contribute calcom/cal.com --locale ko
+```
+
+Forks the repo, detects the i18n setup, translates missing keys, and opens a PR — automatically. [See a real PR →](https://github.com/calcom/cal.com/pull/28425)
+
+```
+  → Forking calcom/cal.com...
+  → Cloning fork...
+  → Detecting i18n setup...
+  → Translating...
+  ✓ Translated 155 keys (score: 100/100)
+  → Opening pull request...
+  ✓ https://github.com/calcom/cal.com/pull/28425
+```
+
+---
+
 ## GitHub Action
 
 ```yaml

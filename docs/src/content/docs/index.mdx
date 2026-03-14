@@ -121,6 +121,41 @@ export default {
 
 That's it. Run `npx koto` and your locale files are ready.
 
+---
+
+## Translate any OSS repo in one command
+
+Contribute translations to open-source projects without cloning, configuring, or setting up anything. koto forks the repo, detects the i18n setup, translates, and opens a PR — automatically.
+
+```bash
+npx koto contribute calcom/cal.com --locale ko
+```
+
+<Terminal title="npx koto contribute calcom/cal.com --locale ko">
+<Fragment set:html={`<span class="bold cyan">  koto</span> <span class="dim">v0.1.0</span>
+
+  <span class="bold">Contributing</span> Korean (ko) translations to <span class="cyan">calcom/cal.com</span>
+
+  <span class="dim">→</span> Forking calcom/cal.com...
+  <span class="dim">→</span> Cloning fork...
+  <span class="dim">→</span> Detecting i18n setup...
+    Source locale: en
+    Locale dir: packages/i18n/locales
+
+  <span class="dim">→</span> Translating...
+  <span class="green">✓</span> Translated 155 keys (score: 100/100)
+
+  <span class="dim">→</span> Creating branch and committing...
+  <span class="dim">→</span> Pushing...
+  <span class="dim">→</span> Opening pull request...
+
+  <span class="green">✓</span> Pull request created!
+  <span class="cyan">https://github.com/calcom/cal.com/pull/28425</span>
+`} />
+</Terminal>
+
+The PR includes a quality report with scores, flagged translations, and a "Powered by koto" footer. [See a real example →](https://github.com/calcom/cal.com/pull/28425)
+
 <CardGrid>
   <LinkCard title="Get started" href="./getting-started/" description="Set up koto in your project in under a minute." />
   <LinkCard title="Configuration" href="./configuration/" description="Customize locales, providers, and context profiles." />
