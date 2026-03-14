@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { createJiti } from "jiti";
+import { ZodError } from "zod";
 import { kotoConfigSchema, type KotoConfig, type ResolvedConfig } from "./schema.js";
 import { defaults, DEFAULT_MODEL_BY_PROVIDER } from "./defaults.js";
 
@@ -98,7 +99,20 @@ export async function loadConfig(
   }
 
   const raw = await loadRawConfig(configPath);
-  const parsed = kotoConfigSchema.parse(raw);
+
+  let parsed: KotoConfig;
+  try {
+    parsed = kotoConfigSchema.parse(raw);
+  } catch (err) {
+    if (err instanceof ZodError) {
+      const issues = err.issues.map((i) => {
+        const path = i.path.length > 0 ? `  ${i.path.join('.')}: ` : '  ';
+        return `${path}${i.message}`;
+      });
+      throw new Error(`Invalid config (${configPath}):\n${issues.join('\n')}`);
+    }
+    throw err;
+  }
 
   return resolveDefaults(parsed);
 }

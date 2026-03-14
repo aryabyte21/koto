@@ -3,6 +3,7 @@ import type { FileFormat } from "./base.js";
 import { jsonFlatFormat } from "./json-flat.js";
 import { jsonNestedFormat } from "./json-nested.js";
 import { poFormat } from "./po.js";
+import { typescriptFormat } from "./typescript.js";
 import { yamlFormat } from "./yaml.js";
 
 const formatsByExtension: Record<string, FileFormat> = {
@@ -11,9 +12,11 @@ const formatsByExtension: Record<string, FileFormat> = {
   ".yaml": yamlFormat,
   ".po": poFormat,
   ".pot": poFormat,
+  ".ts": typescriptFormat,
+  ".js": typescriptFormat,
 };
 
-const formats: FileFormat[] = [jsonNestedFormat, jsonFlatFormat, yamlFormat, poFormat];
+const formats: FileFormat[] = [jsonNestedFormat, jsonFlatFormat, yamlFormat, poFormat, typescriptFormat];
 
 export function getFormat(filePath: string): FileFormat {
   const ext = extname(filePath).toLowerCase();

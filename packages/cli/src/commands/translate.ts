@@ -23,8 +23,17 @@ export async function translateCommand(
 
   const config = await loadConfig(cwd);
   const targetLocales = options.locale
-    ? options.locale.split(',').map((l) => l.trim())
+    ? options.locale.split(',').map((l) => l.trim()).filter(Boolean)
     : config.targetLocales;
+
+  if (options.locale) {
+    const invalid = targetLocales.filter((l) => !config.targetLocales.includes(l));
+    if (invalid.length > 0) {
+      throw new Error(
+        `Unknown locale(s): ${invalid.join(', ')}. Available: ${config.targetLocales.join(', ')}`,
+      );
+    }
+  }
 
   // Compute total keys for progress display
   const totalLabel = options.dryRun ? 'Previewing' : 'Translating';
@@ -34,7 +43,6 @@ export async function translateCommand(
   );
 
   const progress = new TranslationProgress(targetLocales, 0);
-  let initialRender = true;
   let runningCacheHits = 0;
   let runningTranslated = 0;
 
@@ -44,13 +52,8 @@ export async function translateCommand(
     locales: targetLocales,
     context: options.context,
     callbacks: {
-      onFileStart(_file, _locale, totalKeys) {
-        if (initialRender) {
-          for (const l of targetLocales) {
-            progress.update(l, 0, totalKeys);
-          }
-          initialRender = false;
-        }
+      onFileStart(_file, locale, totalKeys) {
+        progress.update(locale, 0, totalKeys);
       },
       onBatchComplete(_file, locale, translated, total) {
         progress.update(locale, translated, total);

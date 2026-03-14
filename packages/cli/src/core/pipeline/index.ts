@@ -137,10 +137,7 @@ export async function runPipeline(
         config.batch.size,
       );
 
-      const targetFilePath = sourceFile.path.replace(
-        `[locale]`,
-        locale,
-      ).replace(config.sourceLocale, locale);
+      const targetFilePath = sourceFile.path.replace('[locale]', locale);
 
       // Read existing target file if it exists
       const targetAbsolute = path.resolve(cwd, targetFilePath);
@@ -165,10 +162,12 @@ export async function runPipeline(
             batchResult = await provider.translate(batch);
             break;
           } catch (err) {
-            if (attempt < MAX_RETRIES - 1) {
+            const msg = (err as Error).message ?? '';
+            const isNonRetryable = /401|403|auth|unauthorized|forbidden/i.test(msg);
+            if (!isNonRetryable && attempt < MAX_RETRIES - 1) {
               const delayMs = Math.pow(2, attempt) * 1000;
               logger.warn(
-                `Provider failed for batch ${batch.id} (attempt ${attempt + 1}/${MAX_RETRIES}): ${(err as Error).message}. Retrying in ${delayMs}ms...`,
+                `Provider failed for batch ${batch.id} (attempt ${attempt + 1}/${MAX_RETRIES}): ${msg}. Retrying in ${delayMs}ms...`,
               );
               await new Promise((resolve) => setTimeout(resolve, delayMs));
             } else {

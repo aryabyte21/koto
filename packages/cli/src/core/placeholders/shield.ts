@@ -1,4 +1,5 @@
 import { DEFAULT_PATTERNS, type PlaceholderPattern } from "./patterns.js";
+import { logger } from "../../utils/logger.js";
 
 export interface ShieldResult {
   shielded: string;
@@ -98,8 +99,8 @@ export function restore(
   }
 
   if (unreplaced.length > 0) {
-    console.warn(
-      `[koto] Warning: ${unreplaced.length} placeholder token(s) not found in translated text: ${unreplaced.join(", ")}`,
+    logger.warn(
+      `${unreplaced.length} placeholder token(s) not found in translated text: ${unreplaced.join(", ")}`,
     );
   }
 
