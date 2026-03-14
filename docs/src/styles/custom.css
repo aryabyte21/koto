@@ -222,10 +222,11 @@ code {
 }
 
 .card .icon {
-  border: none;
-  background: none;
-  padding: 0;
-  color: var(--sl-color-accent);
+  border: none !important;
+  background: none !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+  color: var(--sl-color-accent) !important;
 }
 
 .card:hover {
