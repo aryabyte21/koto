@@ -1,79 +1,114 @@
 ---
 title: koto
-description: Context-aware AI translation for your i18n workflow. Translate your app with LLMs, context profiles, and type safety.
+description: Context-aware AI translation for your i18n workflow.
 template: splash
 hero:
-  tagline: Ship multilingual releases without a localization platform. koto translates only what changed, keeps placeholders safe, and gives every area of your product its own translation tone.
+  tagline: "AI-powered i18n that understands your product. Translate with context profiles, type-safe keys, and any LLM — in one command."
   actions:
     - text: Get Started
       link: ./getting-started/
       icon: right-arrow
       variant: primary
-    - text: View on GitHub
+    - text: GitHub
       link: https://github.com/aryabyte21/koto
       icon: external
       variant: minimal
 ---
 
-import { Card, CardGrid, Code } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import Terminal from '../../components/Terminal.astro';
 
-## Build Fast Without Translation Debt
+<Terminal title="npx koto init">
+<Fragment set:html={`<span class="bold cyan">  koto</span> <span class="dim">v0.1.0</span>
 
-Most tools translate keys in isolation. koto translates with product context, type-aware outputs, and CI-friendly workflows so your team can treat localization like normal engineering work.
+<span class="dim">┌</span>  <span class="bold">Detected</span>
+<span class="dim">│</span>
+<span class="dim">│</span>  <span class="bold">Framework:</span> Next.js 14
+<span class="dim">│</span>  <span class="bold">i18n library:</span> next-intl
+<span class="dim">│</span>  <span class="bold">Source:</span> src/messages/en.json <span class="dim">(847 keys)</span>
+<span class="dim">│</span>
+<span class="dim">└</span>
+
+<span class="cyan">◆</span>  Which LLM provider?
+<span class="dim">│</span>  <span class="cyan">●</span> OpenAI <span class="dim">(gpt-4o-mini — fast & cheap)</span>
+<span class="dim">│</span>  <span class="dim">○</span> Anthropic <span class="dim">(claude-sonnet — high quality)</span>
+<span class="dim">│</span>  <span class="dim">○</span> Google <span class="dim">(gemini-2.5-flash — fast & cheap)</span>
+<span class="dim">│</span>  <span class="dim">○</span> Ollama <span class="dim">(local, free, private)</span>
+
+<span class="cyan">◆</span>  Target locales?
+<span class="dim">│</span>  <span class="cyan">◼</span> <span class="flag">🇪🇸</span>  es       Spanish
+<span class="dim">│</span>  <span class="cyan">◼</span> <span class="flag">🇫🇷</span>  fr       French
+<span class="dim">│</span>  <span class="cyan">◼</span> <span class="flag">🇩🇪</span>  de       German
+<span class="dim">│</span>  <span class="cyan">◼</span> <span class="flag">🇯🇵</span>  ja       Japanese
+<span class="dim">│</span>  <span class="dim">◻</span> <span class="flag">🇰🇷</span>  ko       Korean
+<span class="dim">│</span>  <span class="dim">◻</span> <span class="flag">🇧🇷</span>  pt-BR    Brazilian Portuguese
+
+<span class="dim">┌</span>  <span class="bold">Setup complete</span>
+<span class="dim">│</span>
+<span class="dim">│</span>  <span class="green">Created</span> koto.config.ts
+<span class="dim">│</span>  <span class="green">Created</span> koto.lock
+<span class="dim">│</span>
+<span class="dim">└</span>
+
+  <span class="dim">Run</span> <span class="cyan">npx koto</span> <span class="dim">to translate!</span>
+`} />
+</Terminal>
+
+<Terminal title="npx koto translate">
+<Fragment set:html={`<span class="bold cyan">  koto</span> <span class="dim">v0.1.0</span>
+
+  <span class="bold">Translating</span> → <span class="flag">🇪🇸</span> <span class="flag">🇫🇷</span> <span class="flag">🇩🇪</span> <span class="flag">🇯🇵</span> <span class="dim">(4 locales)</span>
+
+  <span class="flag">🇪🇸</span>  es     <span class="bar-done">████████████████████████████████</span> 847/847 <span class="green">✓</span>
+  <span class="flag">🇫🇷</span>  fr     <span class="bar-done">████████████████████████████████</span> 847/847 <span class="green">✓</span>
+  <span class="flag">🇩🇪</span>  de     <span class="bar-filled">██████████████████████████</span><span class="bar-empty">░░░░░░</span> 694/847
+  <span class="flag">🇯🇵</span>  ja     <span class="bar-filled">█████████████████</span><span class="bar-empty">░░░░░░░░░░░░░░░</span> 451/847
+
+  <span class="yellow">⚡</span> Cache: <span class="bold">712</span> <span class="dim">│</span> <span class="blue">🔤</span> Translated: <span class="bold">135</span> <span class="dim">│</span> <span class="dim">⏱</span>  8.4s
+  <span class="green">💰</span> Estimated cost: <span class="bold">$0.08</span> <span class="dim">(gpt-4o-mini)</span>
+
+  <span class="green bold">✓</span> <span class="bold">Translation complete</span>
+
+  <span class="flag">🇪🇸</span>  es       <span class="bold">135</span> translated, <span class="dim">712 cached</span> <span class="green">✓</span>
+  <span class="flag">🇫🇷</span>  fr       <span class="bold">128</span> translated, <span class="dim">719 cached</span> <span class="green">✓</span>
+  <span class="flag">🇩🇪</span>  de       <span class="bold">847</span> translated, <span class="dim">0 cached</span> <span class="green">✓</span>
+  <span class="flag">🇯🇵</span>  ja       <span class="bold">847</span> translated, <span class="dim">0 cached</span> <span class="green">✓</span>
+
+  <span class="yellow">⚠</span>  2 quality issues found. Run <span class="cyan">koto diff</span> to review.
+
+  <span class="dim">4 locale files updated.</span>
+  <span class="dim">Run</span> <span class="cyan">koto types</span> <span class="dim">to update TypeScript types.</span>
+`} />
+</Terminal>
+
+---
+
+## Why koto?
 
 <CardGrid>
   <Card title="Context Profiles" icon="pencil">
-    Assign tone and domain instructions by file pattern. Marketing can sound energetic while legal copy stays formal and precise.
+    Assign tone and instructions by file pattern. Marketing copy sounds energetic. Legal text stays formal. One command handles all of it.
   </Card>
-  <Card title="BYOLLM" icon="setting">
-    Bring your own model provider. OpenAI, Anthropic, Google, Ollama, or OpenAI-compatible endpoints all work behind one config interface.
+  <Card title="Bring Your Own LLM" icon="setting">
+    OpenAI, Anthropic, Google Gemini, Ollama, or any OpenAI-compatible endpoint. Switch providers with one config line.
   </Card>
-  <Card title="Type Safety" icon="approve-check">
-    Generate framework-specific TypeScript types from locale keys so missing or misspelled keys fail before production.
+  <Card title="Type-Safe Keys" icon="approve-check">
+    Generate TypeScript types from your locale files. Missing or misspelled keys fail at build time, not in production.
   </Card>
   <Card title="Smart Cache" icon="rocket">
-    Incremental lockfile + hash caching means unchanged strings are skipped. Most follow-up runs complete in seconds.
+    SHA-256 content hashing + lockfile. Unchanged strings are never re-translated. Follow-up runs take seconds.
   </Card>
   <Card title="Quality Scoring" icon="star">
-    Every translation is scored for placeholder integrity, length ratio, and glossary consistency so quality gates can run in CI.
+    Placeholder integrity, length ratio, untranslated detection. Gate your CI pipeline on translation quality.
   </Card>
   <Card title="CI/CD Ready" icon="laptop">
-    Run in GitHub Actions or any CI. Use `--fail-on-error` to block releases if translations are incomplete or below threshold.
+    GitHub Action included. Use `--fail-on-error` to block releases when translations are incomplete.
   </Card>
 </CardGrid>
 
 ---
 
-## Get started in 30 seconds
-
-```bash
-# Install the CLI
-pnpm add -D koto
-
-# Interactive setup: detects framework + locale files
-npx koto init
-
-# Translate pending keys
-npx koto translate
-```
-
-```
-◆  Translating 42 keys → 6 locales
-
-  🇪🇸 es  ████████████████████████████████████████ 42/42
-  🇫🇷 fr  ████████████████████████████████████████ 42/42
-  🇩🇪 de  ████████████████████████████████████████ 42/42
-  🇯🇵 ja  ████████████████████████████████████████ 42/42
-  🇰🇷 ko  ████████████████████████████████████████ 42/42
-  🇨🇳 zh  ████████████████████████████████████████ 42/42
-
-✔  252 translations written in 3.2s
-   Quality score: 98/100
-```
-
----
-
-## Minimal configuration
+## Minimal config
 
 ```ts
 // koto.config.ts
@@ -83,13 +118,10 @@ export default defineConfig({
   sourceLocale: 'en',
   targetLocales: ['es', 'fr', 'de', 'ja'],
   files: ['src/locales/[locale].json'],
-  provider: {
-    name: 'openai',
-    model: 'gpt-4o-mini',
-  },
+  provider: { name: 'openai', model: 'gpt-4o-mini' },
 })
 ```
 
-That's it. Run `npx koto translate` and your locale files are ready.
+That's it. Run `npx koto` and your locale files are ready.
 
-[Read the full getting started guide ->](./getting-started/)
+[Get started →](./getting-started/)

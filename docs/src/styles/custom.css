@@ -1,88 +1,190 @@
+/* ─── Base tokens ─── */
 :root {
   --sl-color-accent-low: #dbeafe;
   --sl-color-accent: #2563eb;
   --sl-color-accent-high: #1e40af;
-  --sl-color-black: #0f172a;
-  --sl-color-white: #f8fafc;
-  --sl-font: "Inter", "SF Pro Display", "Segoe UI", sans-serif;
-  --sl-text-h1: 2.45rem;
-  --sl-text-h2: 1.75rem;
+  --sl-color-white: #fafafa;
+  --sl-color-black: #09090b;
+  --sl-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --sl-text-h1: 2.25rem;
+  --sl-text-h2: 1.55rem;
+  --sl-text-h3: 1.2rem;
+  --sl-content-width: 55rem;
 }
 
 :root[data-theme="dark"] {
-  --sl-color-accent-low: #172554;
+  --sl-color-accent-low: #1e293b;
   --sl-color-accent: #60a5fa;
   --sl-color-accent-high: #bfdbfe;
-  --sl-color-black: #010409;
+  --sl-color-black: #09090b;
+  --sl-color-gray-6: #0c0c0e;
+  --sl-color-bg: #09090b;
 }
 
-.main-pane {
-  background-image:
-    radial-gradient(900px 400px at 10% -5%, rgba(37, 99, 235, 0.06), transparent 72%),
-    radial-gradient(700px 300px at 100% 0%, rgba(37, 99, 235, 0.04), transparent 70%);
+/* ─── Sidebar ─── */
+.sidebar-pane {
+  border-color: color-mix(in srgb, var(--sl-color-hairline) 50%, transparent);
 }
 
-.hero {
-  border: 1px solid color-mix(in srgb, var(--sl-color-hairline) 70%, var(--sl-color-accent) 30%);
-  border-radius: 1rem;
-  background:
-    linear-gradient(130deg, color-mix(in srgb, var(--sl-color-accent-low) 70%, transparent), transparent 48%),
-    color-mix(in srgb, var(--sl-color-bg) 97%, white 3%);
-  padding: 2rem;
-  box-shadow: 0 20px 50px -30px rgba(37, 99, 235, 0.12);
-  backdrop-filter: blur(10px);
-}
-
-.hero h1 {
-  letter-spacing: -0.04em;
-  font-weight: 800;
-  text-wrap: balance;
-}
-
-.hero .tagline {
-  max-width: 60ch;
-  font-size: 1.01rem;
-}
-
-.card {
-  border-radius: 0.8rem;
-  border: 1px solid color-mix(in srgb, var(--sl-color-hairline) 85%, var(--sl-color-accent) 15%);
-  box-shadow: 0 10px 24px -24px rgba(2, 6, 23, 0.7);
-  transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
-}
-
-.card:hover {
-  transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--sl-color-accent) 20%, var(--sl-color-hairline));
-}
-
-.sl-markdown-content h2 {
-  letter-spacing: -0.02em;
-  font-weight: 760;
-}
-
-.sl-markdown-content pre {
-  border-radius: 0.8rem;
-  border: 1px solid color-mix(in srgb, var(--sl-color-hairline) 88%, var(--sl-color-accent) 12%);
-}
-
-.pagination-links a {
-  border-radius: 0.8rem;
-  border: 1px solid color-mix(in srgb, var(--sl-color-hairline) 84%, var(--sl-color-accent) 16%);
+/* ─── Header ─── */
+header.header {
+  border-color: color-mix(in srgb, var(--sl-color-hairline) 50%, transparent);
+  backdrop-filter: blur(16px) saturate(1.8);
+  -webkit-backdrop-filter: blur(16px) saturate(1.8);
 }
 
 header .site-title {
-  letter-spacing: -0.02em;
   font-weight: 700;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
 }
 
+/* ─── Hero section ─── */
+.hero {
+  padding: 3rem 2rem;
+  text-align: center;
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  text-wrap: balance;
+  background: linear-gradient(135deg, var(--sl-color-white) 40%, var(--sl-color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+:root:not([data-theme="dark"]) .hero h1 {
+  background: linear-gradient(135deg, var(--sl-color-black) 40%, var(--sl-color-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.hero .tagline {
+  max-width: 48ch;
+  margin: 0 auto;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--sl-color-gray-2);
+}
+
+.hero .action {
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 0.6rem 1.3rem;
+}
+
+/* ─── Cards ─── */
+.card {
+  border-radius: 0.75rem;
+  border: 1px solid var(--sl-color-hairline);
+  background: color-mix(in srgb, var(--sl-color-bg) 97%, var(--sl-color-accent) 3%);
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.card:hover {
+  border-color: color-mix(in srgb, var(--sl-color-accent) 30%, var(--sl-color-hairline));
+  box-shadow: 0 4px 24px -8px rgba(37, 99, 235, 0.08);
+}
+
+.card .card-title {
+  font-weight: 650;
+  font-size: 0.95rem;
+}
+
+/* ─── Code blocks ─── */
+.sl-markdown-content pre {
+  border-radius: 0.6rem;
+  border: 1px solid var(--sl-color-hairline);
+}
+
+/* ─── Terminal window component ─── */
+.terminal-window {
+  border-radius: 0.6rem;
+  border: 1px solid var(--sl-color-hairline);
+  background: #0c0c0e;
+  overflow: hidden;
+  margin: 1.5rem 0;
+  font-family: "SF Mono", "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.terminal-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: #141416;
+  border-bottom: 1px solid #1e1e22;
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.terminal-dot.red { background: #ff5f57; }
+.terminal-dot.yellow { background: #febc2e; }
+.terminal-dot.green { background: #28c840; }
+
+.terminal-title {
+  flex: 1;
+  text-align: center;
+  font-size: 0.72rem;
+  color: #666;
+  font-family: inherit;
+}
+
+.terminal-body {
+  padding: 1rem 1.2rem;
+  color: #e4e4e7;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.terminal-body .dim { color: #52525b; }
+.terminal-body .cyan { color: #22d3ee; }
+.terminal-body .green { color: #4ade80; }
+.terminal-body .yellow { color: #facc15; }
+.terminal-body .blue { color: #60a5fa; }
+.terminal-body .bold { font-weight: 700; }
+.terminal-body .flag { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
+
+/* Progress bars */
+.terminal-body .bar-filled { color: #22d3ee; }
+.terminal-body .bar-empty { color: #27272a; }
+.terminal-body .bar-done { color: #4ade80; }
+
+/* ─── Headings ─── */
+.sl-markdown-content h2 {
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+/* ─── Pagination ─── */
+.pagination-links a {
+  border-radius: 0.6rem;
+}
+
+/* ─── Hide first hr on hero pages ─── */
 [data-has-hero] .sl-markdown-content > hr:first-of-type {
   display: none;
 }
 
+/* ─── Mobile ─── */
 @media (max-width: 50rem) {
   .hero {
-    padding: 1.3rem;
+    padding: 2rem 1rem;
+  }
+  .hero h1 {
+    font-size: 2rem;
   }
 }

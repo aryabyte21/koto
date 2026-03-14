@@ -35,6 +35,8 @@ export async function translateCommand(
 
   const progress = new TranslationProgress(targetLocales, 0);
   let initialRender = true;
+  let runningCacheHits = 0;
+  let runningTranslated = 0;
 
   const result = await runPipeline(config, cwd, {
     dryRun: options.dryRun,
@@ -53,12 +55,13 @@ export async function translateCommand(
       onBatchComplete(_file, locale, translated, total) {
         progress.update(locale, translated, total);
       },
-      onLocaleComplete(locale, stats) {
-        progress.update(locale, stats.translated + stats.cached, stats.total);
-        progress.setCacheHits(result.totalCached);
-        progress.setTranslated(result.totalTranslated);
+      onLocaleComplete(_locale, stats) {
+        runningCacheHits += stats.cached;
+        runningTranslated += stats.translated;
+        progress.setCacheHits(runningCacheHits);
+        progress.setTranslated(runningTranslated);
       },
-      onQualityIssue(key, locale, issue) {
+      onQualityIssue(_key, _locale, _issue) {
         // Collected in result.totalIssues
       },
     },

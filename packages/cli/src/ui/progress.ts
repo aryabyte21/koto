@@ -54,9 +54,16 @@ export class TranslationProgress {
   }
 
   render(): void {
-    // Move cursor up to overwrite previous render
-    if (this.lineCount > 0) {
+    const isTTY = process.stdout.isTTY;
+
+    // Move cursor up to overwrite previous render (TTY only)
+    if (this.lineCount > 0 && isTTY) {
       process.stdout.write(`\x1b[${this.lineCount}A`);
+    }
+
+    // In non-TTY mode, only render when all locales are done to avoid spam
+    if (!isTTY && ![...this.locales.values()].every((l) => l.done || l.total === 0)) {
+      return;
     }
 
     const lines: string[] = [];
