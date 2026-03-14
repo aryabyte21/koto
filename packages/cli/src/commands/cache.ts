@@ -1,11 +1,11 @@
 import pc from 'picocolors';
 import { readLockfile, writeLockfile } from '../core/cache/lockfile.js';
-import { printCompact } from '../ui/intro.js';
+import { printIntro } from '../ui/intro.js';
 import { getLanguageFlag } from '../utils/language.js';
 import { VERSION } from '../utils/version.js';
 
 export async function cacheStatsCommand(cwd: string): Promise<void> {
-  printCompact(VERSION);
+  printIntro(VERSION);
 
   const lockfile = await readLockfile(cwd);
   const entries = lockfile.entries;
@@ -46,7 +46,7 @@ export async function cacheStatsCommand(cwd: string): Promise<void> {
 }
 
 export async function cacheClearCommand(cwd: string): Promise<void> {
-  printCompact(VERSION);
+  printIntro(VERSION);
 
   await writeLockfile(cwd, { version: 1, entries: {} });
   console.log(`  ${pc.green('✓')} Cache cleared.\n`);

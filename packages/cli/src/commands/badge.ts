@@ -3,7 +3,7 @@ import { join, resolve } from 'node:path';
 import { readLockfile, type Lockfile } from '../core/cache/lockfile.js';
 import { loadConfig } from '../core/config/loader.js';
 import { getFormat } from '../formats/registry.js';
-import { printCompact } from '../ui/intro.js';
+import { printIntro } from '../ui/intro.js';
 import { readFile, writeFile } from '../utils/fs.js';
 import { getLanguageFlag } from '../utils/language.js';
 import { VERSION } from '../utils/version.js';
@@ -145,7 +145,7 @@ ${rows}
 }
 
 export async function badgeCommand(cwd: string): Promise<void> {
-  printCompact(VERSION);
+  printIntro(VERSION);
 
   const config = await loadConfig(cwd);
   const lockfile = await readLockfile(cwd);

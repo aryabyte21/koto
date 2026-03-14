@@ -2,12 +2,12 @@ import pc from 'picocolors';
 import * as p from '@clack/prompts';
 import { loadConfig } from '../core/config/loader.js';
 import { createProvider } from '../providers/registry.js';
-import { printCompact } from '../ui/intro.js';
+import { printIntro } from '../ui/intro.js';
 import { getLanguageFlag, getLanguageName, isValidLocaleCode } from '../utils/language.js';
 import { VERSION } from '../utils/version.js';
 
 export async function validateCommand(cwd: string): Promise<void> {
-  printCompact(VERSION);
+  printIntro(VERSION);
 
   const s = p.spinner();
 

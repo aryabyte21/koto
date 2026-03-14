@@ -5,7 +5,7 @@ import { detectI18nLib } from '../core/detect/i18n-lib.js';
 import { detectLocales } from '../core/detect/locales.js';
 import { writeFile, fileExists } from '../utils/fs.js';
 import { getLanguageFlag, getLanguageName } from '../utils/language.js';
-import { printCompact } from '../ui/intro.js';
+import { printIntro } from '../ui/intro.js';
 import path from 'node:path';
 import { VERSION } from '../utils/version.js';
 
@@ -23,7 +23,7 @@ const PROVIDERS = [
 ] as const;
 
 export async function initCommand(cwd: string): Promise<void> {
-  printCompact(VERSION);
+  printIntro(VERSION);
 
   // Check if config already exists
   const configExists = await fileExists(path.resolve(cwd, 'koto.config.ts'));

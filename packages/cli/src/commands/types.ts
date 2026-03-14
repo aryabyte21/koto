@@ -1,7 +1,7 @@
 import pc from 'picocolors';
 import { loadConfig } from '../core/config/loader.js';
 import { generateTypesFromConfig } from '../core/typegen/index.js';
-import { printCompact } from '../ui/intro.js';
+import { printIntro } from '../ui/intro.js';
 import { watch } from 'node:fs';
 import path from 'node:path';
 import { VERSION } from '../utils/version.js';
@@ -11,7 +11,7 @@ export interface TypesOptions {
 }
 
 export async function typesCommand(cwd: string, options: TypesOptions = {}): Promise<void> {
-  printCompact(VERSION);
+  printIntro(VERSION);
 
   const config = await loadConfig(cwd);
   const outputPath = config.typegen?.outputPath ?? 'src/i18n.d.ts';

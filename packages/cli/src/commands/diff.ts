@@ -2,7 +2,7 @@ import { loadConfig } from '../core/config/loader.js';
 import { readLockfile, diffLockfile } from '../core/cache/lockfile.js';
 import { getFormat } from '../formats/registry.js';
 import { readFile } from '../utils/fs.js';
-import { printCompact } from '../ui/intro.js';
+import { printIntro } from '../ui/intro.js';
 import { printDiff, printDiffJson } from '../ui/diff-view.js';
 import type { LocaleDiff, DiffEntry } from '../ui/diff-view.js';
 import path from 'node:path';
@@ -15,7 +15,7 @@ export interface DiffOptions {
 
 export async function diffCommand(cwd: string, options: DiffOptions = {}): Promise<void> {
   if (!options.json) {
-    printCompact(VERSION);
+    printIntro(VERSION);
   }
 
   const config = await loadConfig(cwd);
