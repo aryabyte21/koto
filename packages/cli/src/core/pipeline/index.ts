@@ -1,7 +1,5 @@
-import { createHash } from 'node:crypto';
 import type { ResolvedConfig } from '../config/schema.js';
-import type { Provider, TranslationBatch, TranslationResult } from '../../providers/base.js';
-import type { FileFormat, ParsedTranslations } from '../../formats/base.js';
+import type { TranslationBatch, TranslationResult } from '../../providers/base.js';
 import { resolveContext } from '../context/index.js';
 import { buildSystemPrompt } from '../context/prompt.js';
 import { loadGlossary } from '../context/glossary.js';
@@ -12,8 +10,7 @@ import { readLockfile, writeLockfile, diffLockfile, seedLockfileFromExisting } f
 import { scoreTranslation } from '../quality/scorer.js';
 import { getFormat } from '../../formats/registry.js';
 import { createProvider } from '../../providers/registry.js';
-import { readFile, writeFile, resolveGlob } from '../../utils/fs.js';
-import { getLanguageName, getLanguageFlag } from '../../utils/language.js';
+import { readFile, writeFile } from '../../utils/fs.js';
 import { estimateCost } from '../../utils/cost.js';
 import { logger } from '../../utils/logger.js';
 import path from 'node:path';

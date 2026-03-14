@@ -189,7 +189,11 @@ function parseFlags(args: string[]): ParsedFlags {
         flags.version = true;
         break;
       default:
-        if (!arg.startsWith('-')) {
+        if (arg.startsWith('--')) {
+          console.error(`  ${pc.yellow('⚠')} Unknown flag: ${arg}`);
+        } else if (arg.startsWith('-') && arg.length > 1) {
+          console.error(`  ${pc.yellow('⚠')} Unknown flag: ${arg}`);
+        } else {
           flags.positional.push(arg);
         }
     }

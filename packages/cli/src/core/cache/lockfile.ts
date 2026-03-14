@@ -32,20 +32,22 @@ const LOCKFILE_NAME = "koto.lock";
 
 /**
  * Heuristic: does this value look like something that shouldn't be translated?
- * Brand names, single words, numbers, URLs, technical identifiers, etc.
+ * Only matches clearly non-translatable content — conservative to avoid skipping real translations.
  */
 function looksLikeUntranslatableValue(value: string): boolean {
   const trimmed = value.trim();
-  // Single word (likely a brand name or technical term)
-  if (!trimmed.includes(' ') && trimmed.length <= 30) return true;
-  // All uppercase or has no lowercase letters (acronyms, codes)
-  if (/^[^a-z]*$/.test(trimmed)) return true;
+  if (trimmed.length === 0) return true;
+  // Very short (1-2 chars like ":", "-", "x")
+  if (trimmed.length <= 2) return true;
+  // All uppercase (acronyms: "COPPA", "VPC", "API")
+  if (/^[A-Z][A-Z0-9_\s.-]*$/.test(trimmed) && trimmed.length <= 10) return true;
   // URL or email
-  if (/^https?:\/\//.test(trimmed) || trimmed.includes('@')) return true;
-  // Number or number-like
-  if (/^\d[\d.,]*$/.test(trimmed)) return true;
-  // Very short (1-3 chars)
-  if (trimmed.length <= 3) return true;
+  if (/^https?:\/\//.test(trimmed) || /^\S+@\S+\.\S+$/.test(trimmed)) return true;
+  // Pure number or version-like ("0", "1.0", "2007 SP1")
+  if (/^[\d.,\s]+$/.test(trimmed)) return true;
+  // camelCase or snake_case identifier (not a human-readable word)
+  if (/^[a-z][a-zA-Z0-9]*(?:[A-Z][a-zA-Z0-9]*)+$/.test(trimmed)) return true;
+  if (/^[a-z][a-z0-9]*(?:_[a-z0-9]+)+$/.test(trimmed)) return true;
   return false;
 }
 
