@@ -1,0 +1,148 @@
+---
+title: Getting Started
+description: Install koto and run your first AI-powered translation in under a minute.
+---
+
+import { Steps, Tabs, TabItem, Code } from '@astrojs/starlight/components';
+
+## Prerequisites
+
+- **Node.js 18+** — koto uses modern Node APIs.
+- **An LLM API key** — OpenAI, Anthropic, Google, or a local Ollama instance. See the [Providers guide](/providers/) for setup details.
+- **Existing i18n source file** — at least one locale file (JSON, TypeScript, YAML, or PO) with your source strings.
+
+## Installation
+
+<Tabs>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add -D koto
+    ```
+  </TabItem>
+  <TabItem label="npm">
+    ```bash
+    npm install -D koto
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn add -D koto
+    ```
+  </TabItem>
+  <TabItem label="bun">
+    ```bash
+    bun add -D koto
+    ```
+  </TabItem>
+</Tabs>
+
+## Initialize your project
+
+<Steps>
+
+1. **Run the init command**
+
+   ```bash
+   npx koto init
+   ```
+
+   koto scans your project and walks you through an interactive setup:
+
+   ```
+     ╦╔═  ╔═╗  ╔╦╗  ╔═╗
+     ╠╩╗  ║ ║   ║   ║ ║
+     ╩ ╩  ╚═╝   ╩   ╚═╝
+
+   ◆  What format are your translation files?
+   │  ● JSON (flat or nested)
+   │  ○ TypeScript (next-intl, react-i18next)
+   │  ○ YAML
+   │  ○ PO (gettext)
+
+   ◆  Where is your source locale file?
+   │  src/locales/en.json
+
+   ◆  What locales do you want to translate to?
+   │  ◻ 🇪🇸 es  ◻ 🇫🇷 fr  ◻ 🇩🇪 de  ◻ 🇯🇵 ja  ◻ 🇰🇷 ko  ◻ 🇨🇳 zh
+
+   ✔  Created koto.config.ts
+   ```
+
+2. **Set your API key**
+
+   Export the API key for your chosen provider:
+
+   <Tabs>
+     <TabItem label="OpenAI">
+       ```bash
+       export OPENAI_API_KEY=sk-...
+       ```
+     </TabItem>
+     <TabItem label="Anthropic">
+       ```bash
+       export ANTHROPIC_API_KEY=sk-ant-...
+       ```
+     </TabItem>
+     <TabItem label="Google">
+       ```bash
+       export GOOGLE_API_KEY=...
+       ```
+     </TabItem>
+     <TabItem label="Ollama">
+       No API key needed. Just make sure Ollama is running:
+       ```bash
+       ollama serve
+       ```
+     </TabItem>
+   </Tabs>
+
+3. **Run your first translation**
+
+   ```bash
+   npx koto translate
+   ```
+
+   ```
+   ◆  Translating 42 keys → 6 locales
+
+     🇪🇸 es  ████████████████████████████████████████ 42/42
+     🇫🇷 fr  ████████████████████████████████████████ 42/42
+     🇩🇪 de  ████████████████████████████████████████ 42/42
+     🇯🇵 ja  ████████████████████████████████████████ 42/42
+     🇰🇷 ko  ████████████████████████████████████████ 42/42
+     🇨🇳 zh  ████████████████████████████████████████ 42/42
+
+   ✔  252 translations written in 3.2s
+      Quality score: 98/100
+   ```
+
+</Steps>
+
+## What just happened?
+
+When you run `koto translate`, three things happen:
+
+1. **Diffing** — koto reads your source locale file and compares it against each target locale. Only new or changed keys are queued for translation.
+
+2. **Translation** — Each pending key is sent to your configured LLM provider with the appropriate context profile (tone, glossary, instructions). Translations are batched for efficiency.
+
+3. **Output** — Translated strings are written to your target locale files. A lockfile (`koto-lock.json`) is updated with content hashes so the next run skips unchanged keys.
+
+### Files created
+
+| File | Purpose |
+|---|---|
+| `koto.config.ts` | Your project configuration |
+| `koto-lock.json` | Content hashes for incremental translation (commit this) |
+| `src/locales/es.json` | Translated locale files (one per target locale) |
+
+:::tip
+Commit `koto-lock.json` to your repo. It allows koto to skip unchanged keys on subsequent runs, making incremental translations fast.
+:::
+
+## Next steps
+
+- [Configure context profiles](/contexts/) to give different sections of your app different translation tones
+- [Generate TypeScript types](/type-safety/) from your translation keys
+- [Set up CI/CD](/ci-cd/) to translate automatically on every PR
+- [Explore all CLI commands](/cli-reference/)

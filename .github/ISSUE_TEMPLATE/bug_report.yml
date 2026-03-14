@@ -1,0 +1,61 @@
+name: Bug Report
+description: Report a bug with koto
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      placeholder: What happened? What did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Config file
+      description: Paste your koto.config.ts (redact API keys)
+      render: typescript
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run `npx koto init`
+        2. Run `npx koto translate`
+        3. See error...
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: koto version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: provider
+    attributes:
+      label: LLM Provider
+      options:
+        - OpenAI
+        - Anthropic
+        - Google Gemini
+        - Ollama
+        - Custom
+        - N/A
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js version
+      placeholder: "20.11.0"
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      placeholder: "macOS 14.2 / Ubuntu 22.04 / Windows 11"

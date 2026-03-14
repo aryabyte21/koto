@@ -1,0 +1,258 @@
+---
+title: Configuration
+description: Full reference for koto.config.ts — all options, types, and examples for different frameworks.
+---
+
+import { Tabs, TabItem, Code } from '@astrojs/starlight/components';
+
+koto is configured with a `koto.config.ts` (or `koto.config.js`) file in your project root. Use the `defineConfig()` helper for full type safety and autocompletion.
+
+## Basic configuration
+
+```ts
+// koto.config.ts
+import { defineConfig } from 'koto'
+
+export default defineConfig({
+  sourceLocale: 'en',
+  targetLocales: ['es', 'fr', 'de', 'ja'],
+  files: ['src/locales/[locale].json'],
+  provider: {
+    name: 'openai',
+    model: 'gpt-4o-mini',
+  },
+})
+```
+
+## Full config schema
+
+### `sourceLocale`
+
+**Type:** `string` **Required**
+
+The BCP 47 locale code for your source language.
+
+```ts
+sourceLocale: 'en'
+```
+
+### `targetLocales`
+
+**Type:** `string[]` **Required**
+
+Array of BCP 47 locale codes to translate into.
+
+```ts
+targetLocales: ['es', 'fr', 'de', 'ja', 'ko', 'zh', 'pt-BR']
+```
+
+### `files`
+
+**Type:** `string | string[]` **Required**
+
+Glob pattern(s) pointing to your locale files. Use `[locale]` as a placeholder for the locale code.
+
+```ts
+// Single pattern
+files: 'src/locales/[locale].json'
+
+// Multiple patterns
+files: [
+  'src/locales/[locale].json',
+  'src/locales/[locale]/**/*.json',
+]
+```
+
+### `provider`
+
+**Type:** `ProviderConfig` **Required**
+
+The LLM provider to use for translations. See the [Providers guide](/providers/) for full setup instructions.
+
+```ts
+provider: {
+  name: 'openai',       // 'openai' | 'anthropic' | 'google' | 'ollama'
+  model: 'gpt-4o-mini', // Model identifier
+  baseUrl: undefined,    // Optional: custom API endpoint
+}
+```
+
+### `contexts`
+
+**Type:** `Record<string, ContextConfig>` **Default:** `undefined`
+
+Context profiles for tone-aware translations. See the [Context Profiles guide](/contexts/) for detailed usage.
+
+```ts
+contexts: {
+  default: {
+    tone: 'concise',
+    instructions: 'UI strings. Keep translations short.',
+  },
+  marketing: {
+    tone: 'persuasive and energetic',
+    files: ['src/locales/marketing/[locale].json'],
+  },
+}
+```
+
+### `types`
+
+**Type:** `TypesConfig | boolean` **Default:** `false`
+
+Configuration for TypeScript type generation. Set to `true` to enable with defaults, or pass an object for fine-grained control.
+
+```ts
+// Enable with defaults
+types: true
+
+// Custom output path
+types: {
+  output: 'src/types/i18n.d.ts',
+  framework: 'next-intl', // 'next-intl' | 'i18next' | 'react-intl' | 'generic'
+}
+```
+
+### `cache`
+
+**Type:** `CacheConfig` **Default:** `{ enabled: true, dir: 'node_modules/.cache/koto' }`
+
+Controls translation caching behavior.
+
+```ts
+cache: {
+  enabled: true,
+  dir: 'node_modules/.cache/koto',
+}
+```
+
+### `quality`
+
+**Type:** `QualityConfig` **Default:** `{ threshold: 80 }`
+
+Quality scoring settings. Translations below the threshold trigger warnings (or errors in CI mode).
+
+```ts
+quality: {
+  threshold: 90,  // Score 0-100
+}
+```
+
+### `lockfile`
+
+**Type:** `string` **Default:** `'koto-lock.json'`
+
+Path to the lockfile used for incremental translation tracking.
+
+```ts
+lockfile: 'koto-lock.json'
+```
+
+---
+
+## Framework examples
+
+<Tabs>
+  <TabItem label="Next.js + next-intl">
+    ```ts
+    import { defineConfig } from 'koto'
+
+    export default defineConfig({
+      sourceLocale: 'en',
+      targetLocales: ['es', 'fr', 'de', 'ja'],
+      files: ['messages/[locale].json'],
+      provider: {
+        name: 'openai',
+        model: 'gpt-4o-mini',
+      },
+      types: {
+        output: 'src/types/i18n.d.ts',
+        framework: 'next-intl',
+      },
+    })
+    ```
+  </TabItem>
+  <TabItem label="Vite + i18next">
+    ```ts
+    import { defineConfig } from 'koto'
+
+    export default defineConfig({
+      sourceLocale: 'en',
+      targetLocales: ['es', 'fr', 'de'],
+      files: ['public/locales/[locale]/translation.json'],
+      provider: {
+        name: 'openai',
+        model: 'gpt-4o-mini',
+      },
+      types: {
+        output: 'src/@types/i18next.d.ts',
+        framework: 'i18next',
+      },
+    })
+    ```
+  </TabItem>
+  <TabItem label="React + react-intl">
+    ```ts
+    import { defineConfig } from 'koto'
+
+    export default defineConfig({
+      sourceLocale: 'en',
+      targetLocales: ['es', 'fr', 'ja'],
+      files: ['src/lang/[locale].json'],
+      provider: {
+        name: 'anthropic',
+        model: 'claude-sonnet-4-20250514',
+      },
+      types: {
+        output: 'src/types/intl.d.ts',
+        framework: 'react-intl',
+      },
+    })
+    ```
+  </TabItem>
+  <TabItem label="Astro">
+    ```ts
+    import { defineConfig } from 'koto'
+
+    export default defineConfig({
+      sourceLocale: 'en',
+      targetLocales: ['es', 'fr', 'de', 'ja', 'ko'],
+      files: ['src/i18n/[locale].json'],
+      provider: {
+        name: 'google',
+        model: 'gemini-2.0-flash',
+      },
+    })
+    ```
+  </TabItem>
+  <TabItem label="Local (Ollama)">
+    ```ts
+    import { defineConfig } from 'koto'
+
+    export default defineConfig({
+      sourceLocale: 'en',
+      targetLocales: ['es', 'fr'],
+      files: ['locales/[locale].json'],
+      provider: {
+        name: 'ollama',
+        model: 'llama3.2',
+        baseUrl: 'http://localhost:11434',
+      },
+    })
+    ```
+  </TabItem>
+</Tabs>
+
+## Environment variables
+
+Provider API keys are read from environment variables. You can also set them in a `.env` file (koto loads `.env` automatically).
+
+| Variable | Provider |
+|---|---|
+| `OPENAI_API_KEY` | OpenAI |
+| `ANTHROPIC_API_KEY` | Anthropic |
+| `GOOGLE_API_KEY` | Google Gemini |
+
+:::caution
+Never commit API keys to your repository. Use `.env` files (add to `.gitignore`) or CI/CD secrets.
+:::

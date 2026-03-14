@@ -1,5 +1,6 @@
 import type { Provider } from "./base.js";
 import { AnthropicProvider } from "./anthropic.js";
+import { CustomProvider } from "./custom.js";
 import { GoogleProvider } from "./google.js";
 import { OllamaProvider } from "./ollama.js";
 import { OpenAIProvider } from "./openai.js";
@@ -19,9 +20,11 @@ export function createProvider(config: {
       return new GoogleProvider(config);
     case "ollama":
       return new OllamaProvider(config);
+    case "custom":
+      return new CustomProvider(config);
     default:
       throw new Error(
-        `Unknown provider "${config.name}". Available: openai, anthropic, google, ollama`,
+        `Unknown provider "${config.name}". Available: openai, anthropic, google, ollama, custom`,
       );
   }
 }

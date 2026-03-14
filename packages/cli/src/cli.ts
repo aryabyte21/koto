@@ -5,6 +5,8 @@ import { diffCommand } from './commands/diff.js';
 import { typesCommand } from './commands/types.js';
 import { validateCommand } from './commands/validate.js';
 import { cacheStatsCommand, cacheClearCommand } from './commands/cache.js';
+import { badgeCommand } from './commands/badge.js';
+import { contributeCommand } from './commands/contribute.js';
 import pc from 'picocolors';
 
 const HELP = `
@@ -16,6 +18,8 @@ const HELP = `
     ${pc.cyan('diff')}                Show pending translations
     ${pc.cyan('types')}               Generate TypeScript types from locales
     ${pc.cyan('validate')}            Check config + test provider connection
+    ${pc.cyan('badge')}               Generate i18n coverage badge
+    ${pc.cyan('contribute')}          Fork, translate & PR an OSS repo
     ${pc.cyan('cache stats')}         Show cache statistics
     ${pc.cyan('cache clear')}         Clear translation cache
 
@@ -76,6 +80,31 @@ async function main(): Promise<void> {
       case 'validate':
         await validateCommand(cwd);
         break;
+
+      case 'badge':
+        await badgeCommand(cwd);
+        break;
+
+      case 'contribute': {
+        const repoArg = flags.positional[1];
+        if (!repoArg) {
+          console.log(`  ${pc.red('Missing repo argument.')}`);
+          console.log(`  Usage: koto contribute <owner/repo> --locale <code>\n`);
+          process.exitCode = 1;
+          break;
+        }
+        if (!flags.locale) {
+          console.log(`  ${pc.red('Missing --locale flag.')}`);
+          console.log(`  Usage: koto contribute <owner/repo> --locale <code>\n`);
+          process.exitCode = 1;
+          break;
+        }
+        await contributeCommand(repoArg, {
+          locale: flags.locale,
+          dryRun: flags.dryRun,
+        });
+        break;
+      }
 
       case 'cache':
         if (subcommand === 'clear') {

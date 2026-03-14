@@ -1,0 +1,201 @@
+---
+title: CLI Reference
+description: Complete reference for all koto CLI commands, flags, and environment variables.
+---
+
+## Usage
+
+```bash
+koto [command] [options]
+```
+
+If no command is provided, `koto translate` is run by default.
+
+---
+
+## Commands
+
+### `koto init`
+
+Interactive setup wizard. Auto-detects your project's framework, locale file format, and source directory, then generates a `koto.config.ts`.
+
+```bash
+npx koto init
+```
+
+| Flag | Description |
+|---|---|
+| `--yes`, `-y` | Accept all defaults without prompting |
+
+---
+
+### `koto translate`
+
+Translate all pending strings. This is the default command if none is specified.
+
+```bash
+npx koto translate
+npx koto translate --locale es,fr
+npx koto translate --context legal
+npx koto translate --dry-run
+npx koto translate --force
+```
+
+| Flag | Description |
+|---|---|
+| `--locale`, `-l` | Translate only specific locales (comma-separated) |
+| `--context`, `-c` | Translate only files matching a specific context profile |
+| `--dry-run` | Preview what would be translated without writing files |
+| `--force` | Re-translate all keys, ignoring the cache and lockfile |
+| `--fail-on-error` | Exit with code 1 on translation errors or quality failures |
+| `--json` | Output results in machine-readable JSON |
+
+---
+
+### `koto diff`
+
+Show what needs translation. Lists new, changed, and deleted keys across all target locales.
+
+```bash
+npx koto diff
+npx koto diff --json
+```
+
+| Flag | Description |
+|---|---|
+| `--json` | Output diff in machine-readable JSON |
+| `--locale`, `-l` | Check only specific locales |
+
+---
+
+### `koto types`
+
+Generate TypeScript type definitions from your source locale files.
+
+```bash
+npx koto types
+npx koto types --watch
+```
+
+| Flag | Description |
+|---|---|
+| `--watch` | Watch source files and regenerate types on change |
+
+---
+
+### `koto validate`
+
+Check your configuration file and test the provider connection. Useful for verifying setup before running translations.
+
+```bash
+npx koto validate
+```
+
+```
+✔  Config file: koto.config.ts (valid)
+✔  Source locale: src/locales/en.json (87 keys)
+✔  Target locales: es, fr, de, ja
+✔  Provider: openai / gpt-4o-mini (connected)
+✔  Context profiles: default, marketing, legal
+```
+
+---
+
+### `koto cache stats`
+
+Display cache analytics: total cached translations, hit rate, and disk usage.
+
+```bash
+npx koto cache stats
+```
+
+```
+Cache statistics:
+  Location:     node_modules/.cache/koto
+  Translations: 1,247
+  Hit rate:      94.2%
+  Disk usage:    2.3 MB
+```
+
+---
+
+### `koto cache clear`
+
+Clear the translation cache. Subsequent runs will re-translate all keys.
+
+```bash
+npx koto cache clear
+```
+
+---
+
+## Global options
+
+These options work with any command:
+
+| Flag | Description |
+|---|---|
+| `--version`, `-v` | Show koto version |
+| `--help`, `-h` | Show help text |
+
+---
+
+## Exit codes
+
+| Code | Meaning |
+|---|---|
+| `0` | Success |
+| `1` | Error: translation failure, quality gate failure, or invalid config |
+| `2` | Invalid usage: unknown command or missing required arguments |
+
+---
+
+## Environment variables
+
+| Variable | Description | Required by |
+|---|---|---|
+| `OPENAI_API_KEY` | OpenAI API key | `provider.name: 'openai'` |
+| `ANTHROPIC_API_KEY` | Anthropic API key | `provider.name: 'anthropic'` |
+| `GOOGLE_API_KEY` | Google Gemini API key | `provider.name: 'google'` |
+| `KOTO_CONFIG` | Custom path to config file | All (optional) |
+
+koto automatically loads `.env` files from your project root. You can also set environment variables in your shell or CI pipeline.
+
+---
+
+## Examples
+
+```bash
+# Initialize a new project
+npx koto init
+
+# Translate everything
+npx koto translate
+
+# Translate only Spanish and French
+npx koto translate -l es,fr
+
+# Translate only legal context
+npx koto translate -c legal
+
+# Preview without writing
+npx koto translate --dry-run
+
+# Re-translate everything from scratch
+npx koto translate --force
+
+# CI mode: fail on errors
+npx koto translate --fail-on-error
+
+# Check what needs translating
+npx koto diff
+
+# Generate TypeScript types
+npx koto types
+
+# Watch mode for types
+npx koto types --watch
+
+# Verify setup
+npx koto validate
+```

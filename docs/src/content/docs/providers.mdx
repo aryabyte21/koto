@@ -1,0 +1,204 @@
+---
+title: Providers
+description: Set up OpenAI, Anthropic, Google Gemini, or Ollama as your translation provider.
+---
+
+import { Tabs, TabItem, Card, CardGrid } from '@astrojs/starlight/components';
+
+koto is provider-agnostic. You bring your own LLM and API key. Switch providers by changing one line in your config — your translations, contexts, and workflows stay the same.
+
+## Choosing a provider
+
+| Provider | Quality | Speed | Cost | Local | Best for |
+|---|---|---|---|---|---|
+| **OpenAI** (gpt-4o-mini) | Excellent | Fast | ~$0.15/1M tokens | No | Best balance of quality and cost |
+| **OpenAI** (gpt-4o) | Outstanding | Moderate | ~$2.50/1M tokens | No | Maximum quality for critical content |
+| **Anthropic** (Claude Sonnet) | Outstanding | Moderate | ~$3.00/1M tokens | No | Nuanced, context-sensitive translations |
+| **Google** (Gemini 2.0 Flash) | Very good | Very fast | ~$0.10/1M tokens | No | Fastest option, great for large batches |
+| **Ollama** (llama3.2) | Good | Varies | Free | Yes | Privacy-sensitive projects, offline use |
+
+:::tip
+For most projects, **OpenAI gpt-4o-mini** offers the best quality-to-cost ratio. Start there and switch only if you have specific needs.
+:::
+
+---
+
+## OpenAI
+
+### Setup
+
+1. Get an API key from [platform.openai.com](https://platform.openai.com/api-keys)
+2. Set the environment variable:
+
+```bash
+export OPENAI_API_KEY=sk-...
+```
+
+### Configuration
+
+```ts
+// koto.config.ts
+provider: {
+  name: 'openai',
+  model: 'gpt-4o-mini', // or 'gpt-4o' for higher quality
+}
+```
+
+### Available models
+
+| Model | Quality | Speed | Cost |
+|---|---|---|---|
+| `gpt-4o-mini` | Excellent | Fast | Low |
+| `gpt-4o` | Outstanding | Moderate | Higher |
+| `gpt-4-turbo` | Outstanding | Moderate | Higher |
+
+---
+
+## Anthropic (Claude)
+
+### Setup
+
+1. Get an API key from [console.anthropic.com](https://console.anthropic.com/)
+2. Set the environment variable:
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+```
+
+### Configuration
+
+```ts
+provider: {
+  name: 'anthropic',
+  model: 'claude-sonnet-4-20250514',
+}
+```
+
+### Available models
+
+| Model | Quality | Speed | Cost |
+|---|---|---|---|
+| `claude-sonnet-4-20250514` | Outstanding | Moderate | Moderate |
+| `claude-haiku-35-20241022` | Very good | Fast | Low |
+
+Claude models are particularly strong at understanding nuance and context, making them excellent for context-profile-heavy configurations.
+
+---
+
+## Google Gemini
+
+### Setup
+
+1. Get an API key from [aistudio.google.com](https://aistudio.google.com/apikey)
+2. Set the environment variable:
+
+```bash
+export GOOGLE_API_KEY=...
+```
+
+### Configuration
+
+```ts
+provider: {
+  name: 'google',
+  model: 'gemini-2.0-flash',
+}
+```
+
+### Available models
+
+| Model | Quality | Speed | Cost |
+|---|---|---|---|
+| `gemini-2.0-flash` | Very good | Very fast | Very low |
+| `gemini-2.0-pro` | Excellent | Moderate | Moderate |
+
+Gemini Flash is the fastest option available, making it ideal for large translation batches where speed matters more than peak quality.
+
+---
+
+## Ollama (local)
+
+Ollama lets you run LLMs locally on your own machine. No API key needed, no data leaves your network.
+
+### Setup
+
+1. Install Ollama from [ollama.com](https://ollama.com/)
+2. Pull a model:
+
+```bash
+ollama pull llama3.2
+```
+
+3. Start the Ollama server:
+
+```bash
+ollama serve
+```
+
+### Configuration
+
+```ts
+provider: {
+  name: 'ollama',
+  model: 'llama3.2',
+  baseUrl: 'http://localhost:11434', // default
+}
+```
+
+### Recommended models
+
+| Model | Parameters | Quality | RAM needed |
+|---|---|---|---|
+| `llama3.2` | 3B | Good | 4 GB |
+| `llama3.1` | 8B | Very good | 8 GB |
+| `mistral` | 7B | Good | 8 GB |
+| `mixtral` | 47B (MoE) | Very good | 32 GB |
+
+:::note
+Local models are slower and generally lower quality than cloud APIs, but they're free, private, and work offline. They work well for development and testing, with a cloud provider for production translations.
+:::
+
+---
+
+## Custom provider (HTTP adapter)
+
+If your provider exposes an OpenAI-compatible API, you can use it directly:
+
+```ts
+provider: {
+  name: 'openai',
+  model: 'your-model-name',
+  baseUrl: 'https://your-provider.com/v1',
+}
+```
+
+This works with any service that implements the OpenAI chat completions API, including:
+
+- Azure OpenAI
+- Together AI
+- Anyscale
+- Self-hosted vLLM or text-generation-inference
+
+Set your API key via the `OPENAI_API_KEY` environment variable — it will be sent as the Bearer token.
+
+---
+
+## Switching providers
+
+Changing providers is a one-line config change. Your translations, contexts, lockfile, and workflow all stay the same:
+
+```ts
+provider: {
+  // Before: OpenAI
+  // name: 'openai',
+  // model: 'gpt-4o-mini',
+
+  // After: Anthropic
+  name: 'anthropic',
+  model: 'claude-sonnet-4-20250514',
+}
+```
+
+:::caution
+When switching providers, consider running `npx koto translate --force` once to re-translate everything. Different models may produce slightly different translations, and a full re-run ensures consistency.
+:::

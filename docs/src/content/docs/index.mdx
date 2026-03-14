@@ -1,0 +1,95 @@
+---
+title: koto
+description: Context-aware AI translation for your i18n workflow. Translate your app with LLMs, context profiles, and type safety.
+template: splash
+hero:
+  tagline: Context-aware AI translation for your i18n workflow. Use any LLM to translate your app with tone-aware context profiles, incremental caching, and type-safe keys.
+  actions:
+    - text: Get Started
+      link: /getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/aryabyte21/koto
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid, Code } from '@astrojs/starlight/components';
+
+## Why koto?
+
+Most i18n tools treat translation as a flat key-value lookup. koto understands that "Submit" on a payment form and "Submit" on a feedback widget need different translations. Context profiles let you define tone, terminology, and instructions per section of your app — so every string lands right.
+
+<CardGrid>
+  <Card title="Context Profiles" icon="pencil">
+    Define different tones for different parts of your app. Marketing pages get punchy copy. Legal pages stay formal. UI strings stay concise.
+  </Card>
+  <Card title="BYOLLM" icon="setting">
+    Bring your own LLM. Works with OpenAI, Anthropic Claude, Google Gemini, and local models via Ollama. Switch providers with one config line.
+  </Card>
+  <Card title="Type Safety" icon="approve-check">
+    Auto-generate TypeScript types from your translation files. Catch missing keys at build time, not in production.
+  </Card>
+  <Card title="Smart Cache" icon="rocket">
+    Only re-translate changed or new keys. Unchanged strings are cached with content hashes, so incremental runs take seconds instead of minutes.
+  </Card>
+  <Card title="Quality Scoring" icon="star">
+    Every translation is scored for placeholder integrity, length ratio, and terminology consistency. Catch issues before they ship.
+  </Card>
+  <Card title="CI/CD Ready" icon="laptop">
+    Drop-in GitHub Action. Use `--fail-on-error` in CI to block deploys when translations are missing or quality drops below threshold.
+  </Card>
+</CardGrid>
+
+---
+
+## Get started in 30 seconds
+
+```bash
+# Install
+pnpm add -D koto
+
+# Interactive setup — detects your framework and locale files
+npx koto init
+
+# Translate everything
+npx koto translate
+```
+
+```
+◆  Translating 42 keys → 6 locales
+
+  🇪🇸 es  ████████████████████████████████████████ 42/42
+  🇫🇷 fr  ████████████████████████████████████████ 42/42
+  🇩🇪 de  ████████████████████████████████████████ 42/42
+  🇯🇵 ja  ████████████████████████████████████████ 42/42
+  🇰🇷 ko  ████████████████████████████████████████ 42/42
+  🇨🇳 zh  ████████████████████████████████████████ 42/42
+
+✔  252 translations written in 3.2s
+   Quality score: 98/100
+```
+
+---
+
+## Minimal configuration
+
+```ts
+// koto.config.ts
+import { defineConfig } from 'koto'
+
+export default defineConfig({
+  sourceLocale: 'en',
+  targetLocales: ['es', 'fr', 'de', 'ja'],
+  files: ['src/locales/[locale].json'],
+  provider: {
+    name: 'openai',
+    model: 'gpt-4o-mini',
+  },
+})
+```
+
+That's it. Run `npx koto translate` and your locale files are ready.
+
+[Read the full getting started guide →](/getting-started/)

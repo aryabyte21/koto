@@ -1,0 +1,222 @@
+---
+title: CI/CD Integration
+description: Automate translations in your CI/CD pipeline with GitHub Actions, GitLab CI, or any CI system.
+---
+
+import { Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+koto is built for CI/CD. Run translations automatically on every PR, enforce quality gates, and keep your locale files in sync without manual effort.
+
+## GitHub Actions
+
+### Basic setup
+
+Create `.github/workflows/translate.yml`:
+
+```yaml
+name: Translate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/locales/en.json'
+      - 'src/locales/en/**'
+      - 'koto.config.ts'
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: npx koto translate --fail-on-error
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore(i18n): update translations'
+```
+
+### Using the koto GitHub Action
+
+For a simpler setup, use the official koto action:
+
+```yaml
+- uses: koto-i18n/koto@v1
+  with:
+    provider: openai
+    api_key: ${{ secrets.OPENAI_API_KEY }}
+    locales: es,fr,de,ja
+    fail_on_error: true
+```
+
+### PR workflow
+
+Translate on pull requests and commit the results back to the PR branch:
+
+```yaml
+name: Translate PR
+
+on:
+  pull_request:
+    paths:
+      - 'src/locales/en.json'
+      - 'src/locales/en/**'
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: npx koto translate
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore(i18n): update translations'
+```
+
+---
+
+## GitLab CI
+
+```yaml
+translate:
+  stage: build
+  image: node:20
+  rules:
+    - changes:
+        - src/locales/en.json
+        - src/locales/en/**/*
+        - koto.config.ts
+  before_script:
+    - corepack enable
+    - pnpm install --frozen-lockfile
+  script:
+    - npx koto translate --fail-on-error
+  variables:
+    OPENAI_API_KEY: $OPENAI_API_KEY
+```
+
+---
+
+## Generic CI
+
+koto works in any CI environment that has Node.js. The key command is:
+
+```bash
+npx koto translate --fail-on-error
+```
+
+The `--fail-on-error` flag causes koto to exit with code 1 if:
+
+- Any translation fails
+- Quality score drops below the configured threshold
+- Any source key is missing a translation
+
+This lets you use koto as a quality gate in any pipeline.
+
+---
+
+## Quality gates
+
+Use the `quality.threshold` config option alongside `--fail-on-error` to enforce translation quality standards:
+
+```ts
+// koto.config.ts
+quality: {
+  threshold: 90, // Fail if any translation scores below 90/100
+}
+```
+
+```bash
+# In CI
+npx koto translate --fail-on-error
+```
+
+If any translation scores below the threshold, koto exits with code 1 and reports which translations failed:
+
+```
+✖  Quality gate failed
+
+  🇪🇸 es  auth.termsOfService  Score: 72/100
+           Issue: Placeholder {company} missing in translation
+
+  🇯🇵 ja  marketing.hero       Score: 85/100
+           Issue: Translation is 3x longer than source
+
+Exit code: 1
+```
+
+---
+
+## Diff check in CI
+
+Use `koto diff` to check if translations are up to date without actually translating. This is useful for validation-only pipelines:
+
+```bash
+# Fail if there are untranslated keys
+npx koto diff --json | jq '.pending' | grep -q '0' || exit 1
+```
+
+---
+
+## Caching in CI
+
+koto uses `koto-lock.json` for incremental translation. Make sure this file is committed to your repo so CI runs only translate new or changed keys.
+
+If you also want to cache the translation cache directory between CI runs:
+
+```yaml
+# GitHub Actions
+- uses: actions/cache@v4
+  with:
+    path: node_modules/.cache/koto
+    key: koto-cache-${{ hashFiles('koto-lock.json') }}
+    restore-keys: |
+      koto-cache-
+```
+
+---
+
+## Environment variables
+
+Set your provider's API key as a CI secret:
+
+| CI Platform | How to set secrets |
+|---|---|
+| GitHub Actions | Settings > Secrets and variables > Actions |
+| GitLab CI | Settings > CI/CD > Variables |
+| CircleCI | Project Settings > Environment Variables |
+| Jenkins | Credentials Manager |
+
+:::caution
+Never hardcode API keys in your CI config files. Always use your CI platform's secrets management.
+:::
