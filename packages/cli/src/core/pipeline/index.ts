@@ -78,6 +78,17 @@ export async function runPipeline(
   // Resolve all source files from config patterns
   const sourceFiles = await resolveSourceFiles(config, cwd);
 
+  // Validate --context filter if specified
+  if (options.context) {
+    const definedContexts = new Set(Object.keys(config.contexts ?? {}));
+    if (!definedContexts.has('default')) definedContexts.add('default');
+    if (!definedContexts.has(options.context)) {
+      throw new Error(
+        `Unknown context "${options.context}". Defined contexts: ${[...definedContexts].join(', ')}`,
+      );
+    }
+  }
+
   for (const locale of targetLocales) {
     const localeStats: LocaleStats = { translated: 0, cached: 0, total: 0, issues: 0 };
 

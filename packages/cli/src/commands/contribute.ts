@@ -194,10 +194,10 @@ export async function contributeCommand(
 
     const totalTranslated = result.totalTranslated;
     const totalIssues = result.totalIssues;
-    const passed = totalTranslated - totalIssues;
+    const passed = Math.max(0, totalTranslated - totalIssues);
     const score =
       totalTranslated > 0
-        ? Math.round((passed / totalTranslated) * 100)
+        ? Math.max(0, Math.round((passed / totalTranslated) * 100))
         : 100;
 
     console.log(
@@ -233,19 +233,11 @@ export async function contributeCommand(
     // 6. Create branch, commit, push
     console.log(`  ${pc.dim('→')} Creating branch and committing...`);
     await run('git', ['checkout', '-b', branchName], { cwd: cloneDir });
-    // Remove the temporary koto config before committing
-    await run('git', ['add', '-A'], { cwd: cloneDir });
-    await run('git', ['reset', 'HEAD', 'koto.config.ts'], { cwd: cloneDir });
-    await run('git', ['checkout', '--', 'koto.config.ts'], { cwd: cloneDir }).catch(
-      () => {
-        /* config was new, just unstage it */
-      },
-    );
-    await run('git', ['rm', '--cached', '-f', 'koto.config.ts'], {
-      cwd: cloneDir,
-    }).catch(() => {
-      /* ignore if not tracked */
-    });
+    // Delete the temporary koto config from disk before committing
+    const configFile = join(cloneDir, 'koto.config.ts');
+    await rm(configFile, { force: true }).catch(() => {});
+    const lockFile = join(cloneDir, 'koto.lock');
+    await rm(lockFile, { force: true }).catch(() => {});
     await run('git', ['add', '-A'], { cwd: cloneDir });
     await run(
       'git',

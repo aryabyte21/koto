@@ -1,9 +1,10 @@
 import pc from 'picocolors';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { readLockfile, type Lockfile } from '../core/cache/lockfile.js';
 import { loadConfig } from '../core/config/loader.js';
+import { getFormat } from '../formats/registry.js';
 import { printCompact } from '../ui/intro.js';
-import { writeFile } from '../utils/fs.js';
+import { readFile, writeFile } from '../utils/fs.js';
 import { getLanguageFlag } from '../utils/language.js';
 import { VERSION } from '../utils/version.js';
 
@@ -23,10 +24,11 @@ export interface CoverageReport {
 export function computeCoverage(
   lockfile: Lockfile,
   targetLocales: string[],
+  sourceKeyCount?: number,
 ): CoverageReport {
   const entries = lockfile.entries;
 
-  let totalKeys = 0;
+  let lockfileKeys = 0;
   const localeTranslated = new Map<string, number>();
 
   for (const locale of targetLocales) {
@@ -35,7 +37,7 @@ export function computeCoverage(
 
   for (const [_file, keys] of Object.entries(entries)) {
     for (const [_key, entry] of Object.entries(keys)) {
-      totalKeys++;
+      lockfileKeys++;
       for (const locale of targetLocales) {
         if (entry.translations[locale]) {
           localeTranslated.set(locale, (localeTranslated.get(locale) ?? 0) + 1);
@@ -43,6 +45,9 @@ export function computeCoverage(
       }
     }
   }
+
+  // Use source key count if provided, otherwise fall back to lockfile
+  const totalKeys = sourceKeyCount ?? lockfileKeys;
 
   const locales: LocaleCoverage[] = targetLocales.map((locale) => {
     const translated = localeTranslated.get(locale) ?? 0;
@@ -144,7 +149,22 @@ export async function badgeCommand(cwd: string): Promise<void> {
 
   const config = await loadConfig(cwd);
   const lockfile = await readLockfile(cwd);
-  const report = computeCoverage(lockfile, config.targetLocales);
+
+  // Count actual source keys for accurate coverage
+  let sourceKeyCount = 0;
+  for (const pattern of config.files) {
+    const sourcePath = pattern.replace('[locale]', config.sourceLocale);
+    try {
+      const content = await readFile(resolve(cwd, sourcePath));
+      const format = getFormat(sourcePath);
+      const parsed = format.parse(content);
+      sourceKeyCount += parsed.keys.size;
+    } catch {
+      // source file not found
+    }
+  }
+
+  const report = computeCoverage(lockfile, config.targetLocales, sourceKeyCount || undefined);
 
   console.log(`  ${pc.bold('i18n Coverage Report')}\n`);
 

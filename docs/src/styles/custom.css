@@ -1,4 +1,4 @@
-/* ─── Base tokens ─── */
+/* --- Base tokens --- */
 :root {
   --sl-color-accent-low: #dbeafe;
   --sl-color-accent: #2563eb;
@@ -13,7 +13,7 @@
 }
 
 :root[data-theme="dark"] {
-  --sl-color-accent-low: #1e293b;
+  --sl-color-accent-low: #172554;
   --sl-color-accent: #60a5fa;
   --sl-color-accent-high: #bfdbfe;
   --sl-color-black: #09090b;
@@ -21,12 +21,22 @@
   --sl-color-bg: #09090b;
 }
 
-/* ─── Sidebar ─── */
+/* --- Sidebar --- */
 .sidebar-pane {
   border-color: color-mix(in srgb, var(--sl-color-hairline) 50%, transparent);
 }
 
-/* ─── Header ─── */
+nav.sidebar .top-level > li + li {
+  border-top: 1px solid color-mix(in srgb, var(--sl-color-hairline) 30%, transparent);
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+nav.sidebar a[aria-current="page"] {
+  font-weight: 600;
+}
+
+/* --- Header --- */
 header.header {
   border-color: color-mix(in srgb, var(--sl-color-hairline) 50%, transparent);
   backdrop-filter: blur(16px) saturate(1.8);
@@ -39,7 +49,7 @@ header .site-title {
   letter-spacing: -0.02em;
 }
 
-/* ─── Hero section ─── */
+/* --- Hero section --- */
 .hero {
   padding: 3rem 2rem;
   text-align: center;
@@ -53,22 +63,23 @@ header .site-title {
   letter-spacing: -0.04em;
   line-height: 1.1;
   text-wrap: balance;
-  background: linear-gradient(135deg, var(--sl-color-white) 40%, var(--sl-color-accent));
+  background: linear-gradient(135deg, var(--sl-color-white) 30%, var(--sl-color-accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 :root:not([data-theme="dark"]) .hero h1 {
-  background: linear-gradient(135deg, var(--sl-color-black) 40%, var(--sl-color-accent));
+  background: linear-gradient(135deg, var(--sl-color-black) 30%, var(--sl-color-accent) 100%);
   -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .hero .tagline {
-  max-width: 48ch;
-  margin: 0 auto;
-  font-size: 1.05rem;
+  max-width: 38ch;
+  margin: 0.5rem auto 0;
+  font-size: 1.15rem;
   line-height: 1.65;
   color: var(--sl-color-gray-2);
 }
@@ -80,17 +91,27 @@ header .site-title {
   padding: 0.6rem 1.3rem;
 }
 
-/* ─── Cards ─── */
+/* --- Cards --- */
 .card {
   border-radius: 0.75rem;
   border: 1px solid var(--sl-color-hairline);
-  background: color-mix(in srgb, var(--sl-color-bg) 97%, var(--sl-color-accent) 3%);
+  background: color-mix(in srgb, var(--sl-color-bg) 94%, var(--sl-color-accent) 6%);
   transition: border-color 200ms ease, box-shadow 200ms ease;
 }
 
+:root[data-theme="dark"] .card {
+  background: #111114;
+  border-color: #1e1e24;
+}
+
 .card:hover {
-  border-color: color-mix(in srgb, var(--sl-color-accent) 30%, var(--sl-color-hairline));
-  box-shadow: 0 4px 24px -8px rgba(37, 99, 235, 0.08);
+  border-color: color-mix(in srgb, var(--sl-color-accent) 40%, var(--sl-color-hairline));
+  box-shadow: 0 4px 24px -8px rgba(37, 99, 235, 0.1);
+}
+
+:root[data-theme="dark"] .card:hover {
+  border-color: color-mix(in srgb, var(--sl-color-accent) 30%, #1e1e24);
+  box-shadow: 0 4px 24px -8px rgba(96, 165, 250, 0.08);
 }
 
 .card .card-title {
@@ -98,22 +119,32 @@ header .site-title {
   font-size: 0.95rem;
 }
 
-/* ─── Code blocks ─── */
+/* --- Code blocks --- */
 .sl-markdown-content pre {
   border-radius: 0.6rem;
   border: 1px solid var(--sl-color-hairline);
 }
 
-/* ─── Terminal window component ─── */
+:root[data-theme="dark"] .sl-markdown-content pre {
+  background: #0c0c0e !important;
+  border-color: #1e1e24;
+}
+
+/* --- Terminal window component --- */
 .terminal-window {
   border-radius: 0.6rem;
-  border: 1px solid var(--sl-color-hairline);
+  border: 1px solid #1e1e24;
   background: #0c0c0e;
   overflow: hidden;
   margin: 1.5rem 0;
   font-family: "SF Mono", "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
   font-size: 0.82rem;
   line-height: 1.6;
+  box-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.3);
+}
+
+:root:not([data-theme="dark"]) .terminal-window {
+  box-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.15);
 }
 
 .terminal-titlebar {
@@ -163,23 +194,43 @@ header .site-title {
 .terminal-body .bar-empty { color: #27272a; }
 .terminal-body .bar-done { color: #4ade80; }
 
-/* ─── Headings ─── */
+/* --- Headings --- */
 .sl-markdown-content h2 {
   letter-spacing: -0.02em;
   font-weight: 700;
 }
 
-/* ─── Pagination ─── */
+/* --- Tables --- */
+:root[data-theme="dark"] .sl-markdown-content table {
+  border-color: #1e1e24;
+}
+
+:root[data-theme="dark"] .sl-markdown-content th {
+  background: #111114;
+  border-color: #1e1e24;
+}
+
+:root[data-theme="dark"] .sl-markdown-content td {
+  border-color: #1e1e24;
+}
+
+/* --- Pagination --- */
 .pagination-links a {
   border-radius: 0.6rem;
 }
 
-/* ─── Hide first hr on hero pages ─── */
+/* --- Hide first hr on hero pages --- */
 [data-has-hero] .sl-markdown-content > hr:first-of-type {
   display: none;
 }
 
-/* ─── Mobile ─── */
+/* --- Asides (tips, cautions, notes) --- */
+:root[data-theme="dark"] .starlight-aside {
+  border-color: #1e1e24;
+  background: #111114;
+}
+
+/* --- Mobile --- */
 @media (max-width: 50rem) {
   .hero {
     padding: 2rem 1rem;
