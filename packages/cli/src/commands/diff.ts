@@ -83,7 +83,19 @@ export async function diffCommand(cwd: string, options: DiffOptions = {}): Promi
 
       const format = getFormat(sourcePath);
       const parsed = format.parse(content);
-      const diff = diffLockfile(lockfile, pattern, parsed.keys, [locale]);
+
+      // Read target file to cross-check lockfile
+      const targetFileKeys = new Map<string, Map<string, string>>();
+      const targetPath = pattern.replace('[locale]', locale);
+      const absTarget = path.resolve(cwd, targetPath);
+      try {
+        const targetContent = await readFile(absTarget);
+        targetFileKeys.set(locale, format.parse(targetContent).keys);
+      } catch {
+        targetFileKeys.set(locale, new Map());
+      }
+
+      const diff = diffLockfile(lockfile, pattern, parsed.keys, [locale], targetFileKeys);
 
       for (const key of diff.added) {
         entries.push({

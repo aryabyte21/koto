@@ -131,6 +131,7 @@ export function diffLockfile(
   filePath: string,
   keys: Map<string, string>,
   targetLocales: string[],
+  targetKeys?: Map<string, Map<string, string>>,
 ): DiffResult {
   const fileEntries = lockfile.entries[filePath] ?? {};
   const byLocale: Record<string, LocaleDiff> = {};
@@ -139,6 +140,7 @@ export function diffLockfile(
     const added: string[] = [];
     const changed: string[] = [];
     const unchanged: string[] = [];
+    const localeTargetKeys = targetKeys?.get(locale);
 
     for (const [key, value] of keys) {
       const entry = fileEntries[key];
@@ -155,6 +157,12 @@ export function diffLockfile(
       }
 
       if (!entry.translations[locale]) {
+        added.push(key);
+        continue;
+      }
+
+      // Lockfile says translated, but verify the key actually exists in the target file
+      if (localeTargetKeys && !localeTargetKeys.has(key)) {
         added.push(key);
         continue;
       }

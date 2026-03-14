@@ -155,10 +155,22 @@ export async function runPipeline(
         context.glossaryTerms = terms;
       }
 
+      // Read target file keys to cross-check lockfile accuracy
+      const targetFileKeys = new Map<string, Map<string, string>>();
+      const targetPath = sourceFile.path.replace('[locale]', locale);
+      const targetAbsolutePath = path.resolve(cwd, targetPath);
+      try {
+        const targetContent = await readFile(targetAbsolutePath);
+        const targetParsed = format.parse(targetContent);
+        targetFileKeys.set(locale, targetParsed.keys);
+      } catch {
+        targetFileKeys.set(locale, new Map());
+      }
+
       // Diff against lockfile to find what needs translation
       const diff = options.force
         ? { added: [...keys.keys()], changed: [], removed: [], unchanged: [] }
-        : diffLockfile(lockfile, sourceFile.path, keys, [locale]);
+        : diffLockfile(lockfile, sourceFile.path, keys, [locale], targetFileKeys);
 
       const keysToTranslate = [...diff.added, ...diff.changed];
       localeStats.cached += diff.unchanged.length;
