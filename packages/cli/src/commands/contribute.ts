@@ -216,8 +216,23 @@ export async function contributeCommand(
         ? Math.max(0, Math.round((passed / totalTranslated) * 100))
         : 100;
 
+    // Count actual file changes via git diff (more accurate than API call count)
+    let actualChanges = totalTranslated;
+    if (!options.dryRun) {
+      try {
+        const diffStat = await run('git', ['diff', '--numstat', 'HEAD~1'], { cwd: cloneDir });
+        const lines = diffStat.trim().split('\n').filter(Boolean);
+        actualChanges = lines.reduce((sum, line) => {
+          const added = parseInt(line.split('\t')[0], 10);
+          return sum + (isNaN(added) ? 0 : added);
+        }, 0);
+      } catch {
+        // fallback to totalTranslated
+      }
+    }
+
     console.log(
-      `  ${pc.green('✓')} Translated ${totalTranslated} keys (score: ${score}/100)\n`,
+      `  ${pc.green('✓')} Translated ${actualChanges} keys (score: ${score}/100)\n`,
     );
 
     if (options.dryRun) {
@@ -277,8 +292,8 @@ export async function contributeCommand(
       localeName,
       localeCode: options.locale,
       sourceLocale: existingLocales.sourceLocale,
-      count: totalTranslated,
-      passed,
+      count: actualChanges,
+      passed: Math.max(0, actualChanges - totalIssues),
       issues: totalIssues,
       score,
     });
