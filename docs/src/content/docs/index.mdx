@@ -17,15 +17,8 @@ hero:
 
 import Terminal from '../../components/Terminal.astro';
 
-<pre class="ascii-logo" aria-label="koto">{`╦╔═  ╔═╗  ╔╦╗  ╔═╗
-╠╩╗  ║ ║   ║   ║ ║
-╩ ╩  ╚═╝   ╩   ╚═╝`}</pre>
-
 <Terminal title="npx koto init">
-<Fragment set:html={`<span class="cyan">  ╦╔═  ╔═╗  ╔╦╗  ╔═╗
-  ╠╩╗  ║ ║   ║   ║ ║
-  ╩ ╩  ╚═╝   ╩   ╚═╝</span>
-  <span class="dim">v0.1.0 — context-aware i18n</span>
+<Fragment set:html={`<span class="bold cyan">  koto</span> <span class="dim">v0.1.0</span>
 
 <span class="dim">┌</span>  <span class="bold">Detected</span>
 <span class="dim">│</span>
@@ -36,13 +29,13 @@ import Terminal from '../../components/Terminal.astro';
 <span class="dim">└</span>
 
 <span class="cyan">◆</span>  Which LLM provider?
-<span class="dim">│</span>  <span class="cyan">●</span> OpenAI <span class="dim">(gpt-4o-mini — fast & cheap)</span>
+<span class="dim">│</span>  <span class="cyan">●</span> OpenAI <span class="dim">(gpt-4o-mini — fast &amp; cheap)</span>
 <span class="dim">│</span>  <span class="dim">○</span> Anthropic <span class="dim">(claude-sonnet — high quality)</span>
-<span class="dim">│</span>  <span class="dim">○</span> Google <span class="dim">(gemini-2.5-flash — fast & cheap)</span>
+<span class="dim">│</span>  <span class="dim">○</span> Google <span class="dim">(gemini-2.5-flash)</span>
 <span class="dim">│</span>  <span class="dim">○</span> Ollama <span class="dim">(local, free, private)</span>
 
 <span class="cyan">◆</span>  Target locales?
-<span class="dim">│</span>  <span class="cyan">◼</span> <span class="flag">🇪🇸</span>  es    <span class="cyan">◼</span> <span class="flag">🇫🇷</span>  fr    <span class="cyan">◼</span> <span class="flag">🇩🇪</span>  de    <span class="cyan">◼</span> <span class="flag">🇯🇵</span>  ja
+<span class="dim">│</span>  <span class="cyan">◼</span> <span class="flag">🇪🇸</span> es    <span class="cyan">◼</span> <span class="flag">🇫🇷</span> fr    <span class="cyan">◼</span> <span class="flag">🇩🇪</span> de    <span class="cyan">◼</span> <span class="flag">🇯🇵</span> ja
 
 <span class="green">✔</span>  Created koto.config.ts
 <span class="green">✔</span>  Created koto.lock
@@ -50,10 +43,7 @@ import Terminal from '../../components/Terminal.astro';
 </Terminal>
 
 <Terminal title="npx koto translate">
-<Fragment set:html={`<span class="cyan">  ╦╔═  ╔═╗  ╔╦╗  ╔═╗
-  ╠╩╗  ║ ║   ║   ║ ║
-  ╩ ╩  ╚═╝   ╩   ╚═╝</span>
-  <span class="dim">v0.1.0 — context-aware i18n</span>
+<Fragment set:html={`<span class="bold cyan">  koto</span> <span class="dim">v0.1.0</span>
 
   <span class="bold">Translating</span> → <span class="flag">🇪🇸</span> <span class="flag">🇫🇷</span> <span class="flag">🇩🇪</span> <span class="flag">🇯🇵</span> <span class="dim">(4 locales)</span>
 
@@ -83,7 +73,7 @@ import Terminal from '../../components/Terminal.astro';
 
 You add a button. You change a heading. Your source locale is done in seconds — but your 6 target locales are now stale. AI translation tools exist, but they treat a payment confirmation the same as a marketing headline.
 
-**koto fixes this.** Define context profiles — tone, glossary, instructions — per section of your app. Point it at any LLM. Run one command. Done.
+**koto fixes this.** Define context profiles — tone, glossary, instructions — per section of your app. Point it at any LLM. Run one command.
 
 ---
 
@@ -122,14 +112,13 @@ You add a button. You change a heading. Your source locale is done in seconds �
 
 ```ts
 // koto.config.ts
-import { defineConfig } from 'koto'
-
-export default defineConfig({
+/** @type {import('koto').KotoConfig} */
+export default {
   sourceLocale: 'en',
   targetLocales: ['es', 'fr', 'de', 'ja'],
   files: ['src/locales/[locale].json'],
   provider: { name: 'openai', model: 'gpt-4o-mini' },
-})
+};
 ```
 
 That's it. Run `npx koto` and your locale files are ready.

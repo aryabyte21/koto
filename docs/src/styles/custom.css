@@ -1,4 +1,8 @@
-/* --- Base tokens --- */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Base tokens ── */
 :root {
   --sl-color-accent-low: #dbeafe;
   --sl-color-accent: #2563eb;
@@ -8,8 +12,8 @@
   --sl-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --sl-text-h1: 2.25rem;
   --sl-text-h2: 1.55rem;
-  --sl-text-h3: 1.2rem;
-  --sl-content-width: 55rem;
+  --sl-text-h3: 1.15rem;
+  --sl-content-width: 52rem;
 }
 
 :root[data-theme="dark"] {
@@ -21,22 +25,16 @@
   --sl-color-bg: #09090b;
 }
 
-/* --- Sidebar --- */
+/* ── Sidebar ── */
 .sidebar-pane {
   border-color: color-mix(in srgb, var(--sl-color-hairline) 50%, transparent);
-}
-
-nav.sidebar .top-level > li + li {
-  border-top: 1px solid color-mix(in srgb, var(--sl-color-hairline) 30%, transparent);
-  padding-top: 0.5rem;
-  margin-top: 0.5rem;
 }
 
 nav.sidebar a[aria-current="page"] {
   font-weight: 600;
 }
 
-/* --- Header --- */
+/* ── Header / Navbar ── */
 header.header {
   border-color: color-mix(in srgb, var(--sl-color-hairline) 50%, transparent);
   backdrop-filter: blur(16px) saturate(1.8);
@@ -44,87 +42,67 @@ header.header {
 }
 
 header .site-title {
-  font-weight: 700;
-  font-size: 1.1rem;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: -0.04em;
+  font-family: "Inter", -apple-system, sans-serif;
 }
 
-/* --- Hero section --- */
+/* ── Hero section ── */
 .hero {
-  padding: 3rem 2rem;
+  padding: 4rem 2rem 2rem;
   text-align: center;
-  max-width: 52rem;
+  max-width: 48rem;
   margin: 0 auto;
 }
 
-/* Hide the default Starlight hero h1 — we use the ASCII logo instead */
+/* Style the hero h1 as a big clean wordmark */
 .hero h1#_top {
-  display: none;
+  font-size: 4rem;
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  color: var(--sl-color-white);
 }
 
-/* ASCII art logo in hero */
-.ascii-logo {
-  font-family: "SF Mono", "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
-  font-size: 1.5rem;
-  line-height: 1.3;
-  text-align: center;
-  color: var(--sl-color-accent);
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0 auto 0.5rem;
-  white-space: pre;
-  user-select: none;
-}
-
-:root:not([data-theme="dark"]) .ascii-logo {
-  color: var(--sl-color-accent-high);
+:root:not([data-theme="dark"]) .hero h1#_top {
+  color: var(--sl-color-black);
 }
 
 .hero .tagline {
-  max-width: 38ch;
-  margin: 0.5rem auto 0;
+  max-width: 32ch;
+  margin: 0 auto;
   font-size: 1.15rem;
-  line-height: 1.65;
-  color: var(--sl-color-gray-2);
+  line-height: 1.6;
+  color: var(--sl-color-gray-3);
 }
 
+/* CTA buttons */
 .hero .action {
   border-radius: 0.5rem;
   font-weight: 600;
-  font-size: 0.88rem;
-  padding: 0.6rem 1.3rem;
+  font-size: 0.875rem;
+  padding: 0.65rem 1.4rem;
+  transition: all 150ms ease;
 }
 
-/* --- Cards --- */
-.card {
-  border-radius: 0.75rem;
-  border: 1px solid var(--sl-color-hairline);
-  background: color-mix(in srgb, var(--sl-color-bg) 94%, var(--sl-color-accent) 6%);
-  transition: border-color 200ms ease, box-shadow 200ms ease;
+.hero .action.primary {
+  background: var(--sl-color-white);
+  color: var(--sl-color-black);
+  border: 1px solid var(--sl-color-white);
 }
 
-:root[data-theme="dark"] .card {
-  background: #111114;
-  border-color: #1e1e24;
+:root[data-theme="dark"] .hero .action.primary {
+  background: var(--sl-color-white);
+  color: #09090b;
 }
 
-.card:hover {
-  border-color: color-mix(in srgb, var(--sl-color-accent) 40%, var(--sl-color-hairline));
-  box-shadow: 0 4px 24px -8px rgba(37, 99, 235, 0.1);
+.hero .action.primary:hover {
+  opacity: 0.9;
 }
 
-:root[data-theme="dark"] .card:hover {
-  border-color: color-mix(in srgb, var(--sl-color-accent) 30%, #1e1e24);
-  box-shadow: 0 4px 24px -8px rgba(96, 165, 250, 0.08);
-}
-
-.card .card-title {
-  font-weight: 650;
-  font-size: 0.95rem;
-}
-
-/* --- Code blocks --- */
+/* ── Code blocks ── */
 .sl-markdown-content pre {
   border-radius: 0.6rem;
   border: 1px solid var(--sl-color-hairline);
@@ -132,33 +110,39 @@ header .site-title {
 
 :root[data-theme="dark"] .sl-markdown-content pre {
   background: #0c0c0e !important;
-  border-color: #1e1e24;
+  border-color: #1a1a1f;
 }
 
-/* --- Terminal window component --- */
+/* ── Terminal window ── */
 .terminal-window {
-  border-radius: 0.6rem;
-  border: 1px solid #1e1e24;
-  background: #0c0c0e;
+  border-radius: 0.75rem;
+  border: 1px solid #1a1a1f;
+  background: #0a0a0c;
   overflow: hidden;
   margin: 1.5rem 0;
-  font-family: "SF Mono", "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
-  font-size: 0.82rem;
-  line-height: 1.6;
-  box-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.3);
+  font-family: "SF Mono", "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  font-size: 0.8rem;
+  line-height: 1.65;
+  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.5);
 }
 
 :root:not([data-theme="dark"]) .terminal-window {
-  box-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.15);
+  border-color: #d4d4d8;
+  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.12);
 }
 
 .terminal-titlebar {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 10px 14px;
-  background: #141416;
-  border-bottom: 1px solid #1e1e22;
+  padding: 11px 14px;
+  background: #111113;
+  border-bottom: 1px solid #1a1a1f;
+}
+
+:root:not([data-theme="dark"]) .terminal-titlebar {
+  background: #f4f4f5;
+  border-bottom: 1px solid #d4d4d8;
 }
 
 .terminal-dot {
@@ -175,8 +159,12 @@ header .site-title {
   flex: 1;
   text-align: center;
   font-size: 0.72rem;
-  color: #666;
+  color: #52525b;
   font-family: inherit;
+}
+
+:root:not([data-theme="dark"]) .terminal-title {
+  color: #71717a;
 }
 
 .terminal-body {
@@ -184,6 +172,10 @@ header .site-title {
   color: #e4e4e7;
   white-space: pre;
   overflow-x: auto;
+}
+
+:root:not([data-theme="dark"]) .terminal-body {
+  color: #18181b;
 }
 
 .terminal-body .dim { color: #52525b; }
@@ -194,115 +186,137 @@ header .site-title {
 .terminal-body .bold { font-weight: 700; }
 .terminal-body .flag { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
 
-/* Progress bars */
+:root:not([data-theme="dark"]) .terminal-body .dim { color: #a1a1aa; }
+:root:not([data-theme="dark"]) .terminal-body .cyan { color: #0891b2; }
+:root:not([data-theme="dark"]) .terminal-body .green { color: #16a34a; }
+:root:not([data-theme="dark"]) .terminal-body .yellow { color: #ca8a04; }
+:root:not([data-theme="dark"]) .terminal-body .blue { color: #2563eb; }
+
 .terminal-body .bar-filled { color: #22d3ee; }
 .terminal-body .bar-empty { color: #27272a; }
 .terminal-body .bar-done { color: #4ade80; }
 
-/* --- Headings --- */
+:root:not([data-theme="dark"]) .terminal-body .bar-filled { color: #0891b2; }
+:root:not([data-theme="dark"]) .terminal-body .bar-empty { color: #d4d4d8; }
+:root:not([data-theme="dark"]) .terminal-body .bar-done { color: #16a34a; }
+
+/* ── Headings ── */
 .sl-markdown-content h2 {
   letter-spacing: -0.02em;
   font-weight: 700;
 }
 
-/* --- Tables --- */
+/* ── Tables ── */
 :root[data-theme="dark"] .sl-markdown-content table {
-  border-color: #1e1e24;
+  border-color: #1a1a1f;
 }
 
 :root[data-theme="dark"] .sl-markdown-content th {
   background: #111114;
-  border-color: #1e1e24;
+  border-color: #1a1a1f;
 }
 
 :root[data-theme="dark"] .sl-markdown-content td {
-  border-color: #1e1e24;
+  border-color: #1a1a1f;
 }
 
-/* --- Pagination --- */
+/* ── Pagination ── */
 .pagination-links a {
   border-radius: 0.6rem;
 }
 
-/* --- Hide first hr on hero pages --- */
+/* ── Hero page cleanup ── */
 [data-has-hero] .sl-markdown-content > hr:first-of-type {
   display: none;
 }
 
-/* --- Asides (tips, cautions, notes) --- */
+/* ── Asides ── */
 :root[data-theme="dark"] .starlight-aside {
-  border-color: #1e1e24;
+  border-color: #1a1a1f;
   background: #111114;
 }
 
-/* --- Feature grid (landing page) --- */
+/* ── Feature grid ── */
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: hidden;
   margin: 1.5rem 0;
+}
+
+:root:not([data-theme="dark"]) .feature-grid {
+  background: #e4e4e7;
+  border-color: #e4e4e7;
 }
 
 .feature {
   padding: 1.5rem;
-  border-radius: 0.75rem;
-  border: 1px solid transparent;
-  background: color-mix(in srgb, var(--sl-color-bg) 94%, var(--sl-color-accent) 6%);
-  transition: border-color 200ms ease, background 200ms ease;
+  background: var(--sl-color-bg);
+  transition: background 200ms ease;
 }
 
 :root[data-theme="dark"] .feature {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.06);
+  background: #0c0c0e;
+}
+
+:root:not([data-theme="dark"]) .feature {
+  background: #fafafa;
 }
 
 .feature:hover {
-  border-color: color-mix(in srgb, var(--sl-color-accent) 30%, transparent);
+  background: color-mix(in srgb, var(--sl-color-bg) 95%, var(--sl-color-accent) 5%);
 }
 
 :root[data-theme="dark"] .feature:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: #111114;
 }
 
 .feature h3 {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.4rem;
   letter-spacing: -0.01em;
   color: var(--sl-color-white);
 }
 
+:root:not([data-theme="dark"]) .feature h3 {
+  color: var(--sl-color-black);
+}
+
 .feature p {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   line-height: 1.6;
   margin: 0;
   color: var(--sl-color-gray-3);
 }
 
-@media (max-width: 60rem) {
+@media (max-width: 55rem) {
   .feature-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 35rem) {
+@media (max-width: 30rem) {
   .feature-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* --- Hide Starlight card icons --- */
+/* ── Hide Starlight card icons ── */
 .card .card-icon {
   display: none;
 }
 
-/* --- Mobile --- */
+/* ── Mobile ── */
 @media (max-width: 50rem) {
   .hero {
-    padding: 2rem 1rem;
+    padding: 2.5rem 1rem 1.5rem;
   }
-  .hero h1 {
-    font-size: 2rem;
+  .hero h1#_top {
+    font-size: 2.5rem;
   }
 }
