@@ -11,9 +11,9 @@ koto is configured with a `koto.config.ts` (or `koto.config.js`) file in your pr
 
 ```ts
 // koto.config.ts
-import { defineConfig } from 'koto'
+/** @type {import('koto').KotoConfig} */
 
-export default defineConfig({
+export default {
   sourceLocale: 'en',
   targetLocales: ['es', 'fr', 'de', 'ja'],
   files: ['src/locales/[locale].json'],
@@ -96,56 +96,43 @@ contexts: {
 }
 ```
 
-### `types`
+### `typegen`
 
-**Type:** `TypesConfig | boolean` **Default:** `false`
+**Type:** `{ enabled?: boolean, outputPath?: string }` **Default:** `{ enabled: false }`
 
-Configuration for TypeScript type generation. Set to `true` to enable with defaults, or pass an object for fine-grained control.
-
-```ts
-// Enable with defaults
-types: true
-
-// Custom output path
-types: {
-  output: 'src/types/i18n.d.ts',
-  framework: 'next-intl', // 'next-intl' | 'i18next' | 'react-intl' | 'generic'
-}
-```
-
-### `cache`
-
-**Type:** `CacheConfig` **Default:** `{ enabled: true, dir: 'node_modules/.cache/koto' }`
-
-Controls translation caching behavior.
+Configuration for TypeScript type generation. Run `koto types` to generate.
 
 ```ts
-cache: {
+typegen: {
   enabled: true,
-  dir: 'node_modules/.cache/koto',
+  outputPath: 'src/types/i18n.d.ts', // default: 'src/i18n.d.ts'
 }
 ```
 
 ### `quality`
 
-**Type:** `QualityConfig` **Default:** `{ threshold: 80 }`
+**Type:** `{ enabled?: boolean, minScore?: number }` **Default:** `{ enabled: true, minScore: 0.7 }`
 
-Quality scoring settings. Translations below the threshold trigger warnings (or errors in CI mode).
+Quality scoring settings. Translations scoring below `minScore` trigger warnings. Use `--fail-on-error` in CI to block on quality issues.
 
 ```ts
 quality: {
-  threshold: 90,  // Score 0-100
+  enabled: true,
+  minScore: 0.8, // 0-1 scale (0.8 = 80%)
 }
 ```
 
-### `lockfile`
+### `batch`
 
-**Type:** `string` **Default:** `'koto-lock.json'`
+**Type:** `{ size?: number, concurrency?: number }` **Default:** `{ size: 50, concurrency: 3 }`
 
-Path to the lockfile used for incremental translation tracking.
+Controls how translation requests are batched and parallelized.
 
 ```ts
-lockfile: 'koto-lock.json'
+batch: {
+  size: 30,        // keys per LLM request
+  concurrency: 5,  // parallel requests
+}
 ```
 
 ---
@@ -155,9 +142,9 @@ lockfile: 'koto-lock.json'
 <Tabs>
   <TabItem label="Next.js + next-intl">
     ```ts
-    import { defineConfig } from 'koto'
+    /** @type {import('koto').KotoConfig} */
 
-    export default defineConfig({
+    export default {
       sourceLocale: 'en',
       targetLocales: ['es', 'fr', 'de', 'ja'],
       files: ['messages/[locale].json'],
@@ -165,18 +152,18 @@ lockfile: 'koto-lock.json'
         name: 'openai',
         model: 'gpt-4o-mini',
       },
-      types: {
-        output: 'src/types/i18n.d.ts',
-        framework: 'next-intl',
+      typegen: {
+        outputPath: 'src/types/i18n.d.ts',
+
       },
-    })
+    };
     ```
   </TabItem>
   <TabItem label="Vite + i18next">
     ```ts
-    import { defineConfig } from 'koto'
+    /** @type {import('koto').KotoConfig} */
 
-    export default defineConfig({
+    export default {
       sourceLocale: 'en',
       targetLocales: ['es', 'fr', 'de'],
       files: ['public/locales/[locale]/translation.json'],
@@ -184,18 +171,18 @@ lockfile: 'koto-lock.json'
         name: 'openai',
         model: 'gpt-4o-mini',
       },
-      types: {
-        output: 'src/@types/i18next.d.ts',
-        framework: 'i18next',
+      typegen: {
+        outputPath: 'src/@types/i18next.d.ts',
+
       },
-    })
+    };
     ```
   </TabItem>
   <TabItem label="React + react-intl">
     ```ts
-    import { defineConfig } from 'koto'
+    /** @type {import('koto').KotoConfig} */
 
-    export default defineConfig({
+    export default {
       sourceLocale: 'en',
       targetLocales: ['es', 'fr', 'ja'],
       files: ['src/lang/[locale].json'],
@@ -203,18 +190,18 @@ lockfile: 'koto-lock.json'
         name: 'anthropic',
         model: 'claude-sonnet-4-20250514',
       },
-      types: {
-        output: 'src/types/intl.d.ts',
-        framework: 'react-intl',
+      typegen: {
+        outputPath: 'src/types/intl.d.ts',
+
       },
-    })
+    };
     ```
   </TabItem>
   <TabItem label="Astro">
     ```ts
-    import { defineConfig } from 'koto'
+    /** @type {import('koto').KotoConfig} */
 
-    export default defineConfig({
+    export default {
       sourceLocale: 'en',
       targetLocales: ['es', 'fr', 'de', 'ja', 'ko'],
       files: ['src/i18n/[locale].json'],
@@ -222,14 +209,14 @@ lockfile: 'koto-lock.json'
         name: 'google',
         model: 'gemini-2.0-flash',
       },
-    })
+    };
     ```
   </TabItem>
   <TabItem label="Local (Ollama)">
     ```ts
-    import { defineConfig } from 'koto'
+    /** @type {import('koto').KotoConfig} */
 
-    export default defineConfig({
+    export default {
       sourceLocale: 'en',
       targetLocales: ['es', 'fr'],
       files: ['locales/[locale].json'],
@@ -238,7 +225,7 @@ lockfile: 'koto-lock.json'
         model: 'llama3.2',
         baseUrl: 'http://localhost:11434',
       },
-    })
+    };
     ```
   </TabItem>
 </Tabs>

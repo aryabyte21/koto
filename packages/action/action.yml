@@ -6,32 +6,36 @@ branding:
 
 inputs:
   provider:
-    description: 'LLM provider to use (openai, anthropic, google, ollama)'
-    required: true
+    description: 'LLM provider (openai, anthropic, google, ollama)'
+    required: false
     default: 'openai'
   api_key:
     description: 'API key for the LLM provider'
     required: false
   locales:
-    description: 'Comma-separated list of target locales (e.g. es,fr,de,ja)'
+    description: 'Comma-separated target locales (e.g. es,fr,de,ja)'
     required: false
   working_directory:
     description: 'Directory containing the koto config file'
     required: false
     default: '.'
   fail_on_error:
-    description: 'Exit with error code if any translation fails'
+    description: 'Exit with error if quality issues found'
     required: false
     default: 'false'
 
 outputs:
   translated:
     description: 'Number of keys translated'
+  cached:
+    description: 'Number of keys skipped (cached)'
   locales:
     description: 'Locales that were translated'
-  quality_score:
-    description: 'Average quality score across all translations'
+  issues:
+    description: 'Number of quality issues found'
+  cost:
+    description: 'Estimated cost in USD'
 
 runs:
   using: 'node20'
-  main: 'dist/index.cjs'
+  main: 'dist/index.js'
