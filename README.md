@@ -111,54 +111,12 @@ npx koto translate
 
 ## Features
 
-<table>
-<tr>
-<td width="33%" valign="top">
-
-### 🎯 Context Profiles
-
-Define different tones and terminology for different parts of your app. Marketing pages get punchy copy; legal pages stay formal.
-
-</td>
-<td width="33%" valign="top">
-
-### 🔒 Type-Safe Keys
-
-Auto-generate TypeScript types from your translation files. Catch missing keys at build time, not in production.
-
-</td>
-<td width="33%" valign="top">
-
-### 🤖 BYOLLM
-
-Bring your own LLM. Works with OpenAI, Anthropic Claude, Google Gemini, and local models via Ollama. Switch with one config line.
-
-</td>
-</tr>
-<tr>
-<td width="33%" valign="top">
-
-### ⚡ Smart Cache
-
-Only re-translate changed or new keys. Unchanged strings are cached with content hashes, so incremental runs take seconds.
-
-</td>
-<td width="33%" valign="top">
-
-### 📊 Quality Scoring
-
-Every translation is scored for placeholder integrity, length ratio, and terminology consistency. Catch issues before they ship.
-
-</td>
-<td width="33%" valign="top">
-
-### 🔄 CI/CD Ready
-
-Drop-in GitHub Action. Use `--fail-on-error` in CI to block deploys when translations are missing or quality drops below threshold.
-
-</td>
-</tr>
-</table>
+- **Context Profiles** — Different tones for different sections. Marketing copy sounds energetic. Legal text stays formal.
+- **Type-Safe Keys** — Generate TypeScript types from locale files. Missing keys fail at build time.
+- **BYOLLM** — OpenAI, Anthropic, Gemini, Ollama. Switch providers with one config line.
+- **Smart Cache** — SHA-256 hashing + lockfile. Only re-translate changed keys.
+- **Quality Scoring** — Placeholder integrity, length ratio, terminology checks. CI-ready quality gates.
+- **CI/CD Ready** — GitHub Action included. Use `--fail-on-error` to block bad releases.
 
 ---
 

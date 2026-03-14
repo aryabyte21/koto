@@ -10,6 +10,30 @@ export default defineConfig({
       description:
         'Context-aware AI translation for i18n workflows with LLM provider choice, context profiles, and type-safe keys.',
       customCss: ['./src/styles/custom.css'],
+      head: [
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'preconnect',
+            href: 'https://fonts.googleapis.com',
+          },
+        },
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'preconnect',
+            href: 'https://fonts.gstatic.com',
+            crossorigin: '',
+          },
+        },
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'stylesheet',
+            href: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap',
+          },
+        },
+      ],
       social: {
         github: 'https://github.com/aryabyte21/koto',
       },
